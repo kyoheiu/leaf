@@ -1,0 +1,15 @@
+[package]
+name = "acidpaper"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = {version = "0.6.1", features = ["macros"]}
+env_logger = "0.10.0"
+log = "0.4.17"
+readability = "0.2.0"
+serde = {version = "1.0.144", features = ["derive"]}
+serde_json = "1.0.85"
+tokio = {version = "1.21.0", features = ["full"]}
