@@ -1,7 +1,9 @@
-use std::net::TcpListener;
+use super::handler::health;
 
-use axum::Router;
+use axum::{routing::get, Extension, Router};
+use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct Core;
 
 impl Core {
@@ -9,17 +11,14 @@ impl Core {
         Core
     }
 
-    pub async fn health_check(&self) -> String {
+    pub async fn health(&self) -> String {
         "Hello, world.".to_string()
     }
 }
 
-pub async fn run(listner: TcpListener, core: Core) {
-    let app = Router::new();
-
-    axum::Server::from_tcp(listner)
-        .unwrap()
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+pub fn router(core: Core) -> axum::Router {
+    let shared_core = Arc::new(core);
+    Router::new()
+        .route("/", get(health))
+        .layer(Extension(shared_core))
 }
