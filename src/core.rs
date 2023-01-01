@@ -1,3 +1,5 @@
+use crate::error::AcidError;
+
 use super::handler::*;
 
 use axum::{
@@ -5,13 +7,18 @@ use axum::{
     Router,
 };
 use std::{net::TcpListener, sync::Arc};
+use tera::Tera;
 
 #[derive(Clone)]
-pub struct Core;
+pub struct Core {
+    pub template: Tera,
+}
 
 impl Core {
-    pub fn new() -> Core {
-        Core
+    pub fn new() -> Result<Core, AcidError> {
+        Ok(Core {
+            template: tera::Tera::new("templates/*html")?,
+        })
     }
 }
 
