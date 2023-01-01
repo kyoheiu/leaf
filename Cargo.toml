@@ -8,11 +8,10 @@ edition = "2021"
 [dependencies]
 axum = {version = "0.6.1", features = ["macros"]}
 env_logger = "0.10.0"
+hyper = "0.14.23"
 log = "0.4.17"
 readability = "0.2.0"
 serde = {version = "1.0.144", features = ["derive"]}
 serde_json = "1.0.85"
 tokio = {version = "1.21.0", features = ["full"]}
-
-[dev-dependencies]
-axum-test-helper = "0.2.0"
+tower = "0.4.13"

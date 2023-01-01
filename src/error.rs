@@ -1,3 +1,8 @@
+use axum::{
+    http::StatusCode,
+    response::{IntoResponse, Response},
+};
+
 #[derive(Debug)]
 pub enum AcidError {
     Readability(String),
@@ -17,5 +22,14 @@ impl std::fmt::Display for AcidError {
 impl From<readability::error::Error> for AcidError {
     fn from(err: readability::error::Error) -> Self {
         AcidError::Readability(err.to_string())
+    }
+}
+
+impl IntoResponse for AcidError {
+    fn into_response(self) -> Response {
+        let body = match self {
+            AcidError::Readability(s) => s,
+        };
+        (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
     }
 }

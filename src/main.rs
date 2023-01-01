@@ -1,40 +1,44 @@
 mod core;
-mod errors;
+mod error;
 mod handler;
 mod readble;
 
-use crate::core::{router, Core};
+use crate::core::run;
+
+use log::info;
+use std::net::TcpListener;
+
+use crate::core::Core;
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
     let core = Core::new();
-
-    // build our application with a route
-    let router = router(core);
-
-    // run it
-    let addr = std::net::SocketAddr::from(([0, 0, 0, 0], 8000));
-    println!("listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(router.into_make_service())
-        .await
-        .unwrap();
+    let listener = TcpListener::bind("127.0.0.1:8000").expect("Failed to listen.");
+    info!("Start listening on {:?}", listener);
+    run(listener, core).await;
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use axum::http::StatusCode;
-    use axum_test_helper::TestClient;
+    use super::core::{router, Core};
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use tower::ServiceExt;
 
     #[tokio::test]
-    async fn test_main_router() {
+    async fn test_health() {
         let core = Core::new();
         let router = router(core);
-        let client = TestClient::new(router);
-        let res = client.get("/").send().await;
-        assert_eq!(res.status(), StatusCode::OK);
-        assert_eq!(res.text().await, "Hello, world.");
+
+        let response = router
+            .oneshot(Request::builder().uri("/").body(Body::empty()).unwrap())
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+        let body = String::from_utf8(body.to_vec()).unwrap();
+        assert_eq!(body, "Hello, world.");
     }
 }
