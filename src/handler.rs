@@ -2,9 +2,10 @@ use super::core::Core;
 use super::error::AcidError;
 
 use axum::debug_handler;
-use axum::extract::{Json, State};
+use axum::extract::{Json, Query, State};
 use axum::response::Html;
 use serde::Deserialize;
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 #[derive(Deserialize)]
@@ -15,6 +16,15 @@ pub struct Payload {
 #[debug_handler]
 pub async fn health(State(core): State<Arc<Core>>) -> Html<String> {
     core.health().await
+}
+
+#[debug_handler]
+pub async fn add(State(core): State<Arc<Core>>, Query(params): Query<BTreeMap<String, String>>) {
+    for (k, v) in params {
+        if k == "url" {
+            core.add(&v).await;
+        }
+    }
 }
 
 #[debug_handler]

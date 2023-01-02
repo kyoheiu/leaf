@@ -8,6 +8,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use log::info;
 use std::{net::TcpListener, sync::Arc};
 use tera::Tera;
 
@@ -23,13 +24,12 @@ impl Core {
             .execute(
                 "
             CREATE TABLE IF NOT EXISTS readers (
-            id INTEGER PRIMARY KEY,
-            title TEXT NOT NULL,
-            author TEXT,
+            id TEXT PRIMARY KEY,
+            url TEXT,
+            title TEXT,
             html TEXT,
             plain TEXT,
-            added DATETIME NOT NULL,
-            original DATETIME
+            timestamp DATETIME
             )
             ",
             )
@@ -51,13 +51,39 @@ impl Core {
                 .unwrap(),
         )
     }
+
+    pub async fn add(&self, url: &str) {
+        if let Ok(product) = readability::extractor::scrape(url) {
+            let ulid = ulid::Ulid::new().to_string();
+            let title = product.title;
+            let html = product.content;
+            let plain = product.text;
+            self.db
+                .execute(format!(
+                    "
+                INSERT INTO readers (id, url, title, html, plain, timestamp)
+                VALUES (
+                    '{}',
+                    '{}',
+                    '{}',
+                    '{}',
+                    '{}',
+                    datetime('now', 'localtime')
+                );
+                ",
+                    ulid, url, title, html, plain
+                ))
+                .unwrap();
+            info!("{}: {} ({})", ulid, title, url);
+        }
+    }
 }
 
 pub fn router(core: Core) -> axum::Router {
     let shared_core = Arc::new(core);
     Router::new()
         .route("/", get(health))
-        .route("/post", post(scrape))
+        .route("/add", post(add))
         .with_state(shared_core)
 }
 
