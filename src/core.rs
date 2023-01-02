@@ -27,8 +27,8 @@ impl Core {
             id TEXT PRIMARY KEY,
             url TEXT,
             title TEXT,
-            html TEXT,
-            plain TEXT,
+            html BLOB,
+            plain BLOB,
             timestamp DATETIME
             )
             ",
@@ -53,11 +53,16 @@ impl Core {
     }
 
     pub async fn add(&self, url: &str) {
-        if let Ok(product) = readability::extractor::scrape(url) {
+        let url_owned = url.to_owned();
+        let handle =
+            tokio::task::spawn_blocking(move || readability::extractor::scrape(&url_owned));
+        let res = handle.await.unwrap();
+        if let Ok(product) = res {
             let ulid = ulid::Ulid::new().to_string();
             let title = product.title;
-            let html = product.content;
-            let plain = product.text;
+            let html = product.content.replace('\'', "''");
+            let plain = product.text.replace('\'', "''");
+            info!("{}: {} ({})", ulid, title, url);
             self.db
                 .execute(format!(
                     "
