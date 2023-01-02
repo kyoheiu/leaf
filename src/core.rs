@@ -1,7 +1,9 @@
 use crate::error::AcidError;
 
 use super::handler::*;
+use super::template::Hello;
 
+use axum::response::Html;
 use axum::{
     routing::{get, post},
     Router,
@@ -9,16 +11,45 @@ use axum::{
 use std::{net::TcpListener, sync::Arc};
 use tera::Tera;
 
-#[derive(Clone)]
 pub struct Core {
     pub template: Tera,
+    pub db: sqlite::ConnectionWithFullMutex,
 }
 
 impl Core {
     pub fn new() -> Result<Core, AcidError> {
+        let connection = sqlite::Connection::open_with_full_mutex(".testdb").unwrap();
+        connection
+            .execute(
+                "
+            CREATE TABLE IF NOT EXISTS readers (
+            id INTEGER PRIMARY KEY,
+            title TEXT NOT NULL,
+            author TEXT,
+            html TEXT,
+            plain TEXT,
+            added DATETIME NOT NULL,
+            original DATETIME
+            )
+            ",
+            )
+            .unwrap();
         Ok(Core {
             template: tera::Tera::new("templates/*html")?,
+            db: connection,
         })
+    }
+
+    pub async fn health(&self) -> Html<String> {
+        let hello = Hello { name: "world" };
+        Html(
+            self.template
+                .render(
+                    "hello.html",
+                    &tera::Context::from_serialize(&hello).unwrap(),
+                )
+                .unwrap(),
+        )
     }
 }
 

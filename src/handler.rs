@@ -1,6 +1,5 @@
 use super::core::Core;
 use super::error::AcidError;
-use super::template::Hello;
 
 use axum::debug_handler;
 use axum::extract::{Json, State};
@@ -15,15 +14,7 @@ pub struct Payload {
 
 #[debug_handler]
 pub async fn health(State(core): State<Arc<Core>>) -> Html<String> {
-    let hello = Hello { name: "world" };
-    Html(
-        core.template
-            .render(
-                "hello.html",
-                &tera::Context::from_serialize(&hello).unwrap(),
-            )
-            .unwrap(),
-    )
+    core.health().await
 }
 
 #[debug_handler]
