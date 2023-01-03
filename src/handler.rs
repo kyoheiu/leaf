@@ -22,7 +22,7 @@ pub async fn add(State(core): State<Arc<Core>>, body: String) {
 }
 
 #[debug_handler]
-pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> String {
+pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> Html<String> {
     core.read(&id).await
 }
 

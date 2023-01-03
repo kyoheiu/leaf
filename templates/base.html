@@ -4,15 +4,23 @@
     <meta charset="utf-8" />
     <title>acidpaper</title>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link id="stylesheet" rel="stylesheet" type="text/css" href="/main.css" />
+    <link
+      id="stylesheet"
+      rel="stylesheet"
+      type="text/css"
+      href="/static/main.css"
+    />
   </head>
 
   <div class="header">{{ title }}</div>
 
   <body>
     <section class="section">
+      <div class="url">
+        {{ url }}
+      </div>
       <div class="container">
-        {{ content }}
+        {{ html | safe }}
       </div>
     </section>
   </body>

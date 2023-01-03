@@ -1,15 +1,20 @@
+use crate::template::Article;
+
 use super::error::AcidError;
 use super::handler::*;
 use super::template::Hello;
 
-use axum::response::Html;
+use axum::response::{Html, IntoResponse};
+use axum::routing::get_service;
 use axum::{
     routing::{get, post},
     Router,
 };
+use hyper::StatusCode;
 use log::info;
 use std::{net::TcpListener, sync::Arc};
 use tera::Tera;
+use tower_http::services::ServeDir;
 
 pub struct Core {
     pub template: Tera,
@@ -18,12 +23,14 @@ pub struct Core {
 
 pub fn router(core: Core) -> axum::Router {
     let shared_core = Arc::new(core);
+    let serve_dir = get_service(ServeDir::new("static")).handle_error(handle_error);
     Router::new()
         .route("/", get(list_up))
         .route("/health", get(health))
         .route("/a", post(add))
         .route("/r/:id", get(read))
         .route("/d/:id", get(delete))
+        .nest_service("/static", serve_dir)
         .with_state(shared_core)
 }
 
@@ -139,8 +146,8 @@ impl Core {
         info!("DELETED: {}", id);
     }
 
-    pub async fn read(&self, id: &str) -> String {
-        let mut result = String::new();
+    pub async fn read(&self, id: &str) -> Html<String> {
+        let mut article = Article::new();
         self.db
             .iterate(
                 format!(
@@ -153,10 +160,9 @@ impl Core {
                 |pairs| {
                     for &(column, value) in pairs.iter() {
                         match column {
-                            "id" => result.push_str(&format!("{}\n", value.unwrap())),
-                            "title" => result.push_str(&format!("{}\n", value.unwrap())),
-                            "url" => result.push_str(&format!("{}\n", value.unwrap())),
-                            "plain" => result.push_str(value.unwrap()),
+                            "title" => article.title = value.unwrap().to_owned(),
+                            "url" => article.url = value.unwrap().to_owned(),
+                            "html" => article.html = value.unwrap().to_owned(),
                             _ => {}
                         }
                     }
@@ -164,7 +170,14 @@ impl Core {
                 },
             )
             .unwrap();
-        result
+        Html(
+            self.template
+                .render(
+                    "base.html",
+                    &tera::Context::from_serialize(&article).unwrap(),
+                )
+                .unwrap(),
+        )
     }
 }
 
@@ -214,4 +227,8 @@ mod tests {
             .unwrap();
         assert_eq!(response.status(), StatusCode::OK);
     }
+}
+
+async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
+    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
