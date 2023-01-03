@@ -1,9 +1,7 @@
-use crate::error::AcidError;
-
+use super::error::AcidError;
 use super::handler::*;
 use super::template::Hello;
 
-use axum::extract::Path;
 use axum::response::Html;
 use axum::{
     routing::{get, post},
@@ -25,6 +23,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/health", get(health))
         .route("/a", post(add))
         .route("/r/:id", get(read))
+        .route("/d/:id", get(delete))
         .with_state(shared_core)
 }
 
@@ -128,7 +127,19 @@ impl Core {
         }
     }
 
-    pub async fn read(&self, id: String) -> String {
+    pub async fn delete(&self, id: &str) {
+        self.db
+            .execute(format!(
+                "
+                DELETE FROM readers
+                WHERE id = '{}';",
+                id
+            ))
+            .unwrap();
+        info!("DELETED: {}", id);
+    }
+
+    pub async fn read(&self, id: &str) -> String {
         let mut result = String::new();
         self.db
             .iterate(
