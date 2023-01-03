@@ -18,6 +18,10 @@ pub async fn health(State(core): State<Arc<Core>>) -> Html<String> {
     core.health().await
 }
 
+pub async fn list_up(State(core): State<Arc<Core>>) -> String {
+    core.list_up().await
+}
+
 #[debug_handler]
 pub async fn add(State(core): State<Arc<Core>>, Query(params): Query<BTreeMap<String, String>>) {
     for (k, v) in params {

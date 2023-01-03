@@ -17,6 +17,25 @@ pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
 }
 
+pub fn router(core: Core) -> axum::Router {
+    let shared_core = Arc::new(core);
+    Router::new()
+        .route("/", get(list_up))
+        .route("/health", get(health))
+        .route("/add", post(add))
+        .with_state(shared_core)
+}
+
+pub async fn run(listener: TcpListener, core: Core) {
+    let router = router(core);
+
+    axum::Server::from_tcp(listener)
+        .expect("Failed to listen.")
+        .serve(router.into_make_service())
+        .await
+        .unwrap();
+}
+
 impl Core {
     pub fn new() -> Result<Core, AcidError> {
         let connection = sqlite::Connection::open_with_full_mutex(".testdb").unwrap();
@@ -52,6 +71,30 @@ impl Core {
         )
     }
 
+    pub async fn list_up(&self) -> String {
+        let mut result = String::new();
+        self.db
+            .iterate(
+                "
+            SELECT *
+            FROM readers
+            ORDER BY id DESC",
+                |pairs| {
+                    for &(column, value) in pairs.iter() {
+                        match column {
+                            "id" => result.push_str(&format!("{}\n", value.unwrap())),
+                            "title" => result.push_str(&format!("{}\n", value.unwrap())),
+                            "url" => result.push_str(&format!("{}\n", value.unwrap())),
+                            _ => {}
+                        }
+                    }
+                    true
+                },
+            )
+            .unwrap();
+        result
+    }
+
     pub async fn add(&self, url: &str) {
         let url_owned = url.to_owned();
         let handle =
@@ -84,20 +127,50 @@ impl Core {
     }
 }
 
-pub fn router(core: Core) -> axum::Router {
-    let shared_core = Arc::new(core);
-    Router::new()
-        .route("/", get(health))
-        .route("/add", post(add))
-        .with_state(shared_core)
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::body::Body;
+    use axum::http::{Request, StatusCode};
+    use hyper::Method;
+    use tower::ServiceExt;
 
-pub async fn run(listener: TcpListener, core: Core) {
-    let router = router(core);
+    #[tokio::test]
+    async fn test_health() {
+        let core = Core::new().unwrap();
+        let router = router(core);
 
-    axum::Server::from_tcp(listener)
-        .expect("Failed to listen.")
-        .serve(router.into_make_service())
-        .await
-        .unwrap();
+        let response = router
+            .oneshot(
+                Request::builder()
+                    .uri("/health")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
+        let body = String::from_utf8(body.to_vec()).unwrap();
+        assert_eq!(body, "<h1>Hello, world!</h1>\n");
+    }
+
+    #[tokio::test]
+    async fn test_add() {
+        let core = Core::new().unwrap();
+        let router = router(core);
+
+        let response = router
+            .oneshot(
+                Request::builder()
+                    .method(Method::POST)
+                    .uri("/add?url=http://paulgraham.com/weird.html")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+    }
 }
