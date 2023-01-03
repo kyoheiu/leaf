@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>acidpaper</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link id="stylesheet" rel="stylesheet" type="text/css" href="/main.css" />
+  </head>
+
+  <div class="header">{{ title }}</div>
+
+  <body>
+    <section class="section">
+      <div class="container">
+        {{ content }}
+      </div>
+    </section>
+  </body>
+
+  <div class="footer"></div>
+
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+    };
+  </script>
+  <script
+    type="text/javascript"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+  ></script>
+</html>

@@ -2,7 +2,7 @@ use super::core::Core;
 use super::error::AcidError;
 
 use axum::debug_handler;
-use axum::extract::{Json, Query, State};
+use axum::extract::{Json, Path, Query, State};
 use axum::response::Html;
 use serde::Deserialize;
 use std::collections::BTreeMap;
@@ -29,6 +29,10 @@ pub async fn add(State(core): State<Arc<Core>>, Query(params): Query<BTreeMap<St
             core.add(&v).await;
         }
     }
+}
+
+pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> String {
+    core.read(id).await
 }
 
 #[debug_handler]

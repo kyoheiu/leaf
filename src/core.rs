@@ -3,6 +3,7 @@ use crate::error::AcidError;
 use super::handler::*;
 use super::template::Hello;
 
+use axum::extract::Path;
 use axum::response::Html;
 use axum::{
     routing::{get, post},
@@ -22,7 +23,8 @@ pub fn router(core: Core) -> axum::Router {
     Router::new()
         .route("/", get(list_up))
         .route("/health", get(health))
-        .route("/add", post(add))
+        .route("/a", post(add))
+        .route("/r/:id", get(read))
         .with_state(shared_core)
 }
 
@@ -102,7 +104,7 @@ impl Core {
         let res = handle.await.unwrap();
         if let Ok(product) = res {
             let ulid = ulid::Ulid::new().to_string();
-            let title = product.title;
+            let title = product.title.replace('\'', "''");
             let html = product.content.replace('\'', "''");
             let plain = product.text.replace('\'', "''");
             info!("{}: {} ({})", ulid, title, url);
@@ -124,6 +126,34 @@ impl Core {
                 .unwrap();
             info!("{}: {} ({})", ulid, title, url);
         }
+    }
+
+    pub async fn read(&self, id: String) -> String {
+        let mut result = String::new();
+        self.db
+            .iterate(
+                format!(
+                    "
+            SELECT *
+            FROM readers
+            WHERE id = '{}'",
+                    id
+                ),
+                |pairs| {
+                    for &(column, value) in pairs.iter() {
+                        match column {
+                            "id" => result.push_str(&format!("{}\n", value.unwrap())),
+                            "title" => result.push_str(&format!("{}\n", value.unwrap())),
+                            "url" => result.push_str(&format!("{}\n", value.unwrap())),
+                            "plain" => result.push_str(value.unwrap()),
+                            _ => {}
+                        }
+                    }
+                    true
+                },
+            )
+            .unwrap();
+        result
     }
 }
 
@@ -165,7 +195,7 @@ mod tests {
             .oneshot(
                 Request::builder()
                     .method(Method::POST)
-                    .uri("/add?url=http://paulgraham.com/weird.html")
+                    .uri("/a?url=http://paulgraham.com/weird.html")
                     .body(Body::empty())
                     .unwrap(),
             )
