@@ -12,7 +12,7 @@ pub async fn health(State(core): State<Arc<Core>>) -> Html<String> {
 }
 
 #[debug_handler]
-pub async fn list_up(State(core): State<Arc<Core>>) -> String {
+pub async fn list_up(State(core): State<Arc<Core>>) -> Html<String> {
     core.list_up().await
 }
 

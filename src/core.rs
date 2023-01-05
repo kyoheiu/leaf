@@ -79,28 +79,37 @@ impl Core {
         )
     }
 
-    pub async fn list_up(&self) -> String {
-        let mut result = String::new();
+    pub async fn list_up(&self) -> Html<String> {
+        let mut articles = vec![];
         self.db
             .iterate(
                 "
             SELECT *
             FROM readers
-            ORDER BY id DESC",
+            ORDER BY id DESC
+            LIMIT 10",
                 |pairs| {
+                    let mut article = Article::new();
                     for &(column, value) in pairs.iter() {
                         match column {
-                            "id" => result.push_str(&format!("{}\n", value.unwrap())),
-                            "title" => result.push_str(&format!("{}\n", value.unwrap())),
-                            "url" => result.push_str(&format!("{}\n", value.unwrap())),
+                            "id" => article.id = value.unwrap().to_owned(),
+                            "title" => article.title = value.unwrap().to_owned(),
+                            "url" => article.url = value.unwrap().to_owned(),
+                            "html" => article.html = value.unwrap().to_owned(),
+                            "timestamp" => article.timestamp = value.unwrap().to_owned(),
                             _ => {}
                         }
                     }
+                    articles.push(article);
                     true
                 },
             )
             .unwrap();
-        result
+
+        println!("{:#?}", articles);
+        let mut context = tera::Context::new();
+        context.insert("articles", &articles);
+        Html(self.template.render("index.html", &context).unwrap())
     }
 
     pub async fn add(&self, url: &str) {
@@ -173,12 +182,16 @@ impl Core {
         Html(
             self.template
                 .render(
-                    "base.html",
+                    "article.html",
                     &tera::Context::from_serialize(&article).unwrap(),
                 )
                 .unwrap(),
         )
     }
+}
+
+async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
+    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
 
 #[cfg(test)]
@@ -227,8 +240,4 @@ mod tests {
             .unwrap();
         assert_eq!(response.status(), StatusCode::OK);
     }
-}
-
-async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
-    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }

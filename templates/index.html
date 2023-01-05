@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  {% for article in articles %}
+
+      <p class="contents">
+        <div class="prefix">
+          <div>
+            {{ article.timestamp }}
+          </div>
+          <div class="title">
+            <a href="{{  '/r/' ~ article.id | safe }}">{{ article.title }}</a>
+          </div>
+        </div>
+      </p>
+      
+  {% endfor %}
+
+{% endblock content %}

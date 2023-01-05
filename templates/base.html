@@ -12,34 +12,11 @@
     />
   </head>
 
-  <div class="header">{{ title }}</div>
-
   <body>
     <section class="section">
-      <div class="url">
-        {{ url }}
-      </div>
       <div class="container">
-        {{ html | safe }}
+        {% block content %} {% endblock %}
       </div>
     </section>
   </body>
-
-  <div class="footer"></div>
-
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [
-          ["$", "$"],
-          ["\\(", "\\)"],
-        ],
-      },
-    };
-  </script>
-  <script
-    type="text/javascript"
-    async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
-  ></script>
 </html>
