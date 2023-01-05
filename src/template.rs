@@ -8,9 +8,11 @@ pub struct Hello<'a> {
 #[derive(Debug, Serialize)]
 pub struct Article {
     pub id: String,
-    pub title: String,
     pub url: String,
+    pub title: String,
     pub html: String,
+    pub plain: String,
+    pub position: u8,
     pub timestamp: String,
 }
 
@@ -18,9 +20,11 @@ impl Article {
     pub fn new() -> Article {
         Article {
             id: "".to_owned(),
-            title: "".to_owned(),
             url: "".to_owned(),
+            title: "".to_owned(),
             html: "".to_owned(),
+            plain: "".to_owned(),
+            position: 0,
             timestamp: "".to_owned(),
         }
     }

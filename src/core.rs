@@ -56,6 +56,7 @@ impl Core {
             title TEXT,
             html BLOB,
             plain BLOB,
+            position INTEGER,
             timestamp DATETIME
             )
             ",
@@ -187,6 +188,19 @@ impl Core {
                 )
                 .unwrap(),
         )
+    }
+
+    pub async fn update_progress(&self, id: &str, prog: u8) {
+        self.db
+            .execute(format!(
+                "
+        UPDATE readers 
+        SET position= '{}'
+        WHERE id = '{}'
+        ",
+                id, prog
+            ))
+            .unwrap();
     }
 }
 

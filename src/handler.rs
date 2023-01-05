@@ -2,8 +2,9 @@ use super::core::Core;
 use super::error::AcidError;
 
 use axum::debug_handler;
-use axum::extract::{Path, State};
+use axum::extract::{Path, Query, State};
 use axum::response::Html;
+use std::collections::BTreeMap;
 use std::sync::Arc;
 
 #[debug_handler]
@@ -29,4 +30,11 @@ pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> Html
 #[debug_handler]
 pub async fn delete(State(core): State<Arc<Core>>, Path(id): Path<String>) {
     core.delete(&id).await
+}
+
+#[debug_handler]
+pub async fn update_progress(
+    State(core): State<Arc<Core>>,
+    Query(param): Query<BTreeMap<String, String>>,
+) {
 }
