@@ -37,4 +37,16 @@ pub async fn update_progress(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) {
+    let mut id = String::new();
+    let mut pos = 0;
+    for (k, v) in param {
+        if k == "id" {
+            id = v;
+        } else if k == "scrollposition" {
+            pos = v.parse::<u8>().unwrap();
+        } else {
+            continue;
+        }
+    }
+    core.update_progress(&id, pos).await
 }

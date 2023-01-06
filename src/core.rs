@@ -29,6 +29,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/health", get(health))
         .route("/a", post(add))
         .route("/r/:id", get(read))
+        .route("/u/", get(update_progress))
         .route("/d/:id", get(delete))
         .nest_service("/static", serve_dir)
         .with_state(shared_core)
@@ -54,8 +55,9 @@ impl Core {
             id TEXT PRIMARY KEY,
             url TEXT,
             title TEXT,
-            html BLOB,
-            plain BLOB,
+            html TEXT,
+            plain TEXT,
+            beginning TEXT,
             position INTEGER,
             timestamp DATETIME
             )
@@ -97,6 +99,7 @@ impl Core {
                             "title" => article.title = value.unwrap().to_owned(),
                             "url" => article.url = value.unwrap().to_owned(),
                             "html" => article.html = value.unwrap().to_owned(),
+                            "beginning" => article.beginning = value.unwrap().to_owned(),
                             "timestamp" => article.timestamp = value.unwrap().to_owned(),
                             _ => {}
                         }
@@ -107,7 +110,6 @@ impl Core {
             )
             .unwrap();
 
-        println!("{:#?}", articles);
         let mut context = tera::Context::new();
         context.insert("articles", &articles);
         Html(self.template.render("index.html", &context).unwrap())
@@ -123,24 +125,28 @@ impl Core {
             let title = product.title.replace('\'', "''");
             let html = product.content.replace('\'', "''");
             let plain = product.text.replace('\'', "''");
+            info!("plain: {}", plain);
+            let beginning = create_beginning(&plain);
+            info!("beginning: {}", beginning);
             info!("{}: {} ({})", ulid, title, url);
             self.db
                 .execute(format!(
                     "
-                INSERT INTO readers (id, url, title, html, plain, timestamp)
+                INSERT INTO readers (id, url, title, html, plain, beginning, position, timestamp)
                 VALUES (
                     '{}',
                     '{}',
                     '{}',
                     '{}',
                     '{}',
+                    '{}',
+                    0,
                     datetime('now', 'localtime')
                 );
                 ",
-                    ulid, url, title, html, plain
+                    ulid, url, title, html, plain, beginning
                 ))
                 .unwrap();
-            info!("{}: {} ({})", ulid, title, url);
         }
     }
 
@@ -206,6 +212,16 @@ impl Core {
 
 async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
     (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
+}
+
+fn create_beginning(s: &str) -> String {
+    let mut result: String = s
+        .chars()
+        .filter(|x| !x.is_ascii_control())
+        .take(97)
+        .collect();
+    result.push_str("...");
+    result
 }
 
 #[cfg(test)]

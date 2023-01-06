@@ -1,2 +1,7 @@
-{% extends "base.html" %} {% block content %} {{ url | safe }} {{ title }} {{
-html | safe }} {% endblock content %}
+{% extends "base.html" %} {% block content %}
+
+<div>{{ url | safe }}</div>
+<div>{{ title }}</div>
+<div>{{ html | safe }}</div>
+
+{% endblock content %}

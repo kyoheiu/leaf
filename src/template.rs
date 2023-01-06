@@ -12,6 +12,7 @@ pub struct Article {
     pub title: String,
     pub html: String,
     pub plain: String,
+    pub beginning: String,
     pub position: u8,
     pub timestamp: String,
 }
@@ -24,6 +25,7 @@ impl Article {
             title: "".to_owned(),
             html: "".to_owned(),
             plain: "".to_owned(),
+            beginning: "".to_owned(),
             position: 0,
             timestamp: "".to_owned(),
         }
