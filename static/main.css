@@ -8,6 +8,7 @@ body {
   margin-bottom: 1rem;
   min-width: 200px;
   max-width: 800px;
+  overflow-y: scroll;
 }
 body img,
 body video {

@@ -1,5 +1,6 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base_article.html" %} {% block content %}
 
+<div>{{ id | safe }}</div>
 <div>{{ url | safe }}</div>
 <div>{{ title }}</div>
 <div>{{ html | safe }}</div>

@@ -3,7 +3,8 @@ use super::error::AcidError;
 
 use axum::debug_handler;
 use axum::extract::{Path, Query, State};
-use axum::response::Html;
+use axum::response::{Html, IntoResponse};
+use hyper::HeaderMap;
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
@@ -23,7 +24,7 @@ pub async fn add(State(core): State<Arc<Core>>, body: String) {
 }
 
 #[debug_handler]
-pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> Html<String> {
+pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> impl IntoResponse {
     core.read(&id).await
 }
 
@@ -42,11 +43,33 @@ pub async fn update_progress(
     for (k, v) in param {
         if k == "id" {
             id = v;
-        } else if k == "scrollposition" {
+        } else if k == "pos" {
             pos = v.parse::<u8>().unwrap();
         } else {
             continue;
         }
     }
     core.update_progress(&id, pos).await
+}
+
+#[debug_handler]
+pub async fn get_progress(
+    State(core): State<Arc<Core>>,
+    Query(param): Query<BTreeMap<String, String>>,
+) -> HeaderMap {
+    let mut id = String::new();
+    for (k, v) in param {
+        if k == "id" {
+            id = v;
+        } else {
+            continue;
+        }
+    }
+
+    let mut header = HeaderMap::new();
+    header.insert(
+        "Initial-Position",
+        core.get_progress(&id).await.parse().unwrap(),
+    );
+    header
 }

@@ -10,7 +10,7 @@ use axum::{
     routing::{get, post},
     Router,
 };
-use hyper::StatusCode;
+use hyper::{HeaderMap, StatusCode};
 use log::info;
 use std::{net::TcpListener, sync::Arc};
 use tera::Tera;
@@ -29,7 +29,8 @@ pub fn router(core: Core) -> axum::Router {
         .route("/health", get(health))
         .route("/a", post(add))
         .route("/r/:id", get(read))
-        .route("/u/", get(update_progress))
+        .route("/u", get(update_progress))
+        .route("/g", get(get_progress))
         .route("/d/:id", get(delete))
         .nest_service("/static", serve_dir)
         .with_state(shared_core)
@@ -58,8 +59,17 @@ impl Core {
             html TEXT,
             plain TEXT,
             beginning TEXT,
-            position INTEGER,
             timestamp DATETIME
+            )
+            ",
+            )
+            .unwrap();
+        connection
+            .execute(
+                "
+            CREATE TABLE IF NOT EXISTS positions (
+            id TEXT PRIMARY KEY,
+            position INTEGER
             )
             ",
             )
@@ -132,7 +142,7 @@ impl Core {
             self.db
                 .execute(format!(
                     "
-                INSERT INTO readers (id, url, title, html, plain, beginning, position, timestamp)
+                INSERT INTO readers (id, url, title, html, plain, beginning, timestamp)
                 VALUES (
                     '{}',
                     '{}',
@@ -140,11 +150,23 @@ impl Core {
                     '{}',
                     '{}',
                     '{}',
-                    0,
                     datetime('now', 'localtime')
                 );
                 ",
                     ulid, url, title, html, plain, beginning
+                ))
+                .unwrap();
+
+            self.db
+                .execute(format!(
+                    "
+                INSERT INTO positions (id, position)
+                VALUES (
+                    '{}',
+                    0
+                );
+                ",
+                    ulid
                 ))
                 .unwrap();
         }
@@ -162,8 +184,9 @@ impl Core {
         info!("DELETED: {}", id);
     }
 
-    pub async fn read(&self, id: &str) -> Html<String> {
+    pub async fn read(&self, id: &str) -> impl IntoResponse {
         let mut article = Article::new();
+        let mut pos = String::new();
         self.db
             .iterate(
                 format!(
@@ -179,6 +202,7 @@ impl Core {
                             "title" => article.title = value.unwrap().to_owned(),
                             "url" => article.url = value.unwrap().to_owned(),
                             "html" => article.html = value.unwrap().to_owned(),
+                            "position" => pos = value.unwrap().to_owned(),
                             _ => {}
                         }
                     }
@@ -186,27 +210,63 @@ impl Core {
                 },
             )
             .unwrap();
-        Html(
-            self.template
-                .render(
-                    "article.html",
-                    &tera::Context::from_serialize(&article).unwrap(),
-                )
-                .unwrap(),
+
+        info!("pos: {}", pos);
+        let mut headers = HeaderMap::new();
+        headers.insert("POSITION", pos.parse().unwrap());
+
+        (
+            headers,
+            Html(
+                self.template
+                    .render(
+                        "article.html",
+                        &tera::Context::from_serialize(&article).unwrap(),
+                    )
+                    .unwrap(),
+            ),
         )
     }
 
     pub async fn update_progress(&self, id: &str, prog: u8) {
+        info!("id: {}, progress: {}", id, prog);
         self.db
             .execute(format!(
                 "
-        UPDATE readers 
+        UPDATE positions 
         SET position= '{}'
         WHERE id = '{}'
         ",
-                id, prog
+                prog, id
             ))
             .unwrap();
+    }
+
+    pub async fn get_progress(&self, id: &str) -> String {
+        let mut pos = String::new();
+        self.db
+            .iterate(
+                format!(
+                    "
+            SELECT *
+            FROM positions
+            WHERE id = '{}'",
+                    id
+                ),
+                |pairs| {
+                    for &(column, value) in pairs.iter() {
+                        match column {
+                            "position" => pos = value.unwrap().to_owned(),
+                            _ => {}
+                        }
+                    }
+                    true
+                },
+            )
+            .unwrap();
+
+        info!("initial_pos: {}", pos);
+        pos
     }
 }
 
