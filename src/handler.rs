@@ -40,20 +40,23 @@ pub async fn update_progress(
 ) {
     let mut id = String::new();
     let mut pos = 0;
+    let mut prog = 0;
     for (k, v) in param {
         if k == "id" {
             id = v;
         } else if k == "pos" {
-            pos = v.parse::<u8>().unwrap();
+            pos = v.parse::<u16>().unwrap();
+        } else if k == "prog" {
+            prog = v.parse::<u16>().unwrap();
         } else {
             continue;
         }
     }
-    core.update_progress(&id, pos).await
+    core.update_progress(&id, pos, prog).await
 }
 
 #[debug_handler]
-pub async fn get_progress(
+pub async fn get_position(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> HeaderMap {
@@ -69,7 +72,7 @@ pub async fn get_progress(
     let mut header = HeaderMap::new();
     header.insert(
         "Initial-Position",
-        core.get_progress(&id).await.parse().unwrap(),
+        core.get_position(&id).await.parse().unwrap(),
     );
     header
 }

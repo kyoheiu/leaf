@@ -1,7 +1,6 @@
-use crate::template::Article;
-
 use super::error::AcidError;
 use super::handler::*;
+use super::template::Article;
 use super::template::Hello;
 
 use axum::response::{Html, IntoResponse};
@@ -30,7 +29,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/a", post(add))
         .route("/r/:id", get(read))
         .route("/u", get(update_progress))
-        .route("/g", get(get_progress))
+        .route("/g", get(get_position))
         .route("/d/:id", get(delete))
         .nest_service("/static", serve_dir)
         .with_state(shared_core)
@@ -59,17 +58,9 @@ impl Core {
             html TEXT,
             plain TEXT,
             beginning TEXT,
+            position INTEGER,
+            progress INTEGER,
             timestamp DATETIME
-            )
-            ",
-            )
-            .unwrap();
-        connection
-            .execute(
-                "
-            CREATE TABLE IF NOT EXISTS positions (
-            id TEXT PRIMARY KEY,
-            position INTEGER
             )
             ",
             )
@@ -110,6 +101,7 @@ impl Core {
                             "url" => article.url = value.unwrap().to_owned(),
                             "html" => article.html = value.unwrap().to_owned(),
                             "beginning" => article.beginning = value.unwrap().to_owned(),
+                            "progress" => article.progress = value.unwrap().parse().unwrap(),
                             "timestamp" => article.timestamp = value.unwrap().to_owned(),
                             _ => {}
                         }
@@ -142,7 +134,7 @@ impl Core {
             self.db
                 .execute(format!(
                     "
-                INSERT INTO readers (id, url, title, html, plain, beginning, timestamp)
+                INSERT INTO readers (id, url, title, html, plain, beginning, position, progress, timestamp)
                 VALUES (
                     '{}',
                     '{}',
@@ -150,23 +142,12 @@ impl Core {
                     '{}',
                     '{}',
                     '{}',
+                    0,
+                    0,
                     datetime('now', 'localtime')
                 );
                 ",
                     ulid, url, title, html, plain, beginning
-                ))
-                .unwrap();
-
-            self.db
-                .execute(format!(
-                    "
-                INSERT INTO positions (id, position)
-                VALUES (
-                    '{}',
-                    0
-                );
-                ",
-                    ulid
                 ))
                 .unwrap();
         }
@@ -186,7 +167,6 @@ impl Core {
 
     pub async fn read(&self, id: &str) -> impl IntoResponse {
         let mut article = Article::new();
-        let mut pos = String::new();
         self.db
             .iterate(
                 format!(
@@ -202,7 +182,7 @@ impl Core {
                             "title" => article.title = value.unwrap().to_owned(),
                             "url" => article.url = value.unwrap().to_owned(),
                             "html" => article.html = value.unwrap().to_owned(),
-                            "position" => pos = value.unwrap().to_owned(),
+                            "position" => article.position = value.unwrap().parse().unwrap(),
                             _ => {}
                         }
                     }
@@ -211,9 +191,9 @@ impl Core {
             )
             .unwrap();
 
-        info!("pos: {}", pos);
+        info!("pos: {}", article.position);
         let mut headers = HeaderMap::new();
-        headers.insert("POSITION", pos.parse().unwrap());
+        headers.insert("POSITION", article.position.into());
 
         (
             headers,
@@ -228,28 +208,29 @@ impl Core {
         )
     }
 
-    pub async fn update_progress(&self, id: &str, prog: u8) {
-        info!("id: {}, progress: {}", id, prog);
+    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {
+        info!("id: {}, position: {}, progress: {}", id, pos, prog);
         self.db
             .execute(format!(
                 "
-        UPDATE positions 
-        SET position= '{}'
+        UPDATE readers 
+        SET position = '{}',
+            progress = '{}'
         WHERE id = '{}'
         ",
-                prog, id
+                pos, prog, id
             ))
             .unwrap();
     }
 
-    pub async fn get_progress(&self, id: &str) -> String {
+    pub async fn get_position(&self, id: &str) -> String {
         let mut pos = String::new();
         self.db
             .iterate(
                 format!(
                     "
             SELECT *
-            FROM positions
+            FROM readers
             WHERE id = '{}'",
                     id
                 ),

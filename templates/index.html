@@ -2,6 +2,8 @@
 
 {% block content %}
 
+  <script type="text/javascript" src="/static/index.js"></script>
+
   {% for article in articles %}
 
       <p class="contents">
@@ -14,6 +16,31 @@
           </div>
           <div class="beginning">
             {{ article.beginning }}
+          </div>
+          <div class="progress">
+            {% if article.progress < 10 %}
+            [----------]
+            {% elif article.progress < 20 %}
+            [*---------]
+            {% elif article.progress < 30 %}
+            [**--------]
+            {% elif article.progress < 40 %}
+            [***-------]
+            {% elif article.progress < 50 %}
+            [****------]
+            {% elif article.progress < 60 %}
+            [*****-----]
+            {% elif article.progress < 70 %}
+            [******----]
+            {% elif article.progress < 80 %}
+            [*******---]
+            {% elif article.progress < 90 %}
+            [********--]
+            {% elif article.progress < 99 %}
+            [*********-]
+            {% else %}
+            [**********]
+            {% endif %}
           </div>
         </div>
       </p>

@@ -13,6 +13,8 @@ pub struct Article {
     pub html: String,
     pub plain: String,
     pub beginning: String,
+    pub position: u16,
+    pub progress: u16,
     pub timestamp: String,
 }
 
@@ -25,6 +27,8 @@ impl Article {
             html: "".to_owned(),
             plain: "".to_owned(),
             beginning: "".to_owned(),
+            position: 0,
+            progress: 0,
             timestamp: "".to_owned(),
         }
     }
