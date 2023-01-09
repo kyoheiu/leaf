@@ -1,5 +1,4 @@
-const form = document.getElementById("add");
-form.addEventListener("submit", (event) => {
+const fetch_add = () => {
   const url = document.getElementById("url").value;
 
   console.log(url);
@@ -12,12 +11,17 @@ form.addEventListener("submit", (event) => {
       throw new Error("Cannot add new article.");
     }
     console.log(response.status);
-  });
-  setTimeout(() => {
-    window.location.href = "/";
-    console.log("Set to index.");
     window.location.reload();
-    console.log("Reloaded.");
-  }, 100);
-  event.preventDefault();
-});
+  });
+};
+
+const fetch_delete = (e) => {
+  const target = "/d/" + e.value;
+  fetch(target).then((response) => {
+    if (!response.ok) {
+      throw new Error("Cannot add new article.");
+    }
+    console.log(response.status);
+    window.location.reload();
+  });
+};
