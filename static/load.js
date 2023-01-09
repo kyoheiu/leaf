@@ -1,3 +1,5 @@
+import { fetch_pos } from "./utils.js";
+
 window.addEventListener("load", (event) => {
   const url = location.href;
   const id = url.split("/").pop();
@@ -13,4 +15,6 @@ window.addEventListener("load", (event) => {
     );
     window.scrollTo(0, scroll);
   });
+
+  fetch_pos();
 });
