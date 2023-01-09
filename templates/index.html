@@ -2,7 +2,15 @@
 
 {% block content %}
 
-  <script type="text/javascript" src="/static/index.js"></script>
+  <script defer type="text/javascript" src="/static/index.js"></script>
+
+  <form action="" method="post" id="add">
+  <div>
+    <input type="url" id="url"/>
+    <button type="submit" name="url" value="url">add</button>
+  </div>
+</form>
+
 
   {% for article in articles %}
 

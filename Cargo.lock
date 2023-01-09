@@ -10,6 +10,7 @@ dependencies = [
  "env_logger",
  "hyper",
  "log",
+ "percent-encoding",
  "readability",
  "serde",
  "serde_json",

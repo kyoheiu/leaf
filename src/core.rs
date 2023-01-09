@@ -11,6 +11,7 @@ use axum::{
 };
 use hyper::{HeaderMap, StatusCode};
 use log::info;
+use percent_encoding::percent_decode;
 use std::{net::TcpListener, sync::Arc};
 use tera::Tera;
 use tower_http::services::ServeDir;
@@ -118,7 +119,10 @@ impl Core {
     }
 
     pub async fn add(&self, url: &str) {
+        let url = url.as_bytes();
+        let url = percent_decode(url).decode_utf8().unwrap().to_string();
         let url_owned = url.to_owned();
+        info!("URL to be added: {}", url);
         let handle =
             tokio::task::spawn_blocking(move || readability::extractor::scrape(&url_owned));
         let res = handle.await.unwrap();
