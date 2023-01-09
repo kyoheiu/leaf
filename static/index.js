@@ -13,5 +13,11 @@ form.addEventListener("submit", (event) => {
     }
     console.log(response.status);
   });
+  setTimeout(() => {
+    window.location.href = "/";
+    console.log("Set to index.");
+    window.location.reload();
+    console.log("Reloaded.");
+  }, 100);
   event.preventDefault();
 });
