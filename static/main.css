@@ -4,7 +4,6 @@ body {
   background-color: #f5f5dc;
   width: 80%;
   margin: auto;
-  margin-top: 1rem;
   margin-bottom: 1rem;
   min-width: 200px;
   max-width: 800px;
@@ -31,6 +30,10 @@ body a {
 }
 .header {
   color: #666;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: white;
 }
 .header a {
   color: #666;
@@ -199,4 +202,13 @@ button {
   font-size: 0.8rem;
   font-style: italic;
   text-align: center;
+}
+
+#acidpaper {
+  font-size: 20px;
+  font-weight: 600;
+  background-image:linear-gradient(to bottom left, #553c9a, #ee4b2b);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 }

@@ -2,19 +2,21 @@
 
 {% block content %}
 
-  <script defer type="text/javascript" src="/static/index.js"></script>
+  <div class="header">
+    <script defer type="text/javascript" src="/static/index.js"></script>
 
-  <form action="" method="POST" id="add">
-  <div>
-    <input type="url" id="url"/>
-    <button type="button" onclick="fetch_add()">add</button>
+    <div id="acidpaper">acidpaper</div>
+    <form action="" method="POST" id="add">
+      <div>
+        <input type="url" id="url" />
+        <button type="button" onclick="fetch_add()">add</button>
+      </div>
+    </form>
   </div>
-</form>
-
 
   {% for article in articles %}
 
-      <p class="contents">
+      <p class="contents" id="{{ article.id }}">
         <div class="prefix">
           <div>
             {{ article.timestamp }}
@@ -26,7 +28,7 @@
           <div class="beginning">
             {{ article.beginning }}
           </div>
-          <div class="progress">
+          <div class="progress"><code>
             {% if article.progress < 10 %}
             [----------]
             {% elif article.progress < 20 %}
@@ -50,7 +52,7 @@
             {% else %}
             [**********]
             {% endif %}
-          </div>
+          </code></div>
         </div>
       </p>
       
