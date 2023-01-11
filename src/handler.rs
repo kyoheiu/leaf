@@ -76,3 +76,16 @@ pub async fn get_position(
     );
     header
 }
+
+#[debug_handler]
+pub async fn search(State(core): State<Arc<Core>>, Query(param): Query<BTreeMap<String, String>>) {
+    let mut query = String::new();
+    for (k, v) in param {
+        if k == "q" {
+            query = v;
+        } else {
+            continue;
+        }
+    }
+    core.search(&query).await
+}

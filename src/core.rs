@@ -15,6 +15,7 @@ use hyper::{HeaderMap, StatusCode};
 use log::info;
 use percent_encoding::percent_decode;
 use std::{net::TcpListener, sync::Arc};
+use tantivy::collector::TopDocs;
 use tantivy::schema::Schema;
 use tera::Tera;
 use tower_http::services::ServeDir;
@@ -24,6 +25,7 @@ pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
     pub schema: Schema,
     pub index: tantivy::Index,
+    pub reader: tantivy::IndexReader,
 }
 
 pub fn router(core: Core) -> axum::Router {
@@ -37,6 +39,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/u", get(update_progress))
         .route("/g", get(get_position))
         .route("/d/:id", get(delete))
+        .route("/s", get(search))
         .nest_service("/static", serve_dir)
         .with_state(shared_core)
 }
@@ -72,13 +75,14 @@ impl Core {
             )
             .unwrap();
 
-        let (schema, index) = initialize_schema();
+        let (schema, index, reader) = initialize_schema();
 
         Ok(Core {
             template: tera::Tera::new("templates/*html")?,
             db: connection,
             schema,
             index,
+            reader,
         })
     }
 
@@ -225,8 +229,19 @@ impl Core {
         )
     }
 
-    pub async fn search(&self, query: &str) -> Vec<String> {
-        todo!();
+    pub async fn search(&self, query: &str) {
+        let title = self.schema.get_field("title").unwrap();
+        let plain = self.schema.get_field("plain").unwrap();
+        let searcher = self.reader.searcher();
+        let query_parser = tantivy::query::QueryParser::for_index(&self.index, vec![title, plain]);
+        let query = query_parser.parse_query(query).unwrap();
+
+        let top_docs = searcher.search(&query, &TopDocs::with_limit(10)).unwrap();
+        for (score, doc_address) in top_docs {
+            let retrieved = searcher.doc(doc_address).unwrap();
+            println!("score: {}", score);
+            println!("{}", self.schema.to_json(&retrieved));
+        }
     }
 
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {
