@@ -18,6 +18,6 @@ tokio = {version = "1.21.0", features = ["full"]}
 tower = "0.4.13"
 sqlite = "0.30.3"
 ulid = "1.0.0"
-tower-http = {version = "0.3.5", features = ["fs"]}
+tower-http = { version = "0.3.5", features = ["fs", "cors"]}
 percent-encoding = "2.2.0"
 tantivy = "0.19.0"

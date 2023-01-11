@@ -7,6 +7,7 @@ use super::template::Hello;
 
 use axum::response::{Html, IntoResponse};
 use axum::routing::get_service;
+use axum::Json;
 use axum::{
     routing::{get, post},
     Router,
@@ -18,6 +19,7 @@ use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
 use tantivy::schema::Schema;
 use tera::Tera;
+use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
 
 pub struct Core {
@@ -31,6 +33,10 @@ pub struct Core {
 pub fn router(core: Core) -> axum::Router {
     let shared_core = Arc::new(core);
     let serve_dir = get_service(ServeDir::new("static")).handle_error(handle_error);
+
+    let origins = ["http://localhost:3000".parse().unwrap()];
+    let layer = CorsLayer::new().allow_origin(origins).allow_headers(Any);
+
     Router::new()
         .route("/", get(list_up))
         .route("/health", get(health))
@@ -41,6 +47,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/d/:id", get(delete))
         .route("/s", get(search))
         .nest_service("/static", serve_dir)
+        .layer(layer)
         .with_state(shared_core)
 }
 
@@ -98,7 +105,7 @@ impl Core {
         )
     }
 
-    pub async fn list_up(&self) -> Html<String> {
+    pub async fn list_up(&self) -> Json<Vec<Article>> {
         let mut articles = vec![];
         self.db
             .iterate(
@@ -127,9 +134,10 @@ impl Core {
             )
             .unwrap();
 
-        let mut context = tera::Context::new();
-        context.insert("articles", &articles);
-        Html(self.template.render("index.html", &context).unwrap())
+        Json(articles)
+        // let mut context = tera::Context::new();
+        // context.insert("articles", &articles);
+        // Html(self.template.render("index.html", &context).unwrap())
     }
 
     pub async fn add(&self, url: &str) {
