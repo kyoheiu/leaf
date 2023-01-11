@@ -1,7 +1,7 @@
 body {
   line-height: 1.5;
   color: #444;
-  background-color: #f5f5dc;
+  background-color: white;
   width: 80%;
   margin: auto;
   margin-bottom: 1rem;
@@ -72,12 +72,10 @@ body a {
   text-decoration: none;
 }
 .prefix {
-  text-align: center;
   margin-bottom: 2rem;
 }
 .title {
   font-size: 1.4rem;
-  margin: auto;
   width: 90%;
 }
 .title a {

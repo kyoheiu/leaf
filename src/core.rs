@@ -1,3 +1,5 @@
+use crate::schema::initialize_schema;
+
 use super::error::AcidError;
 use super::handler::*;
 use super::template::Article;
@@ -13,12 +15,15 @@ use hyper::{HeaderMap, StatusCode};
 use log::info;
 use percent_encoding::percent_decode;
 use std::{net::TcpListener, sync::Arc};
+use tantivy::schema::Schema;
 use tera::Tera;
 use tower_http::services::ServeDir;
 
 pub struct Core {
     pub template: Tera,
     pub db: sqlite::ConnectionWithFullMutex,
+    pub schema: Schema,
+    pub index: tantivy::Index,
 }
 
 pub fn router(core: Core) -> axum::Router {
@@ -66,9 +71,14 @@ impl Core {
             ",
             )
             .unwrap();
+
+        let (schema, index) = initialize_schema();
+
         Ok(Core {
             template: tera::Tera::new("templates/*html")?,
             db: connection,
+            schema,
+            index,
         })
     }
 
@@ -154,6 +164,9 @@ impl Core {
                     ulid, url, title, html, plain, beginning
                 ))
                 .unwrap();
+
+            //add to schema
+            self.add_to_index(&ulid, &title, &plain);
         }
     }
 
@@ -212,6 +225,10 @@ impl Core {
         )
     }
 
+    pub async fn search(&self, query: &str) -> Vec<String> {
+        todo!();
+    }
+
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {
         info!("id: {}, position: {}, progress: {}", id, pos, prog);
         self.db
@@ -252,6 +269,23 @@ impl Core {
 
         info!("initial_pos: {}", pos);
         pos
+    }
+
+    //add to schema
+    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) {
+        let mut index_writer = self.index.writer(50_000_000).unwrap();
+        let schema_id = self.schema.get_field("id").unwrap();
+        let schema_title = self.schema.get_field("title").unwrap();
+        let schema_plain = self.schema.get_field("plain").unwrap();
+        index_writer
+            .add_document(tantivy::doc!(
+                schema_id => ulid,
+                schema_title => title,
+                schema_plain => plain
+            ))
+            .unwrap();
+        index_writer.commit().unwrap();
+        drop(index_writer);
     }
 }
 
