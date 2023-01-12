@@ -1,3 +1,11 @@
+export enum State {
+  List,
+  Reading,
+  Archive,
+  Liked,
+  Search,
+}
+
 export interface Article {
   id: string;
   url: string;

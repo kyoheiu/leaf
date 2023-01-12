@@ -1,3 +1,4 @@
+import { A } from "@solidjs/router";
 import { Component, createSignal, onMount, For } from "solid-js";
 import { Article } from "./Types";
 
@@ -11,12 +12,23 @@ onMount(async () => {
 const Lists: Component = () => {
   return (
     <div class="lists">
-      <ul>
-        <For each={list()}>
-          {(article: Article) => <li>{article.title}</li>}
-        </For>
-      </ul>
+      <For each={list()}>{(article: Article) => eachList(article)}</For>
     </div>
+  );
+};
+
+const eachList = (article: Article) => {
+  let link = "/r/" + article.id;
+  return (
+    <>
+      <div class="article">
+        <div>{article.timestamp}</div>
+        <div>
+          <A href={link}>{article.title}</A>
+        </div>
+        <div>{article.beginning}</div>
+      </div>
+    </>
   );
 };
 
