@@ -1,11 +1,11 @@
-use crate::template::Article;
+use crate::types::{ArticleContent, ArticleData};
 
 use super::core::Core;
 use super::error::AcidError;
 
-use axum::extract::{Path, Query, State};
+use axum::debug_handler;
+use axum::extract::{Json, Path, Query, State};
 use axum::response::{Html, IntoResponse};
-use axum::{debug_handler, Json};
 use hyper::HeaderMap;
 use std::collections::BTreeMap;
 use std::sync::Arc;
@@ -16,7 +16,7 @@ pub async fn health(State(core): State<Arc<Core>>) -> Html<String> {
 }
 
 #[debug_handler]
-pub async fn list_up(State(core): State<Arc<Core>>) -> Json<Vec<Article>> {
+pub async fn list_up(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
     core.list_up().await
 }
 
@@ -26,7 +26,7 @@ pub async fn add(State(core): State<Arc<Core>>, body: String) {
 }
 
 #[debug_handler]
-pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> impl IntoResponse {
+pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> Json<ArticleContent> {
     core.read(&id).await
 }
 

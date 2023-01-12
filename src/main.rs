@@ -2,7 +2,7 @@ mod core;
 mod error;
 mod handler;
 mod schema;
-mod template;
+mod types;
 
 use crate::core::{run, Core};
 

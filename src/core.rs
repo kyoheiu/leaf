@@ -1,9 +1,10 @@
 use crate::schema::initialize_schema;
+use crate::types::ArticleContent;
 
 use super::error::AcidError;
 use super::handler::*;
-use super::template::Article;
-use super::template::Hello;
+use super::types::ArticleData;
+use super::types::Hello;
 
 use axum::response::{Html, IntoResponse};
 use axum::routing::get_service;
@@ -105,7 +106,7 @@ impl Core {
         )
     }
 
-    pub async fn list_up(&self) -> Json<Vec<Article>> {
+    pub async fn list_up(&self) -> Json<Vec<ArticleData>> {
         let mut articles = vec![];
         self.db
             .iterate(
@@ -115,13 +116,12 @@ impl Core {
             ORDER BY id DESC
             LIMIT 10",
                 |pairs| {
-                    let mut article = Article::new();
+                    let mut article = ArticleData::new();
                     for &(column, value) in pairs.iter() {
                         match column {
                             "id" => article.id = value.unwrap().to_owned(),
                             "title" => article.title = value.unwrap().to_owned(),
                             "url" => article.url = value.unwrap().to_owned(),
-                            "html" => article.html = value.unwrap().to_owned(),
                             "beginning" => article.beginning = value.unwrap().to_owned(),
                             "progress" => article.progress = value.unwrap().parse().unwrap(),
                             "timestamp" => article.timestamp = value.unwrap().to_owned(),
@@ -135,9 +135,6 @@ impl Core {
             .unwrap();
 
         Json(articles)
-        // let mut context = tera::Context::new();
-        // context.insert("articles", &articles);
-        // Html(self.template.render("index.html", &context).unwrap())
     }
 
     pub async fn add(&self, url: &str) {
@@ -194,8 +191,8 @@ impl Core {
         info!("DELETED: {}", id);
     }
 
-    pub async fn read(&self, id: &str) -> impl IntoResponse {
-        let mut article = Article::new();
+    pub async fn read(&self, id: &str) -> Json<ArticleContent> {
+        let mut article = ArticleContent::new();
         self.db
             .iterate(
                 format!(
@@ -208,10 +205,14 @@ impl Core {
                 |pairs| {
                     for &(column, value) in pairs.iter() {
                         match column {
-                            "title" => article.title = value.unwrap().to_owned(),
+                            "id" => article.id = value.unwrap().to_owned(),
                             "url" => article.url = value.unwrap().to_owned(),
+                            "title" => article.title = value.unwrap().to_owned(),
                             "html" => article.html = value.unwrap().to_owned(),
+                            "plain" => article.plain = value.unwrap().to_owned(),
                             "position" => article.position = value.unwrap().parse().unwrap(),
+                            "progress" => article.progress = value.unwrap().parse().unwrap(),
+                            "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
                             _ => {}
                         }
                     }
@@ -219,22 +220,7 @@ impl Core {
                 },
             )
             .unwrap();
-
-        info!("pos: {}", article.position);
-        let mut headers = HeaderMap::new();
-        headers.insert("POSITION", article.position.into());
-
-        (
-            headers,
-            Html(
-                self.template
-                    .render(
-                        "article.html",
-                        &tera::Context::from_serialize(&article).unwrap(),
-                    )
-                    .unwrap(),
-            ),
-        )
+        Json(article)
     }
 
     pub async fn search(&self, query: &str) {

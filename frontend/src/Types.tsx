@@ -6,14 +6,22 @@ export enum State {
   Search,
 }
 
-export interface Article {
+export interface ArticleData {
+  id: string;
+  url: string;
+  title: string;
+  beginning: string;
+  progress: number;
+  timestamp: string;
+}
+
+export interface ArticleContent {
   id: string;
   url: string;
   title: string;
   html: string;
   plain: string;
-  beginning: string;
-  position: number;
+  position: string;
   progress: number;
   timestamp: string;
 }

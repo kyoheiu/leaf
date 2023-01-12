@@ -5,24 +5,22 @@ import {
   onMount,
   For,
   createResource,
+  Resource,
 } from "solid-js";
-import { Article } from "./Types";
+import { ArticleContent, ArticleData } from "./Types";
 
 const Reading: Component = () => {
-  //   const [text, setText] = createSignal("");
-  //   const [position, setPosition] = createSignal(0);
-  //   const [progress, setProgress] = createSignal(0);
+  const params = useParams();
+  const [content] = createResource(() => params.id, fetchContent);
 
-  //   const params = useParams();
-  //   const [html] = createResource(() => params.id, fetchContent);
-
-  return <div class="text">test</div>;
+  return <div class="text">{JSON.stringify(content())}</div>;
 };
 
-const fetchContent = async (id: string) => {
-  let res = await fetch("http://localhost:8000/r/{id}");
+const fetchContent = async (id: string): Promise<ArticleContent> => {
+  let url = "http://localhost:8000/r/" + id;
+  let res = await fetch(url);
   let j = await res.json();
-  return j.html;
+  return j;
 };
 
 export default Reading;
