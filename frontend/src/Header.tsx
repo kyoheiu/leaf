@@ -15,21 +15,24 @@ const Header: Component = () => {
     setList(await updated.json());
   };
 
-  const search_query = async () => {
+  const send_query = async () => {
+    setQuery(
+      () => (document.getElementById("query")! as HTMLTextAreaElement).value
+    );
     const target = "http://localhost:8000/s?q=" + query();
-    const res = await fetch(target);
-    if (!res.ok) {
+    console.log(target);
+    const matched = await fetch(target);
+    if (!matched.ok) {
       console.log("Error: Cannot search documents.");
     }
+    setList(await matched.json());
     setQuery(() => "");
-    setList(await res.json());
   };
 
   const [url, setUrl] = createSignal("");
   const [_loading] = createResource(url, add_url);
 
   const [query, setQuery] = createSignal("");
-  const [_searching] = createResource(query, search_query);
 
   return (
     <div class="header">
@@ -49,16 +52,7 @@ const Header: Component = () => {
       </div>
       <div id="search">
         <input type="text" id="query" value={query()} />
-        <button
-          onClick={() =>
-            setUrl(
-              () =>
-                (document.getElementById("query")! as HTMLTextAreaElement).value
-            )
-          }
-        >
-          search
-        </button>
+        <button onClick={() => send_query()}>search</button>
       </div>
     </div>
   );
