@@ -1,17 +1,35 @@
-import type { Component } from "solid-js";
+import { Component, createResource, createSignal } from "solid-js";
+import { setList } from "./Lists";
 
 const Header: Component = () => {
+  const add_url = async () => {
+    const res = await fetch("http://localhost:8000/a", {
+      method: "POST",
+      body: url(),
+    });
+    if (!res.ok) {
+      console.log("Error: Cannot");
+    }
+    const updated = await fetch("http://localhost:8000/");
+    setList(await updated.json());
+  };
+
+  const [url, setUrl] = createSignal("");
+  const [_loading] = createResource(url, add_url);
+
   return (
     <div class="header">
-      <script defer type="text/javascript" src="/static/index.js"></script>
-
       <div id="acidpaper">acidpaper</div>
-      <form action="" method="post" id="add">
-        <div>
-          <input type="url" id="url" />
-          <button type="button">add</button>
-        </div>
-      </form>
+      <input type="text" id="url" value={url()} />
+      <button
+        onClick={() =>
+          setUrl(
+            () => (document.getElementById("url")! as HTMLTextAreaElement).value
+          )
+        }
+      >
+        add
+      </button>
     </div>
   );
 };

@@ -436,6 +436,18 @@
   resolved "https://registry.yarnpkg.com/@solidjs/router/-/router-0.6.0.tgz#27583cd0aa81a99482e0e7eddae5e214bd8bf6b6"
   integrity sha512-7ug2fzXXhvvDBL4CQyMvMM9o3dgBE6PoRh38T8UTmMnYz4rcCfROqSZc9yq+YEC96qWt5OvJgZ1Uj/4EAQXlfA==
 
+"@types/dompurify@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.4.0.tgz#fd9706392a88e0e0e6d367f3588482d817df0ab9"
+  integrity sha512-IDBwO5IZhrKvHFUl+clZxgf3hn2b/lU6H1KaBShPkQyGJUQ0xwebezIPSuiyGwfz1UzJWQl4M7BDxtHtCCPlTg==
+  dependencies:
+    "@types/trusted-types" "*"
+
+"@types/trusted-types@*":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/trusted-types/-/trusted-types-2.0.2.tgz#fc25ad9943bcac11cceb8168db4f275e0e72e756"
+  integrity sha512-F5DIZ36YVLE+PN+Zwws4kJogq47hNgX3Nx6WyDJ3kcplxyke3XIzB8uK5n/Lpm1HBsbGzd6nmGehL8cPekP+Tg==
+
 ansi-styles@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-3.2.1.tgz#41fbb20243e50b12be0f04b8dedbf07520ce841d"
@@ -513,6 +525,11 @@ debug@^4.1.0:
   integrity sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==
   dependencies:
     ms "2.1.2"
+
+dompurify@^2.4.3:
+  version "2.4.3"
+  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.3.tgz#f4133af0e6a50297fc8874e2eaedc13a3c308c03"
+  integrity sha512-q6QaLcakcRjebxjg8/+NP+h0rPfatOgOzc46Fst9VAA3jF2ApfKBNKMzdP4DYTqtUMXSCd5pRS/8Po/OmoCHZQ==
 
 electron-to-chromium@^1.4.251:
   version "1.4.284"

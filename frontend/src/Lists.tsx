@@ -2,7 +2,7 @@ import { A } from "@solidjs/router";
 import { Component, createSignal, onMount, For } from "solid-js";
 import { ArticleData } from "./Types";
 
-const [list, setList] = createSignal([]);
+export const [list, setList] = createSignal([]);
 
 onMount(async () => {
   const res = await fetch("http://localhost:8000/");
