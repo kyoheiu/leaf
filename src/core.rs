@@ -37,9 +37,9 @@ pub fn router(core: Core) -> axum::Router {
         .route("/a", post(add))
         .route("/r/:id", get(read))
         .route("/u", get(update_progress))
-        .route("/g", get(get_position))
         .route("/d/:id", get(delete))
         .route("/s", get(search))
+        .route("/t", get(toggle))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -69,8 +69,8 @@ impl Core {
             beginning TEXT,
             position INTEGER,
             progress INTEGER,
-            archived BOOLEAN,
-            liked BOOLEAN,
+            archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0,1)),
+            liked INTEGER NOT NULL DEFAULT 0 CHECK (liked IN (0,1)),
             timestamp DATETIME
             )
             ",
@@ -142,7 +142,7 @@ impl Core {
             self.db
                 .execute(format!(
                     "
-                INSERT INTO articles (id, url, title, html, plain, beginning, position, progress, timestamp)
+                INSERT INTO articles (id, url, title, html, plain, beginning, position, progress, archived, liked, timestamp)
                 VALUES (
                     '{}',
                     '{}',
@@ -150,6 +150,8 @@ impl Core {
                     '{}',
                     '{}',
                     '{}',
+                    0,
+                    0,
                     0,
                     0,
                     datetime('now', 'localtime')
@@ -271,6 +273,21 @@ impl Core {
                 pos, prog, id
             ))
             .unwrap();
+    }
+
+    pub async fn toggle(&self, id: &str, toggle: &str) {
+        info!("id: {}, toggle: {}", id, toggle);
+        self.db
+            .execute(format!(
+                "
+        UPDATE articles
+        SET {} = (({} | 1) - ({} & 1))
+        WHERE id = '{}'
+        ",
+                toggle, toggle, toggle, id
+            ))
+            .unwrap();
+        info!("TOGGLED: {} - {}", id, toggle);
     }
 
     pub async fn get_position(&self, id: &str) -> String {

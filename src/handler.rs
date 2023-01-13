@@ -93,3 +93,20 @@ pub async fn search(
     }
     core.search(&query).await
 }
+
+#[debug_handler]
+pub async fn toggle(State(core): State<Arc<Core>>, Query(param): Query<BTreeMap<String, String>>) {
+    let mut id = String::new();
+    let mut toggle = String::new();
+    for (k, v) in param {
+        if k == "id" {
+            id = v;
+        } else if k == "toggle" {
+            toggle = v;
+        } else {
+            continue;
+        }
+    }
+    log::info!("query: {} {}", id, toggle);
+    core.toggle(&id, &toggle).await
+}
