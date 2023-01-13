@@ -1,4 +1,4 @@
-use crate::types::{ArticleContent, ArticleData};
+use crate::types::{ArticleContent, ArticleData, Articles};
 
 use super::core::Core;
 use super::error::AcidError;
@@ -79,7 +79,10 @@ pub async fn get_position(
 }
 
 #[debug_handler]
-pub async fn search(State(core): State<Arc<Core>>, Query(param): Query<BTreeMap<String, String>>) {
+pub async fn search(
+    State(core): State<Arc<Core>>,
+    Query(param): Query<BTreeMap<String, String>>,
+) -> Json<Articles> {
     let mut query = String::new();
     for (k, v) in param {
         if k == "q" {

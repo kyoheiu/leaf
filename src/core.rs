@@ -1,25 +1,22 @@
 use crate::schema::initialize_schema;
-use crate::types::ArticleContent;
+use crate::types::{ArticleContent, Articles};
 
 use super::error::AcidError;
 use super::handler::*;
 use super::types::ArticleData;
 
-use axum::response::IntoResponse;
-use axum::routing::get_service;
 use axum::Json;
 use axum::{
     routing::{get, post},
     Router,
 };
-use hyper::StatusCode;
 use log::info;
 use percent_encoding::percent_decode;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
 use tantivy::schema::Schema;
+use tantivy::Term;
 use tower_http::cors::{Any, CorsLayer};
-use tower_http::services::ServeDir;
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
@@ -30,7 +27,6 @@ pub struct Core {
 
 pub fn router(core: Core) -> axum::Router {
     let shared_core = Arc::new(core);
-    let serve_dir = get_service(ServeDir::new("static")).handle_error(handle_error);
 
     let origins = ["http://localhost:3000".parse().unwrap()];
     let layer = CorsLayer::new().allow_origin(origins).allow_headers(Any);
@@ -44,7 +40,6 @@ pub fn router(core: Core) -> axum::Router {
         .route("/g", get(get_position))
         .route("/d/:id", get(delete))
         .route("/s", get(search))
-        .nest_service("/static", serve_dir)
         .layer(layer)
         .with_state(shared_core)
 }
@@ -102,7 +97,7 @@ impl Core {
             .iterate(
                 "
             SELECT *
-            FROM readers
+            FROM articles
             ORDER BY id DESC
             LIMIT 10",
                 |pairs| {
@@ -147,7 +142,7 @@ impl Core {
             self.db
                 .execute(format!(
                     "
-                INSERT INTO readers (id, url, title, html, plain, beginning, position, progress, timestamp)
+                INSERT INTO articles (id, url, title, html, plain, beginning, position, progress, timestamp)
                 VALUES (
                     '{}',
                     '{}',
@@ -173,12 +168,14 @@ impl Core {
         self.db
             .execute(format!(
                 "
-                DELETE FROM readers
+                DELETE FROM articles
                 WHERE id = '{}';",
                 id
             ))
             .unwrap();
         info!("DELETED: {}", id);
+        self.delete_from_index(id);
+        info!("DELETED FROM INEX: {}", id);
     }
 
     pub async fn read(&self, id: &str) -> Json<ArticleContent> {
@@ -188,7 +185,7 @@ impl Core {
                 format!(
                     "
             SELECT *
-            FROM readers
+            FROM articles
             WHERE id = '{}'",
                     id
                 ),
@@ -213,19 +210,21 @@ impl Core {
         Json(article)
     }
 
-    pub async fn search(&self, query: &str) {
+    pub async fn search(&self, query: &str) -> Json<Articles> {
+        info!("query: {}", query);
         let title = self.schema.get_field("title").unwrap();
         let plain = self.schema.get_field("plain").unwrap();
         let searcher = self.reader.searcher();
         let query_parser = tantivy::query::QueryParser::for_index(&self.index, vec![title, plain]);
         let query = query_parser.parse_query(query).unwrap();
 
-        let top_docs = searcher.search(&query, &TopDocs::with_limit(10)).unwrap();
-        for (score, doc_address) in top_docs {
-            let retrieved = searcher.doc(doc_address).unwrap();
-            println!("score: {}", score);
-            println!("{}", self.schema.to_json(&retrieved));
+        let mut top_docs = searcher.search(&query, &TopDocs::with_limit(10)).unwrap();
+        top_docs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+        for doc in top_docs {
+            let retrieved = searcher.doc(doc.1).unwrap();
+            println!("{:#?}", retrieved);
         }
+        Json(Articles { articles: vec![] })
     }
 
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {
@@ -233,7 +232,7 @@ impl Core {
         self.db
             .execute(format!(
                 "
-        UPDATE readers 
+        UPDATE articles
         SET position = '{}',
             progress = '{}'
         WHERE id = '{}'
@@ -250,7 +249,7 @@ impl Core {
                 format!(
                     "
             SELECT *
-            FROM readers
+            FROM articles
             WHERE id = '{}'",
                     id
                 ),
@@ -286,10 +285,15 @@ impl Core {
         index_writer.commit().unwrap();
         drop(index_writer);
     }
-}
 
-async fn handle_error(_err: std::io::Error) -> impl IntoResponse {
-    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
+    fn delete_from_index(&self, id: &str) {
+        let mut index_writer = self.index.writer(50_000_000).unwrap();
+        let schema_id = self.schema.get_field("id").unwrap();
+        let term = Term::from_field_text(schema_id, id);
+        index_writer.delete_term(term);
+        index_writer.commit().unwrap();
+        drop(index_writer);
+    }
 }
 
 fn create_beginning(s: &str) -> String {

@@ -10,7 +10,7 @@ pub fn initialize_schema() -> (Schema, Index, IndexReader) {
     }
 
     let mut schema_builder = Schema::builder();
-    schema_builder.add_text_field("id", TEXT | STORED);
+    schema_builder.add_text_field("id", STRING | STORED);
     schema_builder.add_text_field("title", TEXT | STORED);
     schema_builder.add_text_field("plain", TEXT);
     let schema = schema_builder.build();
