@@ -4,27 +4,24 @@ use crate::types::ArticleContent;
 use super::error::AcidError;
 use super::handler::*;
 use super::types::ArticleData;
-use super::types::Hello;
 
-use axum::response::{Html, IntoResponse};
+use axum::response::IntoResponse;
 use axum::routing::get_service;
 use axum::Json;
 use axum::{
     routing::{get, post},
     Router,
 };
-use hyper::{HeaderMap, StatusCode};
+use hyper::StatusCode;
 use log::info;
 use percent_encoding::percent_decode;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
 use tantivy::schema::Schema;
-use tera::Tera;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
 
 pub struct Core {
-    pub template: Tera,
     pub db: sqlite::ConnectionWithFullMutex,
     pub schema: Schema,
     pub index: tantivy::Index,
@@ -68,7 +65,7 @@ impl Core {
         connection
             .execute(
                 "
-            CREATE TABLE IF NOT EXISTS readers (
+            CREATE TABLE IF NOT EXISTS articles (
             id TEXT PRIMARY KEY,
             url TEXT,
             title TEXT,
@@ -77,6 +74,8 @@ impl Core {
             beginning TEXT,
             position INTEGER,
             progress INTEGER,
+            archived BOOLEAN,
+            liked BOOLEAN,
             timestamp DATETIME
             )
             ",
@@ -86,7 +85,6 @@ impl Core {
         let (schema, index, reader) = initialize_schema();
 
         Ok(Core {
-            template: tera::Tera::new("templates/*html")?,
             db: connection,
             schema,
             index,
@@ -94,16 +92,8 @@ impl Core {
         })
     }
 
-    pub async fn health(&self) -> Html<String> {
-        let hello = Hello { name: "world" };
-        Html(
-            self.template
-                .render(
-                    "hello.html",
-                    &tera::Context::from_serialize(&hello).unwrap(),
-                )
-                .unwrap(),
-        )
+    pub async fn health(&self) -> String {
+        "Hello, world.".to_string()
     }
 
     pub async fn list_up(&self) -> Json<Vec<ArticleData>> {
@@ -338,7 +328,7 @@ mod tests {
 
         let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
         let body = String::from_utf8(body.to_vec()).unwrap();
-        assert_eq!(body, "<h1>Hello, world!</h1>\n");
+        assert_eq!(body, "Hello, world.\n");
     }
 
     #[tokio::test]

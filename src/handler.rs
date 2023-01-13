@@ -5,13 +5,12 @@ use super::error::AcidError;
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
-use axum::response::{Html, IntoResponse};
 use hyper::HeaderMap;
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
 #[debug_handler]
-pub async fn health(State(core): State<Arc<Core>>) -> Html<String> {
+pub async fn health(State(core): State<Arc<Core>>) -> String {
     core.health().await
 }
 
