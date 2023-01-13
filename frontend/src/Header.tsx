@@ -35,9 +35,9 @@ const Header: Component = () => {
   const [query, setQuery] = createSignal("");
 
   return (
-    <div class="header">
-      <div id="acidpaper">acidpaper</div>
-      <div id="add">
+    <ul class="header">
+      <li id="acidpaper">acidpaper</li>
+      <li id="add">
         <input type="text" id="url" value={url()} />
         <button
           onClick={() =>
@@ -47,14 +47,16 @@ const Header: Component = () => {
             )
           }
         >
-          add
+          ➕
         </button>
-      </div>
-      <div id="search">
+      </li>
+      <li id="search">
         <input type="text" id="query" value={query()} />
-        <button onClick={() => send_query()}>search</button>
-      </div>
-    </div>
+        <button onClick={() => send_query()}>🔎</button>
+      </li>
+      <li>archive</li>
+      <li>liked</li>
+    </ul>
   );
 };
 
