@@ -210,7 +210,7 @@ impl Core {
         Json(article)
     }
 
-    pub async fn search(&self, query: &str) -> Json<Articles> {
+    pub async fn search(&self, query: &str) -> Json<Vec<ArticleData>> {
         info!("query: {}", query);
         let title = self.schema.get_field("title").unwrap();
         let plain = self.schema.get_field("plain").unwrap();
@@ -220,11 +220,42 @@ impl Core {
 
         let mut top_docs = searcher.search(&query, &TopDocs::with_limit(10)).unwrap();
         top_docs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+        let mut articles = vec![];
+        let field = self.schema.get_field("id").unwrap();
         for doc in top_docs {
+            let mut article = ArticleData::new();
             let retrieved = searcher.doc(doc.1).unwrap();
-            println!("{:#?}", retrieved);
+            let id = retrieved.get_first(field).unwrap().as_text().unwrap();
+
+            self.db
+                .iterate(
+                    format!(
+                        "
+            SELECT *
+            FROM articles
+            WHERE id = '{}'",
+                        id
+                    ),
+                    |pairs| {
+                        for &(column, value) in pairs.iter() {
+                            match column {
+                                "id" => article.id = value.unwrap().to_owned(),
+                                "url" => article.url = value.unwrap().to_owned(),
+                                "title" => article.title = value.unwrap().to_owned(),
+                                "beginning" => article.beginning = value.unwrap().to_owned(),
+                                "progress" => article.progress = value.unwrap().parse().unwrap(),
+                                "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
+                                _ => {}
+                            }
+                        }
+                        true
+                    },
+                )
+                .unwrap();
+            articles.push(article);
         }
-        Json(Articles { articles: vec![] })
+        info!("{:#?}", articles);
+        Json(articles)
     }
 
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {

@@ -82,7 +82,7 @@ pub async fn get_position(
 pub async fn search(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Json<Articles> {
+) -> Json<Vec<ArticleData>> {
     let mut query = String::new();
     for (k, v) in param {
         if k == "q" {
