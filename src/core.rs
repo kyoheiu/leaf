@@ -1,9 +1,8 @@
-use crate::schema::initialize_schema;
-use crate::types::{ArticleContent, Articles};
-
 use super::error::AcidError;
 use super::handler::*;
-use super::types::ArticleData;
+use super::schema::initialize_schema;
+use super::statements::*;
+use super::types::{ArticleContent, ArticleData};
 
 use axum::Json;
 use axum::{
@@ -57,25 +56,7 @@ pub async fn run(listener: TcpListener, core: Core) {
 impl Core {
     pub fn new() -> Result<Core, AcidError> {
         let connection = sqlite::Connection::open_with_full_mutex(".testdb").unwrap();
-        connection
-            .execute(
-                "
-            CREATE TABLE IF NOT EXISTS articles (
-            id TEXT PRIMARY KEY,
-            url TEXT,
-            title TEXT,
-            html TEXT,
-            plain TEXT,
-            beginning TEXT,
-            position INTEGER,
-            progress INTEGER,
-            archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0,1)),
-            liked INTEGER NOT NULL DEFAULT 0 CHECK (liked IN (0,1)),
-            timestamp DATETIME
-            )
-            ",
-            )
-            .unwrap();
+        connection.execute(state_create_table()).unwrap();
 
         let (schema, index, reader) = initialize_schema();
 
@@ -87,36 +68,25 @@ impl Core {
         })
     }
 
-    pub async fn health(&self) -> String {
-        "Hello, world.".to_string()
-    }
-
     pub async fn list_up(&self) -> Json<Vec<ArticleData>> {
         let mut articles = vec![];
         self.db
-            .iterate(
-                "
-            SELECT *
-            FROM articles
-            ORDER BY id DESC
-            LIMIT 10",
-                |pairs| {
-                    let mut article = ArticleData::new();
-                    for &(column, value) in pairs.iter() {
-                        match column {
-                            "id" => article.id = value.unwrap().to_owned(),
-                            "title" => article.title = value.unwrap().to_owned(),
-                            "url" => article.url = value.unwrap().to_owned(),
-                            "beginning" => article.beginning = value.unwrap().to_owned(),
-                            "progress" => article.progress = value.unwrap().parse().unwrap(),
-                            "timestamp" => article.timestamp = value.unwrap().to_owned(),
-                            _ => {}
-                        }
+            .iterate(state_list_up(), |pairs| {
+                let mut article = ArticleData::new();
+                for &(column, value) in pairs.iter() {
+                    match column {
+                        "id" => article.id = value.unwrap().to_owned(),
+                        "title" => article.title = value.unwrap().to_owned(),
+                        "url" => article.url = value.unwrap().to_owned(),
+                        "beginning" => article.beginning = value.unwrap().to_owned(),
+                        "progress" => article.progress = value.unwrap().parse().unwrap(),
+                        "timestamp" => article.timestamp = value.unwrap().to_owned(),
+                        _ => {}
                     }
-                    articles.push(article);
-                    true
-                },
-            )
+                }
+                articles.push(article);
+                true
+            })
             .unwrap();
 
         Json(articles)
@@ -140,25 +110,7 @@ impl Core {
             info!("beginning: {}", beginning);
             info!("{}: {} ({})", ulid, title, url);
             self.db
-                .execute(format!(
-                    "
-                INSERT INTO articles (id, url, title, html, plain, beginning, position, progress, archived, liked, timestamp)
-                VALUES (
-                    '{}',
-                    '{}',
-                    '{}',
-                    '{}',
-                    '{}',
-                    '{}',
-                    0,
-                    0,
-                    0,
-                    0,
-                    datetime('now', 'localtime')
-                );
-                ",
-                    ulid, url, title, html, plain, beginning
-                ))
+                .execute(state_add(&ulid, &url, &title, &html, &plain, &beginning))
                 .unwrap();
 
             //add to schema
@@ -167,14 +119,7 @@ impl Core {
     }
 
     pub async fn delete(&self, id: &str) {
-        self.db
-            .execute(format!(
-                "
-                DELETE FROM articles
-                WHERE id = '{}';",
-                id
-            ))
-            .unwrap();
+        self.db.execute(state_delete(id)).unwrap();
         info!("DELETED: {}", id);
         self.delete_from_index(id);
         info!("DELETED FROM INEX: {}", id);
@@ -183,31 +128,22 @@ impl Core {
     pub async fn read(&self, id: &str) -> Json<ArticleContent> {
         let mut article = ArticleContent::new();
         self.db
-            .iterate(
-                format!(
-                    "
-            SELECT *
-            FROM articles
-            WHERE id = '{}'",
-                    id
-                ),
-                |pairs| {
-                    for &(column, value) in pairs.iter() {
-                        match column {
-                            "id" => article.id = value.unwrap().to_owned(),
-                            "url" => article.url = value.unwrap().to_owned(),
-                            "title" => article.title = value.unwrap().to_owned(),
-                            "html" => article.html = value.unwrap().to_owned(),
-                            "plain" => article.plain = value.unwrap().to_owned(),
-                            "position" => article.position = value.unwrap().parse().unwrap(),
-                            "progress" => article.progress = value.unwrap().parse().unwrap(),
-                            "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
-                            _ => {}
-                        }
+            .iterate(state_read(id), |pairs| {
+                for &(column, value) in pairs.iter() {
+                    match column {
+                        "id" => article.id = value.unwrap().to_owned(),
+                        "url" => article.url = value.unwrap().to_owned(),
+                        "title" => article.title = value.unwrap().to_owned(),
+                        "html" => article.html = value.unwrap().to_owned(),
+                        "plain" => article.plain = value.unwrap().to_owned(),
+                        "position" => article.position = value.unwrap().parse().unwrap(),
+                        "progress" => article.progress = value.unwrap().parse().unwrap(),
+                        "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
+                        _ => {}
                     }
-                    true
-                },
-            )
+                }
+                true
+            })
             .unwrap();
         Json(article)
     }
@@ -230,29 +166,20 @@ impl Core {
             let id = retrieved.get_first(field).unwrap().as_text().unwrap();
 
             self.db
-                .iterate(
-                    format!(
-                        "
-            SELECT *
-            FROM articles
-            WHERE id = '{}'",
-                        id
-                    ),
-                    |pairs| {
-                        for &(column, value) in pairs.iter() {
-                            match column {
-                                "id" => article.id = value.unwrap().to_owned(),
-                                "url" => article.url = value.unwrap().to_owned(),
-                                "title" => article.title = value.unwrap().to_owned(),
-                                "beginning" => article.beginning = value.unwrap().to_owned(),
-                                "progress" => article.progress = value.unwrap().parse().unwrap(),
-                                "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
-                                _ => {}
-                            }
+                .iterate(state_read(id), |pairs| {
+                    for &(column, value) in pairs.iter() {
+                        match column {
+                            "id" => article.id = value.unwrap().to_owned(),
+                            "url" => article.url = value.unwrap().to_owned(),
+                            "title" => article.title = value.unwrap().to_owned(),
+                            "beginning" => article.beginning = value.unwrap().to_owned(),
+                            "progress" => article.progress = value.unwrap().parse().unwrap(),
+                            "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
+                            _ => {}
                         }
-                        true
-                    },
-                )
+                    }
+                    true
+                })
                 .unwrap();
             articles.push(article);
         }
@@ -263,58 +190,14 @@ impl Core {
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {
         info!("id: {}, position: {}, progress: {}", id, pos, prog);
         self.db
-            .execute(format!(
-                "
-        UPDATE articles
-        SET position = '{}',
-            progress = '{}'
-        WHERE id = '{}'
-        ",
-                pos, prog, id
-            ))
+            .execute(state_upgrade_progress(pos, prog, id))
             .unwrap();
     }
 
     pub async fn toggle(&self, id: &str, toggle: &str) {
         info!("id: {}, toggle: {}", id, toggle);
-        self.db
-            .execute(format!(
-                "
-        UPDATE articles
-        SET {} = (({} | 1) - ({} & 1))
-        WHERE id = '{}'
-        ",
-                toggle, toggle, toggle, id
-            ))
-            .unwrap();
+        self.db.execute(state_toggle(toggle, id)).unwrap();
         info!("TOGGLED: {} - {}", id, toggle);
-    }
-
-    pub async fn get_position(&self, id: &str) -> String {
-        let mut pos = String::new();
-        self.db
-            .iterate(
-                format!(
-                    "
-            SELECT *
-            FROM articles
-            WHERE id = '{}'",
-                    id
-                ),
-                |pairs| {
-                    for &(column, value) in pairs.iter() {
-                        match column {
-                            "position" => pos = value.unwrap().to_owned(),
-                            _ => {}
-                        }
-                    }
-                    true
-                },
-            )
-            .unwrap();
-
-        info!("initial_pos: {}", pos);
-        pos
     }
 
     //add to schema
@@ -341,6 +224,10 @@ impl Core {
         index_writer.delete_term(term);
         index_writer.commit().unwrap();
         drop(index_writer);
+    }
+
+    pub async fn health(&self) -> String {
+        "Hello, world.".to_string()
     }
 }
 

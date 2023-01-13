@@ -1,11 +1,9 @@
-use crate::types::{ArticleContent, ArticleData, Articles};
-
 use super::core::Core;
 use super::error::AcidError;
+use super::types::{ArticleContent, ArticleData};
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
-use hyper::HeaderMap;
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
@@ -54,28 +52,6 @@ pub async fn update_progress(
         }
     }
     core.update_progress(&id, pos, prog).await
-}
-
-#[debug_handler]
-pub async fn get_position(
-    State(core): State<Arc<Core>>,
-    Query(param): Query<BTreeMap<String, String>>,
-) -> HeaderMap {
-    let mut id = String::new();
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else {
-            continue;
-        }
-    }
-
-    let mut header = HeaderMap::new();
-    header.insert(
-        "Initial-Position",
-        core.get_position(&id).await.parse().unwrap(),
-    );
-    header
 }
 
 #[debug_handler]
