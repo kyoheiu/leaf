@@ -23,6 +23,8 @@ const Reading: Component = () => {
     plain: "",
     position: "",
     progress: 0,
+    archived: false,
+    liked: false,
     timestamp: "",
   });
 

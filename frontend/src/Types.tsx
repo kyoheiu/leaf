@@ -12,6 +12,8 @@ export interface ArticleData {
   title: string;
   beginning: string;
   progress: number;
+  archived: boolean;
+  liked: boolean;
   timestamp: string;
 }
 
@@ -23,5 +25,7 @@ export interface ArticleContent {
   plain: string;
   position: string;
   progress: number;
+  archived: boolean;
+  liked: boolean;
   timestamp: string;
 }

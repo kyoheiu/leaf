@@ -1,5 +1,84 @@
-import { Component, createResource, createSignal } from "solid-js";
+import {
+  Component,
+  createEffect,
+  createRenderEffect,
+  createResource,
+  createSignal,
+  Show,
+} from "solid-js";
 import { setList } from "./Lists";
+import { ArticleData } from "./Types";
+
+export const [showArchived, setShowArchived] = createSignal(false);
+export const [showLiked, setShowLiked] = createSignal(false);
+
+createEffect(async () => {
+  const res = await fetch("http://localhost:8000/");
+  const j = await res.json();
+  if (showArchived()) {
+    if (showLiked()) {
+      setList(() =>
+        j.filter((e: ArticleData) => {
+          return e.archived && e.liked;
+        })
+      );
+    } else {
+      setList(() =>
+        j.filter((e: ArticleData) => {
+          return e.archived;
+        })
+      );
+    }
+  } else {
+    if (showLiked()) {
+      setList(() =>
+        j.filter((e: ArticleData) => {
+          return !e.archived && e.liked;
+        })
+      );
+    } else {
+      setList(() =>
+        j.filter((e: ArticleData) => {
+          return !e.archived;
+        })
+      );
+    }
+  }
+}, showArchived());
+
+createEffect(async () => {
+  if (showLiked()) {
+    if (showArchived()) {
+      setList((arr) =>
+        arr.filter((e) => {
+          return e.archived;
+        })
+      );
+    } else {
+      setList((arr) =>
+        arr.filter((e) => {
+          return !e.archived && e.liked;
+        })
+      );
+    }
+  } else {
+    const res = await fetch("http://localhost:8000/");
+    const j = await res.json();
+    if (showArchived()) {
+      setList(() =>
+        j.filter((e: ArticleData) => {
+          return e.archived;
+        })
+      );
+    } else {
+      setList(() =>
+        j.filter((e: ArticleData) => {
+          return !e.archived;
+        })
+      );
+    }
+  }
+}, showLiked());
 
 const Header: Component = () => {
   const add_url = async () => {
@@ -29,10 +108,10 @@ const Header: Component = () => {
     setQuery(() => "");
   };
 
+  const [query, setQuery] = createSignal("");
+
   const [url, setUrl] = createSignal("");
   const [_loading] = createResource(url, add_url);
-
-  const [query, setQuery] = createSignal("");
 
   return (
     <ul class="header">
@@ -54,8 +133,34 @@ const Header: Component = () => {
         <input type="text" id="query" value={query()} />
         <button onClick={() => send_query()}>🔎</button>
       </li>
-      <li>archive</li>
-      <li>liked</li>
+      <li>
+        <Show
+          when={showArchived()}
+          fallback={
+            <button onClick={() => setShowArchived((v) => !v)} class="inactive">
+              archived
+            </button>
+          }
+        >
+          <button onClick={() => setShowArchived((v) => !v)} class="active">
+            archived
+          </button>
+        </Show>
+      </li>
+      <li>
+        <Show
+          when={showLiked()}
+          fallback={
+            <button onClick={() => setShowLiked((v) => !v)} class="inactive">
+              liked
+            </button>
+          }
+        >
+          <button onClick={() => setShowLiked((v) => !v)} class="active">
+            liked
+          </button>
+        </Show>
+      </li>
     </ul>
   );
 };

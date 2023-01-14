@@ -20,3 +20,11 @@ code {
 .header > li {
   margin-left: 1em;
 }
+
+.active {
+  background-color: aqua;
+}
+
+.inactive {
+  background-color: white;
+}
