@@ -1,3 +1,5 @@
+use crate::statements::{state_list_up, state_reload};
+
 use super::core::Core;
 use super::error::AcidError;
 use super::types::{ArticleContent, ArticleData};
@@ -14,7 +16,23 @@ pub async fn health(State(core): State<Arc<Core>>) -> String {
 
 #[debug_handler]
 pub async fn list_up(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
-    core.list_up().await
+    core.list_up(&state_list_up()).await
+}
+
+#[debug_handler]
+pub async fn reload(
+    State(core): State<Arc<Core>>,
+    Query(param): Query<BTreeMap<String, String>>,
+) -> Json<Vec<ArticleData>> {
+    let mut id = String::new();
+    for (k, v) in param {
+        if k == "id" {
+            id = v;
+        } else {
+            continue;
+        }
+    }
+    core.list_up(&&&state_reload(&id)).await
 }
 
 #[debug_handler]

@@ -39,6 +39,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/d/:id", get(delete))
         .route("/s", get(search))
         .route("/t", get(toggle))
+        .route("/p", get(reload))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -68,10 +69,10 @@ impl Core {
         })
     }
 
-    pub async fn list_up(&self) -> Json<Vec<ArticleData>> {
+    pub async fn list_up(&self, statement: &str) -> Json<Vec<ArticleData>> {
         let mut articles = vec![];
         self.db
-            .iterate(state_list_up(), |pairs| {
+            .iterate(statement, |pairs| {
                 let mut article = ArticleData::new();
                 for &(column, value) in pairs.iter() {
                     match column {

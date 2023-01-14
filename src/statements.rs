@@ -27,6 +27,19 @@ pub fn state_list_up() -> String {
     .to_owned()
 }
 
+pub fn state_reload(id: &str) -> String {
+    format!(
+        "
+         SELECT *
+         FROM articles
+         WHERE id < '{}' 
+         ORDER BY id DESC
+         LIMIT 10
+        ",
+        id
+    )
+}
+
 pub fn state_add(
     ulid: &str,
     url: &str,
