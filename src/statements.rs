@@ -92,9 +92,9 @@ pub fn state_toggle(toggle: &str, id: &str) -> String {
     format!(
         "
          UPDATE articles
-         SET {} = (({} | 1) - ({} & 1))
+         SET {} = CASE {} WHEN 0 THEN 1 ELSE 0 END
          WHERE id = '{}'
         ",
-        toggle, toggle, toggle, id
+        toggle, toggle, id
     )
 }

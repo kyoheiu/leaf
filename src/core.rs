@@ -80,6 +80,10 @@ impl Core {
                         "url" => article.url = value.unwrap().to_owned(),
                         "beginning" => article.beginning = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
+                        "archived" => {
+                            article.archived = if value.unwrap() == "0" { false } else { true }
+                        }
+                        "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
                         "timestamp" => article.timestamp = value.unwrap().to_owned(),
                         _ => {}
                     }
@@ -198,6 +202,20 @@ impl Core {
         info!("id: {}, toggle: {}", id, toggle);
         self.db.execute(state_toggle(toggle, id)).unwrap();
         info!("TOGGLED: {} - {}", id, toggle);
+
+        self.db
+            .iterate(state_read(id), |pairs| {
+                for &(column, value) in pairs.iter() {
+                    match column {
+                        "archived" => info!("now archived: {}", value.unwrap()),
+                        "liked" => info!("now liked: {}", value.unwrap()),
+
+                        _ => {}
+                    }
+                }
+                true
+            })
+            .unwrap();
     }
 
     //add to schema

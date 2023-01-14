@@ -7,6 +7,8 @@ pub struct ArticleData {
     pub title: String,
     pub beginning: String,
     pub progress: u16,
+    pub archived: bool,
+    pub liked: bool,
     pub timestamp: String,
 }
 
@@ -18,6 +20,8 @@ impl ArticleData {
             title: "".to_owned(),
             beginning: "".to_owned(),
             progress: 0,
+            archived: false,
+            liked: false,
             timestamp: "".to_owned(),
         }
     }
@@ -32,6 +36,8 @@ pub struct ArticleContent {
     pub plain: String,
     pub position: u16,
     pub progress: u16,
+    pub archived: bool,
+    pub liked: bool,
     pub timestamp: String,
 }
 
@@ -45,6 +51,8 @@ impl ArticleContent {
             plain: "".to_owned(),
             position: 0,
             progress: 0,
+            archived: false,
+            liked: false,
             timestamp: "".to_owned(),
         }
     }
