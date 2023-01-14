@@ -12,23 +12,36 @@ export const show_liked_only = (e: ArticleData) => {
   return e.liked;
 };
 
-export const filter_list = (arr: ArticleData[]): ArticleData[] => {
-  const tuple = [showArchived(), showLiked()];
-  switch (tuple.join(",")) {
-    case "false,false":
-      return arr.filter(hide_archived);
-    case "false,true":
-      return arr.filter(hide_archived).filter(show_liked_only);
-    case "true,false":
-      return arr.filter(show_archived);
-    case "true,true":
-      return arr.filter(show_archived).filter(show_liked_only);
+const get_scroll_position = () => {
+  const bodyheight = document.documentElement.scrollHeight;
+  const scrolled = document.documentElement.scrollTop;
+  const client = document.documentElement.clientHeight;
+
+  const pos = Math.round((scrolled * 100) / bodyheight);
+  const prog = Math.abs(bodyheight - client - scrolled);
+  if (prog < 1) {
+    return { pos: pos, prog: 100 };
+  } else {
+    return { pos: pos, prog: 100 - Math.round((prog * 100) / bodyheight) };
   }
-  return [];
 };
 
-const update_list = async () => {
-  const res = await fetch("http://localhost:8000/");
-  const j = await res.json();
-  setList(() => filter_list(j));
+export const fetch_pos = async () => {
+  const url = location.href;
+  const id = url.split("/").pop();
+
+  const numbers = get_scroll_position();
+  console.log("id: " + id + " pos: " + numbers.pos + " prog: " + numbers.prog);
+  const target =
+    "http://localhost:8000/u?id=" +
+    id +
+    "&pos=" +
+    numbers.pos +
+    "&prog=" +
+    numbers.prog;
+  fetch(target).then((response) => {
+    if (!response.ok) {
+      throw new Error("Cannot update scroll position.");
+    }
+  });
 };

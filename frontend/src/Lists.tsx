@@ -14,6 +14,9 @@ import { hide_archived, show_archived, show_liked_only } from "./utils";
 const [list, setList] = createSignal<ArticleData[]>([]);
 const [showArchived, setShowArchived] = createSignal(false);
 const [showLiked, setShowLiked] = createSignal(false);
+const [query, setQuery] = createSignal("");
+const [url, setUrl] = createSignal("");
+const [isBottom, setIsBottom] = createSignal(false);
 
 const filter_list = (
   arr: ArticleData[],
@@ -68,9 +71,6 @@ const send_query = async () => {
   setQuery(() => "");
 };
 
-const [query, setQuery] = createSignal("");
-const [url, setUrl] = createSignal("");
-
 const delete_article = (id: string) => {
   const target = "http://localhost:8000/d/" + id;
   fetch(target).then((res) => {
@@ -119,27 +119,57 @@ const eachList = (article: ArticleData) => {
     <>
       <div class="article">
         <div>{article.timestamp}</div>
-        <div>
-          <A href={link}>{article.title}</A>{" "}
-          <button onClick={() => delete_article(article.id)}>delete</button>
-          <button onClick={() => toggle_archived(article.id)}>
-            <Show when={article.archived} fallback={"archive"}>
-              unarchive
-            </Show>
-          </button>
-          <button onClick={() => toggle_liked(article.id)}>
-            <Show when={article.liked} fallback={"like"}>
-              unlike
-            </Show>
-          </button>
+        <div class="title">
+          <A href={link}>{article.title}</A>
         </div>
-        <div>{article.beginning}</div>
+        <button onClick={() => toggle_archived(article.id)}>
+          <Show when={article.archived} fallback={"archive"}>
+            unarchive
+          </Show>
+        </button>
+        <button onClick={() => toggle_liked(article.id)}>
+          <Show when={article.liked} fallback={"like"}>
+            unlike
+          </Show>
+        </button>
+        <button onClick={() => delete_article(article.id)}>delete</button>
+        <div class="beginning">{article.beginning}</div>
       </div>
     </>
   );
 };
 
 const Lists: Component = () => {
+  window.addEventListener("scroll", () => {
+    if (
+      Math.abs(
+        document.documentElement.scrollHeight -
+          document.documentElement.clientHeight -
+          document.documentElement.scrollTop
+      ) < 1
+    ) {
+      setIsBottom(true);
+      console.log("bottom");
+    }
+  });
+
+  createEffect(() => {
+    if (isBottom()) {
+      const bottom_id = list().slice(-1)[0].id;
+      const target = "http://localhost:8000/p?id=" + bottom_id;
+      fetch(target).then((res) =>
+        res
+          .json()
+          .then((j) =>
+            setList((arr) =>
+              arr.concat(filter_list(j, showArchived(), showLiked()))
+            )
+          )
+      );
+      setIsBottom(false);
+    }
+  });
+
   return (
     <>
       <ul class="header">
