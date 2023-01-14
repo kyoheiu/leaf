@@ -17,6 +17,7 @@ const [showLiked, setShowLiked] = createSignal(false);
 const [query, setQuery] = createSignal("");
 const [url, setUrl] = createSignal("");
 const [isBottom, setIsBottom] = createSignal(false);
+const [isLast, setIsLast] = createSignal(false);
 
 const filter_list = (
   arr: ArticleData[],
@@ -158,13 +159,16 @@ const Lists: Component = () => {
       const bottom_id = list().slice(-1)[0].id;
       const target = "http://localhost:8000/p?id=" + bottom_id;
       fetch(target).then((res) =>
-        res
-          .json()
-          .then((j) =>
+        res.json().then((j) => {
+          if (j.length === 0) {
+            setIsLast(true);
+          } else {
+            setIsLast(false);
             setList((arr) =>
               arr.concat(filter_list(j, showArchived(), showLiked()))
-            )
-          )
+            );
+          }
+        })
       );
       setIsBottom(false);
     }
@@ -216,6 +220,9 @@ const Lists: Component = () => {
       </ul>
       <div class="lists">
         <For each={list()}>{(article: ArticleData) => eachList(article)}</For>
+      </div>
+      <div>
+        <Show when={isLast()}>No more article in this page.</Show>
       </div>
     </>
   );
