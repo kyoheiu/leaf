@@ -10,10 +10,12 @@ import {
   Show,
   on,
 } from "solid-js";
-import { ArticleContent, ArticleData } from "./Types";
+import { ArticleContent, ArticleData, State } from "./Types";
 import { fetch_pos } from "./utils";
+import { setState } from "./App";
 
 const Reading: Component = () => {
+  setState(State.Reading);
   const params = useParams();
 
   const [article, setArticle] = createSignal<ArticleContent>({

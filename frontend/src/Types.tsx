@@ -1,9 +1,8 @@
 export enum State {
-  List,
-  Reading,
-  Archive,
-  Liked,
-  Search,
+  Top = "Top",
+  Search = "Search",
+  Tag = "Tag",
+  Reading = "Reading",
 }
 
 export interface ArticleData {
@@ -15,6 +14,7 @@ export interface ArticleData {
   archived: boolean;
   liked: boolean;
   timestamp: string;
+  tags: string[];
 }
 
 export interface ArticleContent {

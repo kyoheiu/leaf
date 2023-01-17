@@ -2,38 +2,22 @@ import { A } from "@solidjs/router";
 import {
   Component,
   createSignal,
-  onMount,
   For,
   Show,
   createEffect,
-  createRenderEffect,
+  Switch,
+  Match,
 } from "solid-js";
-import { ArticleData } from "./Types";
+import { IconButton } from "@hope-ui/solid";
+
+import { state } from "./App";
+import { filter_list, showArchived, showLiked } from "./Header";
+import { ArticleData, State } from "./Types";
 import { hide_archived, show_archived, show_liked_only } from "./utils";
 
-const [list, setList] = createSignal<ArticleData[]>([]);
-const [showArchived, setShowArchived] = createSignal(false);
-const [showLiked, setShowLiked] = createSignal(false);
-const [query, setQuery] = createSignal("");
-const [url, setUrl] = createSignal("");
-const [isBottom, setIsBottom] = createSignal(false);
-const [isLast, setIsLast] = createSignal(false);
-
-const filter_list = (
-  arr: ArticleData[],
-  showArchived: boolean,
-  showLiked: boolean
-): ArticleData[] => {
-  if (!showArchived && !showLiked) {
-    return arr.filter(hide_archived);
-  } else if (!showArchived && showLiked) {
-    return arr.filter(hide_archived).filter(show_liked_only);
-  } else if (showArchived && !showLiked) {
-    return arr.filter(show_archived);
-  } else {
-    return arr.filter(show_archived).filter(show_liked_only);
-  }
-};
+export const [list, setList] = createSignal<ArticleData[]>([]);
+export const [isBottom, setIsBottom] = createSignal(false);
+export const [isLast, setIsLast] = createSignal(false);
 
 const update_list = async (showArchived: boolean, showLiked: boolean) => {
   const res = await fetch("http://localhost:8000/");
@@ -42,35 +26,6 @@ const update_list = async (showArchived: boolean, showLiked: boolean) => {
 };
 
 createEffect(() => update_list(showArchived(), showLiked()));
-
-const add_url = async () => {
-  setUrl(() => (document.getElementById("url")! as HTMLTextAreaElement).value);
-  const res = await fetch("http://localhost:8000/a", {
-    method: "POST",
-    body: url(),
-  });
-  if (!res.ok) {
-    console.log("Error: Cannot add url.");
-  }
-  setUrl(() => "");
-  const updated = await fetch("http://localhost:8000/");
-  const j = await updated.json();
-  setList(filter_list(j, showArchived(), showLiked()));
-};
-
-const send_query = async () => {
-  setQuery(
-    () => (document.getElementById("query")! as HTMLTextAreaElement).value
-  );
-  const target = "http://localhost:8000/s?q=" + query();
-  console.log(target);
-  const matched = await fetch(target);
-  if (!matched.ok) {
-    console.log("Error: Cannot search documents.");
-  }
-  setList(await matched.json());
-  setQuery(() => "");
-};
 
 const delete_article = (id: string) => {
   const target = "http://localhost:8000/d/" + id;
@@ -114,7 +69,7 @@ const toggle_liked = async (id: string) => {
   setList(() => filter_list(j, showArchived(), showLiked()));
 };
 
-const eachList = (article: ArticleData) => {
+export const eachList = (article: ArticleData) => {
   let link = "/r/" + article.id;
   return (
     <>
@@ -122,6 +77,20 @@ const eachList = (article: ArticleData) => {
         <div>{article.timestamp}</div>
         <div class="title">
           <A href={link}>{article.title}</A>
+        </div>
+        <div class="tag">
+          <Show when={article.tags.length !== 0}>
+            <For each={article.tags}>
+              {(tag: string) => {
+                let tag_link = "/tag/" + tag;
+                return (
+                  <>
+                    <a href={tag_link}>{tag}</a>&nbsp
+                  </>
+                );
+              }}
+            </For>
+          </Show>
         </div>
         <button onClick={() => toggle_archived(article.id)}>
           <Show when={article.archived} fallback={"archive"}>
@@ -176,48 +145,6 @@ const Lists: Component = () => {
 
   return (
     <>
-      <ul class="header">
-        <li id="acidpaper">acidpaper</li>
-        <li id="add">
-          <input type="text" id="url" value={url()} />
-          <button onClick={() => add_url()}>➕</button>
-        </li>
-        <li id="search">
-          <input type="text" id="query" value={query()} />
-          <button onClick={() => send_query()}>🔎</button>
-        </li>
-        <li>
-          <Show
-            when={showArchived()}
-            fallback={
-              <button
-                onClick={() => setShowArchived((v) => !v)}
-                class="inactive"
-              >
-                archived
-              </button>
-            }
-          >
-            <button onClick={() => setShowArchived((v) => !v)} class="active">
-              archived
-            </button>
-          </Show>
-        </li>
-        <li>
-          <Show
-            when={showLiked()}
-            fallback={
-              <button onClick={() => setShowLiked((v) => !v)} class="inactive">
-                liked
-              </button>
-            }
-          >
-            <button onClick={() => setShowLiked((v) => !v)} class="active">
-              liked
-            </button>
-          </Show>
-        </li>
-      </ul>
       <div class="lists">
         <For each={list()}>{(article: ArticleData) => eachList(article)}</For>
       </div>
@@ -229,3 +156,6 @@ const Lists: Component = () => {
 };
 
 export default Lists;
+function setState(Top: State) {
+  throw new Error("Function not implemented.");
+}
