@@ -20,7 +20,7 @@ pub fn state_create_articles_table() -> String {
 pub fn state_create_tags_table() -> String {
     "
      CREATE TABLE IF NOT EXISTS tags (
-     id TEXT PRIMARY KEY,
+     ulid TEXT,
      tag TEXT NOT NULL
      )
     "
@@ -35,6 +35,31 @@ pub fn state_list_up() -> String {
      LIMIT 10
      "
     .to_owned()
+}
+
+pub fn state_list_tags(id: &str) -> String {
+    format!(
+        "
+         SELECT *
+         FROM tags
+         WHERE ulid = '{}'
+        ",
+        id
+    )
+}
+
+pub fn state_list_tag(name: &str) -> String {
+    format!(
+        "
+         SELECT *
+         FROM articles
+         INNER JOIN tags ON articles.id = tags.ulid
+         WHERE tags.tag = '{}'
+         ORDER BY id DESC
+         LIMIT 10
+        ",
+        name
+    )
 }
 
 pub fn state_reload(id: &str) -> String {
@@ -125,7 +150,7 @@ pub fn state_toggle(toggle: &str, id: &str) -> String {
 pub fn state_add_tag(id: &str, tag: &str) -> String {
     format!(
         "
-         INSERT INTO tags (id, tag)
+         INSERT INTO tags (ulid, tag)
          VALUES (
              '{}',
              '{}'
@@ -139,7 +164,7 @@ pub fn state_delete_tag(id: &str, tag: &str) -> String {
     format!(
         "
          DELETE FROM tags
-         WHERE id = '{}' and tag = '{}';
+         WHERE ulid = '{}' and tag = '{}';
         ",
         id, tag
     )

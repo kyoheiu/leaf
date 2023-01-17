@@ -10,6 +10,7 @@ pub struct ArticleData {
     pub archived: bool,
     pub liked: bool,
     pub timestamp: String,
+    pub tags: Vec<String>,
 }
 
 impl ArticleData {
@@ -23,6 +24,7 @@ impl ArticleData {
             archived: false,
             liked: false,
             timestamp: "".to_owned(),
+            tags: vec![],
         }
     }
 }

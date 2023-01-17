@@ -40,7 +40,8 @@ pub fn router(core: Core) -> axum::Router {
         .route("/s", get(search))
         .route("/t", get(toggle))
         .route("/p", get(reload))
-        .route("/tag", post(manage_tag))
+        .route("/tag/:name", get(list_up_tag))
+        .route("/manage_tag", post(manage_tag))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -88,6 +89,7 @@ impl Core {
                         }
                         "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
                         "timestamp" => article.timestamp = value.unwrap().to_owned(),
+                        "tag" => article.tags.push(value.unwrap().to_owned()),
                         _ => {}
                     }
                 }
@@ -95,6 +97,24 @@ impl Core {
                 true
             })
             .unwrap();
+
+        //get tags
+        for mut article in articles.iter_mut() {
+            let mut tags = vec![];
+            let id = &article.id;
+            self.db
+                .iterate(state_list_tags(&id), |pairs| {
+                    for &(column, value) in pairs.iter() {
+                        match column {
+                            "tag" => tags.push(value.unwrap().to_owned()),
+                            _ => {}
+                        }
+                    }
+                    true
+                })
+                .unwrap();
+            article.tags = tags;
+        }
 
         Json(articles)
     }
@@ -190,6 +210,25 @@ impl Core {
                 .unwrap();
             articles.push(article);
         }
+
+        //get tags
+        for mut article in articles.iter_mut() {
+            let mut tags = vec![];
+            let id = &article.id;
+            self.db
+                .iterate(state_list_tags(&id), |pairs| {
+                    for &(column, value) in pairs.iter() {
+                        match column {
+                            "tag" => tags.push(value.unwrap().to_owned()),
+                            _ => {}
+                        }
+                    }
+                    true
+                })
+                .unwrap();
+            article.tags = tags;
+        }
+
         info!("{:#?}", articles);
         Json(articles)
     }

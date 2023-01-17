@@ -1,4 +1,4 @@
-use crate::statements::{state_list_up, state_reload};
+use crate::statements::{state_list_tag, state_list_up, state_reload};
 
 use super::core::Core;
 use super::error::AcidError;
@@ -124,8 +124,16 @@ pub async fn manage_tag(
     }
     log::info!("query: {} {}", id, kind);
     match kind.as_str() {
-        "add" => core.add_tag(&id, body.trim()).await,
-        "delete" => core.delete_tag(&id, body.trim()).await,
+        "add" => core.add_tag(&id, &body.trim().to_lowercase()).await,
+        "delete" => core.delete_tag(&id, &body.trim().to_lowercase()).await,
         _ => {}
     }
+}
+
+#[debug_handler]
+pub async fn list_up_tag(
+    State(core): State<Arc<Core>>,
+    Path(name): Path<String>,
+) -> Json<Vec<ArticleData>> {
+    core.list_up(&state_list_tag(&name.to_lowercase())).await
 }
