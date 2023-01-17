@@ -1,4 +1,4 @@
-pub fn state_create_table() -> String {
+pub fn state_create_articles_table() -> String {
     "
      CREATE TABLE IF NOT EXISTS articles (
      id TEXT PRIMARY KEY,
@@ -12,6 +12,16 @@ pub fn state_create_table() -> String {
      archived INTEGER NOT NULL DEFAULT 0 CHECK (archived IN (0,1)),
      liked INTEGER NOT NULL DEFAULT 0 CHECK (liked IN (0,1)),
      timestamp DATETIME
+     )
+    "
+    .to_owned()
+}
+
+pub fn state_create_tags_table() -> String {
+    "
+     CREATE TABLE IF NOT EXISTS tags (
+     id TEXT PRIMARY KEY,
+     tag TEXT NOT NULL
      )
     "
     .to_owned()
@@ -109,5 +119,28 @@ pub fn state_toggle(toggle: &str, id: &str) -> String {
          WHERE id = '{}'
         ",
         toggle, toggle, id
+    )
+}
+
+pub fn state_add_tag(id: &str, tag: &str) -> String {
+    format!(
+        "
+         INSERT INTO tags (id, tag)
+         VALUES (
+             '{}',
+             '{}'
+         );
+        ",
+        id, tag
+    )
+}
+
+pub fn state_delete_tag(id: &str, tag: &str) -> String {
+    format!(
+        "
+         DELETE FROM tags
+         WHERE id = '{}' and tag = '{}';
+        ",
+        id, tag
     )
 }

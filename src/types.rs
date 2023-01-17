@@ -62,3 +62,9 @@ impl ArticleContent {
 pub struct Articles {
     pub articles: Vec<ArticleData>,
 }
+
+#[derive(Debug, Serialize)]
+pub struct Tag {
+    id: String,
+    tag: String,
+}

@@ -40,6 +40,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/s", get(search))
         .route("/t", get(toggle))
         .route("/p", get(reload))
+        .route("/tag", post(manage_tag))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -57,7 +58,8 @@ pub async fn run(listener: TcpListener, core: Core) {
 impl Core {
     pub fn new() -> Result<Core, AcidError> {
         let connection = sqlite::Connection::open_with_full_mutex(".testdb").unwrap();
-        connection.execute(state_create_table()).unwrap();
+        connection.execute(state_create_articles_table()).unwrap();
+        connection.execute(state_create_tags_table()).unwrap();
 
         let (schema, index, reader) = initialize_schema();
 
@@ -219,6 +221,15 @@ impl Core {
             .unwrap();
     }
 
+    pub async fn add_tag(&self, id: &str, tag: &str) {
+        self.db.execute(state_add_tag(id, tag)).unwrap();
+        info!("Add tag {} to ID {}", tag, id);
+    }
+
+    pub async fn delete_tag(&self, id: &str, tag: &str) {
+        self.db.execute(state_delete_tag(id, tag)).unwrap();
+        info!("Add tag {} to ID {}", tag, id);
+    }
     //add to schema
     fn add_to_index(&self, ulid: &str, title: &str, plain: &str) {
         let mut index_writer = self.index.writer(50_000_000).unwrap();
