@@ -31,6 +31,29 @@ pub fn state_list_up() -> String {
     "
      SELECT *
      FROM articles
+     WHERE archived = 0
+     ORDER BY id DESC
+     LIMIT 10
+     "
+    .to_owned()
+}
+
+pub fn state_list_up_archived() -> String {
+    "
+     SELECT *
+     FROM articles
+     WHERE archived = 1
+     ORDER BY id DESC
+     LIMIT 10
+     "
+    .to_owned()
+}
+
+pub fn state_list_up_liked() -> String {
+    "
+     SELECT *
+     FROM articles
+     WHERE liked = 1
      ORDER BY id DESC
      LIMIT 10
      "
@@ -68,6 +91,32 @@ pub fn state_reload(id: &str) -> String {
          SELECT *
          FROM articles
          WHERE id < '{}' 
+         ORDER BY id DESC
+         LIMIT 10
+        ",
+        id
+    )
+}
+
+pub fn state_reload_archived(id: &str) -> String {
+    format!(
+        "
+         SELECT *
+         FROM articles
+         WHERE id < '{}' AND archived = 1
+         ORDER BY id DESC
+         LIMIT 10
+        ",
+        id
+    )
+}
+
+pub fn state_reload_liked(id: &str) -> String {
+    format!(
+        "
+         SELECT *
+         FROM articles
+         WHERE id < '{}' AND liked = 1
          ORDER BY id DESC
          LIMIT 10
         ",

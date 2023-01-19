@@ -1,4 +1,7 @@
-use crate::statements::{state_list_tag, state_list_up, state_reload};
+use crate::statements::{
+    state_list_tag, state_list_up, state_list_up_archived, state_list_up_liked, state_reload,
+    state_reload_archived, state_reload_liked,
+};
 
 use super::core::Core;
 use super::error::AcidError;
@@ -20,6 +23,16 @@ pub async fn list_up(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
 }
 
 #[debug_handler]
+pub async fn list_up_archived(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
+    core.list_up(&state_list_up_archived()).await
+}
+
+#[debug_handler]
+pub async fn list_up_liked(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
+    core.list_up(&state_list_up_liked()).await
+}
+
+#[debug_handler]
 pub async fn reload(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
@@ -32,7 +45,39 @@ pub async fn reload(
             continue;
         }
     }
-    core.list_up(&&&state_reload(&id)).await
+    core.list_up(&state_reload(&id)).await
+}
+
+#[debug_handler]
+pub async fn reload_archived(
+    State(core): State<Arc<Core>>,
+    Query(param): Query<BTreeMap<String, String>>,
+) -> Json<Vec<ArticleData>> {
+    let mut id = String::new();
+    for (k, v) in param {
+        if k == "id" {
+            id = v;
+        } else {
+            continue;
+        }
+    }
+    core.list_up(&state_reload_archived(&id)).await
+}
+
+#[debug_handler]
+pub async fn reload_liked(
+    State(core): State<Arc<Core>>,
+    Query(param): Query<BTreeMap<String, String>>,
+) -> Json<Vec<ArticleData>> {
+    let mut id = String::new();
+    for (k, v) in param {
+        if k == "id" {
+            id = v;
+        } else {
+            continue;
+        }
+    }
+    core.list_up(&state_reload_liked(&id)).await
 }
 
 #[debug_handler]
