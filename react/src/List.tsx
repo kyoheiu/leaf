@@ -45,13 +45,14 @@ const Lists = () => {
       }
       console.log(res.status);
     });
-    const new_list = list.map((article) => {
+    let new_list: ArticleData[] = [];
+    for (let article of list) {
       if (article.id === id) {
         article.liked = !article.liked;
       }
-      return article;
-    });
-    setList(new_list);
+      new_list.push(article);
+    }
+    setList(() => new_list);
   };
 
   const eachList = (article: ArticleData) => {
