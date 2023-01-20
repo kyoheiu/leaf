@@ -1,7 +1,7 @@
+import { listState } from "@/contexts/atoms";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { listState } from "./contexts/atoms";
 
 const Header = () => {
   const [list, setList] = useRecoilState(listState);
@@ -17,13 +17,14 @@ const Header = () => {
     fetch("http://localhost:8000/a", {
       method: "POST",
       body: url,
-    }).then((res) =>
-      !res.ok ? console.log("Error: Cannot add url.") : console.log("Added.")
-    );
-    setUrl(() => "");
-    fetch("http://localhost:8000/")
-      .then((res) => res.json())
-      .then((j) => setList(j));
+    }).then((res) => {
+      if (!res.ok) {
+        console.log("Error: Cannot add url.");
+      } else {
+        console.log("added");
+        window.location.href = "/";
+      }
+    });
   };
 
   const send_query = async () => {
@@ -38,7 +39,7 @@ const Header = () => {
     <>
       <ul className="header">
         <li id="acidpaper">
-          <Link to="/">acidpaper</Link>
+          <Link href="/">acidpaper</Link>
         </li>
         <li id="add">
           <form onSubmit={add_url}>
@@ -52,11 +53,17 @@ const Header = () => {
         </li>
         <li id="search">
           <form onSubmit={() => send_query()}>
-            <input type="text" id="query" value={query} placeholder="Search" />
+            <input
+              type="text"
+              id="query"
+              readOnly
+              value={query}
+              placeholder="Search"
+            />
           </form>
         </li>
         <li>
-          <Link to="archive">archived</Link>
+          <Link href="archive">archived</Link>
         </li>
       </ul>
     </>

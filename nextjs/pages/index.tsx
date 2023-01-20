@@ -1,12 +1,14 @@
-import { Component, useContext, useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import "./App.css";
-import { ArticleData } from "./Types";
-import { Link } from "react-router-dom";
+import { Inter } from "@next/font/google";
+import styles from "@/styles/Home.module.css";
+import { listState } from "@/contexts/atoms";
+import { ArticleData } from "@/types/Types";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { listState } from "./contexts/atoms";
 
-const Lists = () => {
+const inter = Inter({ subsets: ["latin"] });
+
+export const List = () => {
   const [list, setList] = useRecoilState(listState);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -56,13 +58,13 @@ const Lists = () => {
   };
 
   const eachList = (article: ArticleData) => {
-    let link = "/r/" + article.id;
+    let link = "/articles/" + article.id;
     return (
-      <>
+      <li key={article.id}>
         <div className="article">
           <div>{article.timestamp}</div>
           <div className="title">
-            <Link to={link}>{article.title}</Link>
+            <Link href={link}>{article.title}</Link>
           </div>
           <div className="tag">
             {article.tags.map((tag) => {
@@ -83,21 +85,23 @@ const Lists = () => {
           <button onClick={() => delete_article(article.id)}>delete</button>
           <div className="beginning">{article.beginning}</div>
         </div>
-      </>
+      </li>
     );
   };
 
-  window.addEventListener("scroll", () => {
-    if (
-      Math.abs(
-        document.documentElement.scrollHeight -
-          document.documentElement.clientHeight -
-          document.documentElement.scrollTop
-      ) < 1
-    ) {
-      setIsBottom(true);
-      console.log("bottom");
-    }
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      if (
+        Math.abs(
+          document.documentElement.scrollHeight -
+            document.documentElement.clientHeight -
+            document.documentElement.scrollTop
+        ) < 1
+      ) {
+        setIsBottom(true);
+        console.log("bottom");
+      }
+    });
   });
 
   useEffect(() => {
@@ -135,4 +139,4 @@ const Lists = () => {
   );
 };
 
-export default Lists;
+export default List;
