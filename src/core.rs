@@ -4,6 +4,7 @@ use super::schema::initialize_schema;
 use super::statements::*;
 use super::types::{ArticleContent, ArticleData};
 
+use axum::routing::{delete, put};
 use axum::Json;
 use axum::{
     routing::{get, post},
@@ -31,21 +32,16 @@ pub fn router(core: Core) -> axum::Router {
     let layer = CorsLayer::new().allow_origin(origins).allow_headers(Any);
 
     Router::new()
-        .route("/", get(list_up))
         .route("/health", get(health))
-        .route("/a", post(add))
-        .route("/r/:id", get(read))
-        .route("/u", get(update_progress))
-        .route("/d/:id", get(delete))
-        .route("/s", get(search))
-        .route("/t", get(toggle))
-        .route("/p", get(reload))
-        .route("/p/archive", get(reload_archived))
-        .route("/p/like", get(reload_liked))
-        .route("/archive", get(list_up_archived))
-        .route("/like", get(list_up_liked))
-        .route("/tag/:name", get(list_up_tag))
-        .route("/manage_tag", post(manage_tag))
+        .route("/articles", get(list_up))
+        .route("/articles", post(create))
+        .route("/articles/archived", get(list_up_archived))
+        .route("/articles/liked", get(list_up_liked))
+        .route("/articles/:id", get(read))
+        .route("/articles/:id", put(update_article))
+        .route("/articles/:id", delete(delete_article))
+        .route("/search", get(search))
+        .route("/tags/:name", get(list_up_tag))
         .layer(layer)
         .with_state(shared_core)
 }

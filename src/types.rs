@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -69,4 +71,22 @@ pub struct Articles {
 pub struct Tag {
     id: String,
     tag: String,
+}
+
+#[derive(Debug, PartialEq)]
+pub enum Kind {
+    Add,
+    Delete,
+}
+
+impl FromStr for Kind {
+    type Err = ();
+
+    fn from_str(input: &str) -> Result<Kind, Self::Err> {
+        match input {
+            "add" => Ok(Kind::Add),
+            "delete" => Ok(Kind::Delete),
+            _ => Err(()),
+        }
+    }
 }

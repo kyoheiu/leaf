@@ -5,11 +5,12 @@ use crate::statements::{
 
 use super::core::Core;
 use super::error::AcidError;
-use super::types::{ArticleContent, ArticleData};
+use super::types::*;
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
 use std::collections::BTreeMap;
+use std::str::FromStr;
 use std::sync::Arc;
 
 #[debug_handler]
@@ -18,70 +19,46 @@ pub async fn health(State(core): State<Arc<Core>>) -> String {
 }
 
 #[debug_handler]
-pub async fn list_up(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
-    core.list_up(&state_list_up()).await
-}
-
-#[debug_handler]
-pub async fn list_up_archived(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
-    core.list_up(&state_list_up_archived()).await
-}
-
-#[debug_handler]
-pub async fn list_up_liked(State(core): State<Arc<Core>>) -> Json<Vec<ArticleData>> {
-    core.list_up(&state_list_up_liked()).await
-}
-
-#[debug_handler]
-pub async fn reload(
+pub async fn list_up(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Json<Vec<ArticleData>> {
-    let mut id = String::new();
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else {
-            continue;
-        }
+    if param.contains_key("reload") {
+        let id = param.get("reload").unwrap();
+        core.list_up(&state_reload(&id)).await
+    } else {
+        core.list_up(&state_list_up()).await
     }
-    core.list_up(&state_reload(&id)).await
 }
 
 #[debug_handler]
-pub async fn reload_archived(
+pub async fn list_up_archived(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Json<Vec<ArticleData>> {
-    let mut id = String::new();
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else {
-            continue;
-        }
+    if param.contains_key("reload") {
+        let id = param.get("reload").unwrap();
+        core.list_up(&state_reload_archived(&id)).await
+    } else {
+        core.list_up(&state_list_up_archived()).await
     }
-    core.list_up(&state_reload_archived(&id)).await
 }
 
 #[debug_handler]
-pub async fn reload_liked(
+pub async fn list_up_liked(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Json<Vec<ArticleData>> {
-    let mut id = String::new();
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else {
-            continue;
-        }
+    if param.contains_key("reload") {
+        let id = param.get("reload").unwrap();
+        core.list_up(&state_reload_liked(&id)).await
+    } else {
+        core.list_up(&state_list_up_liked()).await
     }
-    core.list_up(&state_reload_liked(&id)).await
 }
 
 #[debug_handler]
-pub async fn add(State(core): State<Arc<Core>>, body: String) {
+pub async fn create(State(core): State<Arc<Core>>, body: String) {
     core.add(body.trim()).await;
 }
 
@@ -91,30 +68,34 @@ pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> Json
 }
 
 #[debug_handler]
-pub async fn delete(State(core): State<Arc<Core>>, Path(id): Path<String>) {
+pub async fn delete_article(State(core): State<Arc<Core>>, Path(id): Path<String>) {
     core.delete(&id).await
 }
 
 #[debug_handler]
-pub async fn update_progress(
+pub async fn update_article(
     State(core): State<Arc<Core>>,
+    Path(id): Path<String>,
     Query(param): Query<BTreeMap<String, String>>,
+    body: String,
 ) {
-    let mut id = String::new();
-    let mut pos = 0;
-    let mut prog = 0;
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else if k == "pos" {
-            pos = v.parse::<u16>().unwrap();
-        } else if k == "prog" {
-            prog = v.parse::<u16>().unwrap();
-        } else {
-            continue;
+    if param.contains_key("toggle") {
+        let to_toggle = param.get("toggle").unwrap();
+        log::info!("query: {} {}", id, to_toggle);
+        core.toggle(&id, &to_toggle).await
+    } else if param.contains_key("pos") && param.contains_key("prog") {
+        let pos = param.get("pos").unwrap().parse::<u16>().unwrap();
+        let prog = param.get("prog").unwrap().parse::<u16>().unwrap();
+        core.update_progress(&id, pos, prog).await
+    } else if param.contains_key("kind") {
+        if let Ok(kind) = Kind::from_str(param.get("kind").unwrap()) {
+            match kind {
+                Kind::Add => core.add_tag(&id, &body.trim().to_lowercase()).await,
+                Kind::Delete => core.delete_tag(&id, &body.trim().to_lowercase()).await,
+            }
         }
+    } else {
     }
-    core.update_progress(&id, pos, prog).await
 }
 
 #[debug_handler]
