@@ -4,10 +4,9 @@ use super::schema::initialize_schema;
 use super::statements::*;
 use super::types::{ArticleContent, ArticleData};
 
-use axum::routing::{delete, put};
 use axum::Json;
 use axum::{
-    routing::{get, post},
+    routing::{delete, get, post, put},
     Router,
 };
 use log::info;
@@ -29,17 +28,20 @@ pub fn router(core: Core) -> axum::Router {
     let shared_core = Arc::new(core);
 
     let origins = ["http://localhost:3000".parse().unwrap()];
-    let layer = CorsLayer::new().allow_origin(origins).allow_headers(Any);
+    let layer = CorsLayer::new()
+        .allow_origin(origins)
+        .allow_headers(Any)
+        .allow_methods(Any);
 
     Router::new()
         .route("/health", get(health))
-        .route("/articles", get(list_up))
-        .route("/articles", post(create))
+        .route("/articles", get(list_up).post(create))
         .route("/articles/archived", get(list_up_archived))
         .route("/articles/liked", get(list_up_liked))
-        .route("/articles/:id", get(read))
-        .route("/articles/:id", put(update_article))
-        .route("/articles/:id", delete(delete_article))
+        .route(
+            "/articles/:id",
+            get(read).post(update_article).delete(delete_article),
+        )
         .route("/search", get(search))
         .route("/tags/:name", get(list_up_tag))
         .layer(layer)

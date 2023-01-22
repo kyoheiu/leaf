@@ -115,48 +115,6 @@ pub async fn search(
 }
 
 #[debug_handler]
-pub async fn toggle(State(core): State<Arc<Core>>, Query(param): Query<BTreeMap<String, String>>) {
-    let mut id = String::new();
-    let mut toggle = String::new();
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else if k == "toggle" {
-            toggle = v;
-        } else {
-            continue;
-        }
-    }
-    log::info!("query: {} {}", id, toggle);
-    core.toggle(&id, &toggle).await
-}
-
-#[debug_handler]
-pub async fn manage_tag(
-    State(core): State<Arc<Core>>,
-    Query(param): Query<BTreeMap<String, String>>,
-    body: String,
-) {
-    let mut id = String::new();
-    let mut kind = String::new();
-    for (k, v) in param {
-        if k == "id" {
-            id = v;
-        } else if k == "kind" {
-            kind = v;
-        } else {
-            continue;
-        }
-    }
-    log::info!("query: {} {}", id, kind);
-    match kind.as_str() {
-        "add" => core.add_tag(&id, &body.trim().to_lowercase()).await,
-        "delete" => core.delete_tag(&id, &body.trim().to_lowercase()).await,
-        _ => {}
-    }
-}
-
-#[debug_handler]
 pub async fn list_up_tag(
     State(core): State<Arc<Core>>,
     Path(name): Path<String>,
