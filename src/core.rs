@@ -273,7 +273,7 @@ impl Core {
 
     pub async fn delete_tag(&self, id: &str, tag: &str) {
         self.db.execute(state_delete_tag(id, tag)).unwrap();
-        info!("Add tag {} to ID {}", tag, id);
+        info!("Delete tag {} to ID {}", tag, id);
     }
     //add to schema
     fn add_to_index(&self, ulid: &str, title: &str, plain: &str) {
