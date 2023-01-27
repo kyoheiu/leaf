@@ -7,8 +7,7 @@ export default async function handler(
   if (req.method !== "POST") {
     res.status(404).end();
   } else {
-    let url: string = JSON.stringify(req.body);
-    url = url.slice(4);
+    let url: string = req.body.url;
     const response = await fetch("http://127.0.0.1:8000/articles", {
       method: "POST",
       body: url,

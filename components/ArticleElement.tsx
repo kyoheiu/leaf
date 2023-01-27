@@ -136,42 +136,44 @@ export default function ArticleElement(props: ElementProps) {
   }
 
   return (
-    <li id={article.data.id}>
-      <div className="timestamp">{article.data.timestamp}</div>
-      <div className="title">
-        <a href={"/articles/" + article.data.id}>{article.data.title}</a>
-      </div>
-      <div className="beginning">{article.data.beginning}</div>
-      <button id={article.data.id} onClick={toggle_like}>
-        {article.data.liked ? "unlike" : "like"}
-      </button>
-      <button id={article.data.id} onClick={archive}>
-        {article.data.archived ? "unarchive" : "archive"}
-      </button>
-      <button id={article.data.id} onClick={delete_article}>
-        "delete"
-      </button>
-      <div>
-        {article.data.tags.map((x) => {
-          {
-            return (
-              <>
-                <form>
-                  <a href={"/tags/" + x}>
-                    <code id={article.data.id + "_delete_tag"}>{x}</code>
-                  </a>
-                  <button onClick={(e) => delete_tag(e)}>x</button>&nbsp;
-                </form>
-              </>
-            );
-          }
-        })}
-      </div>
-      <Tags tags={article.data.tags} />
-      <form>
-        <input id={article.data.id + "_add_tag"} type="text" />
-        <button onClick={(e) => add_tag(e)}>add tag</button>
-      </form>
-    </li>
+    <>
+      <ul key={article.data.id} id={article.data.id}>
+        <div className="timestamp">{article.data.timestamp}</div>
+        <div className="title">
+          <a href={"/articles/" + article.data.id}>{article.data.title}</a>
+        </div>
+        <div className="beginning">{article.data.beginning}</div>
+        <button id={article.data.id} onClick={toggle_like}>
+          {article.data.liked ? "unlike" : "like"}
+        </button>
+        <button id={article.data.id} onClick={archive}>
+          {article.data.archived ? "unarchive" : "archive"}
+        </button>
+        <button id={article.data.id} onClick={delete_article}>
+          "delete"
+        </button>
+        <div>
+          {article.data.tags.map((x) => {
+            {
+              return (
+                <>
+                  <form>
+                    <a href={"/tags/" + x}>
+                      <code id={article.data.id + "_delete_tag"}>{x}</code>
+                    </a>
+                    <button onClick={(e) => delete_tag(e)}>x</button>&nbsp;
+                  </form>
+                </>
+              );
+            }
+          })}
+        </div>
+        <Tags tags={article.data.tags} />
+        <form>
+          <input id={article.data.id + "_add_tag"} type="text" />
+          <button onClick={(e) => add_tag(e)}>add tag</button>
+        </form>
+      </ul>
+    </>
   );
 }
