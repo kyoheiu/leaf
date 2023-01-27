@@ -26,6 +26,7 @@ pub async fn list_up(
 ) -> Json<Vec<ArticleData>> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
+        info!("reload after {}", id);
         core.list_up(&state_reload(&id)).await
     } else {
         core.list_up(&state_list_up()).await

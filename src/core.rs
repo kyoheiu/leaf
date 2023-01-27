@@ -185,7 +185,7 @@ impl Core {
         let query_parser = tantivy::query::QueryParser::for_index(&self.index, vec![title, plain]);
         let query = query_parser.parse_query(query).unwrap();
 
-        let mut top_docs = searcher.search(&query, &TopDocs::with_limit(10)).unwrap();
+        let mut top_docs = searcher.search(&query, &TopDocs::with_limit(50)).unwrap();
         top_docs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
         let mut articles = vec![];
         let field = self.schema.get_field("id").unwrap();
