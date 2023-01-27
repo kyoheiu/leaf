@@ -9,6 +9,7 @@ use super::types::*;
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
+use log::info;
 use std::collections::BTreeMap;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -58,10 +59,8 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create(State(core): State<Arc<Core>>, Query(param): Query<BTreeMap<String, String>>) {
-    if param.contains_key("create") {
-        core.add(param.get("create").unwrap()).await;
-    }
+pub async fn create(State(core): State<Arc<Core>>, body: String) {
+    core.add(body.trim()).await;
 }
 
 #[debug_handler]
