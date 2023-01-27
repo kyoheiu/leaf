@@ -30,8 +30,10 @@ export default function Home({
     <>
       <Header />
       <li>
-        {wrapped.map((e) => {
-          return <ArticleElement element={e} kind={ElementKind.Top} />;
+        {wrapped.map((e, index) => {
+          return (
+            <ArticleElement key={index} element={e} kind={ElementKind.Top} />
+          );
         })}
       </li>
     </>

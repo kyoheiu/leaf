@@ -153,17 +153,17 @@ export default function ArticleElement(props: ElementProps) {
           "delete"
         </button>
         <div>
-          {article.data.tags.map((x) => {
+          {article.data.tags.map((x, index) => {
             {
               return (
-                <>
+                <div key={index}>
                   <form>
                     <a href={"/tags/" + x}>
                       <code id={article.data.id + "_delete_tag"}>{x}</code>
                     </a>
                     <button onClick={(e) => delete_tag(e)}>x</button>&nbsp;
                   </form>
-                </>
+                </div>
               );
             }
           })}
