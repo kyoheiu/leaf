@@ -1,13 +1,16 @@
 import useSWR, { Fetcher } from "swr";
-import { ArticleData, ElementKind, WrappedData } from "../types/types";
-import ArticleElement from "../components/ArticleElement";
-import { Header } from "../components/Header";
+import { ArticleData, ElementKind, WrappedData } from "../../types/types";
+import ArticleElement from "../../components/ArticleElement";
+import { Header } from "../../components/Header";
 
 const fetcher: Fetcher<ArticleData[], string> = (url: string) =>
   fetch(url).then((res) => res.json());
 
 export default function Home() {
-  const { data, error } = useSWR("http://localhost:8000/articles", fetcher);
+  const { data, error } = useSWR(
+    "http://localhost:8000/articles/archived",
+    fetcher
+  );
 
   if (!data) {
     return <h1>No article found.</h1>;
@@ -22,7 +25,7 @@ export default function Home() {
     <>
       <Header />
       {wrapped.map((e) => {
-        return <ArticleElement element={e} kind={ElementKind.Top} />;
+        return <ArticleElement element={e} kind={ElementKind.Archived} />;
       })}
     </>
   );
