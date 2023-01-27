@@ -2,6 +2,7 @@ mod core;
 mod error;
 mod handler;
 mod schema;
+mod scrape;
 mod statements;
 mod types;
 

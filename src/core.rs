@@ -1,3 +1,5 @@
+use crate::scrape::scrape_og;
+
 use super::error::AcidError;
 use super::handler::*;
 use super::schema::initialize_schema;
@@ -84,6 +86,7 @@ impl Core {
                         "id" => article.id = value.unwrap().to_owned(),
                         "title" => article.title = value.unwrap().to_owned(),
                         "url" => article.url = value.unwrap().to_owned(),
+                        "og" => article.og = value.unwrap().to_owned(),
                         "beginning" => article.beginning = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
                         "archived" => {
@@ -121,25 +124,48 @@ impl Core {
         Json(articles)
     }
 
-    pub async fn add(&self, url: &str) {
+    pub async fn create(&self, url: &str) {
         let url = url.as_bytes();
         let url = percent_decode(url).decode_utf8().unwrap().to_string();
         let url_owned = url.to_owned();
         info!("URL to be added: {}", url);
-        let handle =
-            tokio::task::spawn_blocking(move || readability::extractor::scrape(&url_owned));
-        let res = handle.await.unwrap();
+        let input = reqwest::get(&url_owned)
+            .await
+            .unwrap()
+            .text()
+            .await
+            .unwrap();
+        let mut input_u8 = input.as_bytes();
+        let url_reqwest = reqwest::Url::parse(&url_owned).unwrap();
+        let res = readability_fork::extractor::extract(&mut input_u8, &url_reqwest);
+        let og = scrape_og(&input);
+        // let handle = tokio::task::spawn_blocking(async move || {
+        //     let input = reqwest::get(&url_owned)
+        //         .await
+        //         .unwrap()
+        //         .text()
+        //         .await
+        //         .unwrap();
+        //     readability_fork::extractor::extract(input, &url_owned);
+        // });
+        // let res = handle.await.unwrap();
         if let Ok(product) = res {
             let ulid = ulid::Ulid::new().to_string();
             let title = product.title.replace('\'', "''");
             let html = product.content.replace('\'', "''");
+            let og = match og {
+                Some(og) => og,
+                None => "".to_owned(),
+            };
             let plain = product.text.replace('\'', "''");
             info!("plain: {}", plain);
             let beginning = create_beginning(&plain);
             info!("beginning: {}", beginning);
             info!("{}: {} ({})", ulid, title, url);
             self.db
-                .execute(state_add(&ulid, &url, &title, &html, &plain, &beginning))
+                .execute(state_add(
+                    &ulid, &url, &title, &html, &og, &plain, &beginning,
+                ))
                 .unwrap();
 
             //add to schema

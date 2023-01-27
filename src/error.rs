@@ -19,8 +19,8 @@ impl std::fmt::Display for AcidError {
     }
 }
 
-impl From<readability::error::Error> for AcidError {
-    fn from(err: readability::error::Error) -> Self {
+impl From<readability_fork::error::Error> for AcidError {
+    fn from(err: readability_fork::error::Error) -> Self {
         AcidError::Readability(err.to_string())
     }
 }

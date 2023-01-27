@@ -5,6 +5,7 @@ pub fn state_create_articles_table() -> String {
      url TEXT,
      title TEXT,
      html TEXT,
+     og TEXT,
      plain TEXT,
      beginning TEXT,
      position INTEGER,
@@ -129,13 +130,15 @@ pub fn state_add(
     url: &str,
     title: &str,
     html: &str,
+    og: &str,
     plain: &str,
     beginning: &str,
 ) -> String {
     format!(
         "
-         INSERT INTO articles (id, url, title, html, plain, beginning, position, progress, archived, liked, timestamp)
+         INSERT INTO articles (id, url, title, html, og, plain, beginning, position, progress, archived, liked, timestamp)
          VALUES (
+             '{}',
              '{}',
              '{}',
              '{}',
@@ -149,7 +152,7 @@ pub fn state_add(
              datetime('now', 'localtime')
          );
         ",
-        ulid, url, title, html, plain, beginning)
+        ulid, url, title, html, og, plain, beginning)
 }
 
 pub fn state_delete(id: &str) -> String {
