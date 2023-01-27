@@ -73,10 +73,10 @@ export default function ArticleElement(props: ElementProps) {
     }));
   };
 
-  const add_tag = async (e) => {
+  const add_tag = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const element = document.getElementById(article.data.id + "_add_tag");
-    const tag = element!.value;
+    const tag = (element as HTMLInputElement).value;
     console.log(tag);
     const target =
       "http://localhost:8000/articles/" + article.data.id + "?kind=add";
@@ -94,10 +94,10 @@ export default function ArticleElement(props: ElementProps) {
         tags: [...x.data.tags, tag],
       },
     }));
-    element!.value = "";
+    (element as HTMLInputElement).value = "";
   };
 
-  const delete_tag = async (e) => {
+  const delete_tag = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const tag = document.getElementById(
       article.data.id + "_delete_tag"

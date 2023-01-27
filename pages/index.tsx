@@ -1,14 +1,22 @@
-import { ElementKind, WrappedData } from "../types/types";
+import { ArticleData, ElementKind, WrappedData } from "../types/types";
 import ArticleElement from "../components/ArticleElement";
 import { Header } from "../components/Header";
+import { GetServerSideProps } from "next";
+import { InferGetServerSidePropsType } from "next";
 
-export const getServerSideProps = async () => {
+type Data = ArticleData[];
+
+export const getServerSideProps: GetServerSideProps<{
+  data: Data;
+}> = async () => {
   const res = await fetch("http://127.0.0.1:8000/articles");
   const data = await res.json();
   return { props: { data } };
 };
 
-export default function Home({ data }) {
+export default function Home({
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   if (!data) {
     return <h1>No article found.</h1>;
   }

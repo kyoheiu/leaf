@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export const Header = () => {
   const [url, setUrl] = useState<string>("");
 
-  const handle_input = async (e) => {
+  const handle_input = async (e: any) => {
     e.preventDefault();
     const response = await fetch("http://127.0.0.1:8000/articles", {
       method: "POST",

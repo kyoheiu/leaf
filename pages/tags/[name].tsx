@@ -12,11 +12,15 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const query = context.query.q;
-  const target = "http://127.0.0.1:8000/search?q=" + query;
-  const res = await fetch(target);
-  const data = await res.json();
-  return { props: { data } };
+  if (context.params) {
+    const tag_name = context.params.name;
+    const target = "http://127.0.0.1:8000/tags/" + tag_name;
+    const res = await fetch(target);
+    const data = await res.json();
+    return { props: { data } };
+  } else {
+    return { props: { data: [] } };
+  }
 };
 
 export default function Searched({
