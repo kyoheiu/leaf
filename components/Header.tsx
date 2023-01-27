@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export const Header = () => {
@@ -21,7 +22,7 @@ export const Header = () => {
       <div className="header">
         <li>
           <ul>
-            <a href="/">acidpaper</a>
+            <Link href="/">acidpaper</Link>
           </ul>
           <form onSubmit={(e) => handle_input(e)}>
             <input
@@ -38,10 +39,10 @@ export const Header = () => {
             </form>
           </ul>
           <ul>
-            <a href="/archived">archived</a>
+            <Link href="/archived">archived</Link>
           </ul>
           <ul>
-            <a href="/liked">liked</a>
+            <Link href="/liked">liked</Link>
           </ul>
         </li>
       </div>

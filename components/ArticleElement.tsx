@@ -1,6 +1,7 @@
 import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
+import Link from "next/link";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -140,7 +141,9 @@ export default function ArticleElement(props: ElementProps) {
       <ul key={article.data.id} id={article.data.id}>
         <div className="timestamp">{article.data.timestamp}</div>
         <div className="title">
-          <a href={"/articles/" + article.data.id}>{article.data.title}</a>
+          <Link href={"/articles/" + article.data.id}>
+            {article.data.title}
+          </Link>
         </div>
         <div className="beginning">{article.data.beginning}</div>
         <button id={article.data.id} onClick={toggle_like}>
@@ -158,9 +161,9 @@ export default function ArticleElement(props: ElementProps) {
               return (
                 <div key={index}>
                   <form>
-                    <a href={"/tags/" + x}>
+                    <Link href={"/tags/" + x}>
                       <code id={article.data.id + "_delete_tag"}>{x}</code>
-                    </a>
+                    </Link>
                     <button onClick={(e) => delete_tag(e)}>x</button>&nbsp;
                   </form>
                 </div>
