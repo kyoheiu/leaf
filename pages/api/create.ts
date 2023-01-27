@@ -9,7 +9,7 @@ export default async function handler(
   } else {
     let url: string = JSON.stringify(req.body);
     url = url.slice(4);
-    const response = await fetch("http://localhost:8000/articles", {
+    const response = await fetch("http://127.0.0.1:8000/articles", {
       method: "POST",
       body: url,
     });

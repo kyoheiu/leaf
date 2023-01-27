@@ -1,14 +1,15 @@
-import useSWR, { Fetcher } from "swr";
-import { ArticleData, ElementKind, WrappedData } from "../types/types";
+import { ElementKind, WrappedData } from "../types/types";
 import ArticleElement from "../components/ArticleElement";
 import { Header } from "../components/Header";
+import axios from "axios";
 
-const fetcher: Fetcher<ArticleData[], string> = (url: string) =>
-  fetch(url).then((res) => res.json());
+export const getServerSideProps = async () => {
+  const res = await fetch("http://127.0.0.1:8000/articles");
+  const data = await res.json();
+  return { props: { data } };
+};
 
-export default function Home() {
-  const { data, error } = useSWR("http://localhost:8000/articles", fetcher);
-
+export default function Home({ data }) {
   if (!data) {
     return <h1>No article found.</h1>;
   }
