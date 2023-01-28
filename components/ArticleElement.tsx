@@ -141,11 +141,14 @@ export default function ArticleElement(props: ElementProps) {
       <ul key={article.data.id} id={article.data.id}>
         <div className="timestamp">{article.data.timestamp}</div>
         <div className="title">
-          <Link href={"/articles/" + article.data.id}>
-            {article.data.title}
-          </Link>
+          <a href={"/articles/" + article.data.id}>{article.data.title}</a>
         </div>
         <div className="beginning">{article.data.beginning}</div>
+        <div>
+          {article.data.og !== "" && (
+            <img className="og" src={article.data.og} />
+          )}
+        </div>
         <button id={article.data.id} onClick={toggle_like}>
           {article.data.liked ? "unlike" : "like"}
         </button>

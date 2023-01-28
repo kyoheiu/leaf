@@ -32,9 +32,6 @@ export default function Searched({
     const bodyheight = document.documentElement.scrollHeight;
     const scrolled = document.documentElement.scrollTop;
     const client = document.documentElement.clientHeight;
-
-    console.log(bodyheight, scrolled, client);
-
     const pos = Math.round((scrolled * 100) / bodyheight);
     const prog = Math.abs(bodyheight - client - scrolled);
     if (prog < 1) {

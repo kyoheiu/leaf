@@ -2,6 +2,7 @@ export interface ArticleData {
   id: string;
   url: string;
   title: string;
+  og: string;
   beginning: string;
   progress: number;
   archived: boolean;
