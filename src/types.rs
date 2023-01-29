@@ -1,6 +1,12 @@
 use std::str::FromStr;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Payload {
+    pub url: String,
+    pub html: String,
+}
 
 #[derive(Debug, Serialize)]
 pub struct ArticleData {

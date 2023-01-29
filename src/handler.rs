@@ -1,10 +1,9 @@
-use crate::statements::{
+use super::core::Core;
+use super::error::AcidError;
+use super::statements::{
     state_list_tag, state_list_up, state_list_up_archived, state_list_up_liked, state_reload,
     state_reload_archived, state_reload_liked,
 };
-
-use super::core::Core;
-use super::error::AcidError;
 use super::types::*;
 
 use axum::debug_handler;
@@ -60,8 +59,9 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create(State(core): State<Arc<Core>>, body: String) {
-    core.create(body.trim()).await;
+pub async fn create(State(core): State<Arc<Core>>, Json(payload): Json<Payload>) {
+    info!("{:#?}", payload);
+    core.create(payload).await;
 }
 
 #[debug_handler]
