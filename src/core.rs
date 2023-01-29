@@ -13,6 +13,9 @@ use axum::{
 };
 use log::info;
 use percent_encoding::percent_decode;
+use sanitize_html::rules::pattern::Pattern;
+use sanitize_html::rules::Element;
+use sanitize_html::sanitize_str;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
 use tantivy::schema::Schema;
@@ -129,7 +132,17 @@ impl Core {
         let url = percent_decode(url).decode_utf8().unwrap().to_string();
         let url_owned = url.to_owned();
         info!("URL to be added: {}", url);
-        let input = reqwest::get(&url_owned)
+
+        let client = reqwest::Client::builder()
+            .user_agent(
+                "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            )
+            .build()
+            .unwrap();
+
+        let input = client
+            .get(&url_owned)
+            .send()
             .await
             .unwrap()
             .text()
@@ -152,7 +165,13 @@ impl Core {
         if let Ok(product) = res {
             let ulid = ulid::Ulid::new().to_string();
             let title = product.title.replace('\'', "''");
-            let html = product.content.replace('\'', "''");
+            let mut rule = sanitize_html::rules::predefined::default();
+            let img = Element::new("img").attribute("src", Pattern::any());
+            let figure = Element::new("figure");
+            rule = rule.element(img).element(figure);
+            let sanitized: String = sanitize_str(&rule, &product.content).unwrap();
+            let html = sanitized.replace('\'', "''");
+
             let og = match og {
                 Some(og) => og,
                 None => "".to_owned(),
