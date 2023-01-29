@@ -10,7 +10,6 @@ dependencies = [
  "env_logger",
  "hyper",
  "log",
- "percent-encoding",
  "readability-fork",
  "reqwest",
  "sanitize_html",

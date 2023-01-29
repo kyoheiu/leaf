@@ -13,7 +13,6 @@ use axum::{
     Router,
 };
 use log::info;
-use percent_encoding::percent_decode;
 use sanitize_html::rules::pattern::Pattern;
 use sanitize_html::rules::Element;
 use sanitize_html::sanitize_str;
@@ -131,27 +130,11 @@ impl Core {
     pub async fn create(&self, payload: Payload) {
         let url = payload.url;
         info!("url: {}", url);
-        let url = percent_decode(url.as_bytes())
-            .decode_utf8()
-            .unwrap()
-            .to_string();
-        let url_owned = url.to_owned();
-        info!("URL to be added: {}", url);
 
         let mut input_u8 = payload.html.as_bytes();
-        let url_reqwest = reqwest::Url::parse(&url_owned).unwrap();
+        let url_reqwest = reqwest::Url::parse(&url).unwrap();
         let og = scrape_og(&payload.html);
         let extracted = readability_fork::extractor::extract(&mut input_u8, &url_reqwest);
-        // let handle = tokio::task::spawn_blocking(async move || {
-        //     let input = reqwest::get(&url_owned)
-        //         .await
-        //         .unwrap()
-        //         .text()
-        //         .await
-        //         .unwrap();
-        //     readability_fork::extractor::extract(input, &url_owned);
-        // });
-        // let res = handle.await.unwrap();
         if let Ok(product) = extracted {
             let ulid = ulid::Ulid::new().to_string();
             let title = product.title.replace('\'', "''");
