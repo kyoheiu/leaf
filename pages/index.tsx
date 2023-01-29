@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
+import { Stack } from "@mui/material";
 
 type Data = ArticleData[];
 
@@ -67,13 +68,13 @@ export default function Home({
   return (
     <>
       <Header />
-      <li>
+      <Stack spacing={2}>
         {wrapped.map((e, index) => {
           return (
             <ArticleElement key={index} element={e} kind={ElementKind.Top} />
           );
         })}
-      </li>
+      </Stack>
       <Footer isLast={isLast} />
     </>
   );

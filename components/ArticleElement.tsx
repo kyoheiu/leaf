@@ -2,7 +2,7 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import { Button } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Input } from "@mui/material";
 import { Avatar } from "@mui/material";
@@ -149,7 +149,7 @@ export default function ArticleElement(props: ElementProps) {
 
   return (
     <>
-      <ul key={article.data.id} id={article.data.id}>
+      <div key={article.data.id} id={article.data.id}>
         <div className="timestamp">{article.data.timestamp}</div>
         <div className="title">
           <a href={"/articles/" + article.data.id}>{article.data.title}</a>
@@ -201,7 +201,7 @@ export default function ArticleElement(props: ElementProps) {
             <LabelIcon />
           </Button>
         </form>
-      </ul>
+      </div>
     </>
   );
 }

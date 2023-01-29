@@ -1,12 +1,18 @@
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Input } from "@mui/material";
-import Button from "@mui/material/Button";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Grid, Input, PaletteMode, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import IconButton from "@mui/material/IconButton";
+import InvertColorsIcon from "@mui/icons-material/InvertColors";
+import { ThemeContext } from "@emotion/react";
+import ColorMode from "../pages/_app";
 
 export const Header = () => {
+  const mode = useContext<PaletteMode>(ColorMode);
   const [url, setUrl] = useState<string>("");
 
   const handle_input = async (e: any) => {
@@ -22,39 +28,54 @@ export const Header = () => {
     }
   };
 
+  const toggle_theme = () => {};
+
   return (
     <>
-      <div className="header">
-        <li>
-          <ul>
-            <Link href="/">acidpaper</Link>
-          </ul>
+      <Grid container spacing={1} className="header">
+        <Grid item xs={3}>
+          <Link href="/">acidpaper</Link>
+        </Grid>
+        <Grid item xs={3}>
           <form action="api/create" method="POST">
-            <Input
-              name="url"
-              onChange={(e) => setUrl(() => e.target.value)}
+            <TextField
               type="URL"
+              name="url"
+              label={<Add sx={{ fontSize: 20 }} />}
+              variant="standard"
+              size="small"
+              onChange={(e) => setUrl(() => e.target.value)}
             />
-            <Button type="submit">
-              <Add />
-            </Button>
           </form>
-          <ul>
-            <form action="/search" method="GET">
-              <Input type="text" id="query" name="q" />
-              <Button type="submit">
-                <SearchIcon />
-              </Button>
-            </form>
-          </ul>
-          <ul>
-            <Link href="/archived">archived</Link>
-          </ul>
-          <ul>
-            <Link href="/liked">liked</Link>
-          </ul>
-        </li>
-      </div>
+        </Grid>
+        <Grid item xs={3}>
+          <form action="/search" method="GET">
+            <TextField
+              type="text"
+              name="q"
+              id="query"
+              label={<SearchIcon sx={{ fontSize: 20 }} />}
+              variant="standard"
+              size="small"
+            />
+          </form>
+        </Grid>
+        <Grid item xs={1}>
+          <Link href="/archived">
+            <ArchiveIcon sx={{ fontSize: 20 }} />
+          </Link>
+        </Grid>
+        <Grid item xs={1}>
+          <Link href="/liked">
+            <FavoriteIcon sx={{ fontSize: 20 }} />
+          </Link>
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton onClick={toggle_theme}>
+            <InvertColorsIcon sx={{ fontSize: 20 }} />
+          </IconButton>
+        </Grid>
+      </Grid>
     </>
   );
 };
