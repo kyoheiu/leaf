@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Input } from "@chakra-ui/react";
 
 export const Header = () => {
   const [url, setUrl] = useState<string>("");
@@ -25,7 +26,9 @@ export const Header = () => {
             <Link href="/">acidpaper</Link>
           </ul>
           <form action="api/create" method="POST">
-            <input
+            <Input
+              size="sm"
+              width="auto"
               name="url"
               onChange={(e) => setUrl(() => e.target.value)}
               type="URL"
@@ -34,7 +37,7 @@ export const Header = () => {
           </form>
           <ul>
             <form action="/search" method="GET">
-              <input type="text" id="query" name="q" />
+              <Input size="sm" width="auto" type="text" id="query" name="q" />
               <button type="submit">Search</button>
             </form>
           </ul>
