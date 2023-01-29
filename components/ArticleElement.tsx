@@ -2,8 +2,17 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import Button from "@mui/material/Button";
+import { Button } from "@mui/material";
 import { CircularProgress } from "@mui/material";
+import { Input } from "@mui/material";
+import { Avatar } from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import LabelIcon from "@mui/icons-material/Label";
+import LabelOffIcon from "@mui/icons-material/LabelOff";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -148,18 +157,23 @@ export default function ArticleElement(props: ElementProps) {
         <div className="beginning">{article.data.beginning}</div>
         <div>
           {article.data.og !== "" && (
-            <img className="og" src={article.data.og} />
+            <Avatar
+              className="og"
+              sx={{ width: 100, height: 100 }}
+              variant="rounded"
+              src={article.data.og}
+            />
           )}
         </div>
         <CircularProgress variant="determinate" value={article.data.progress} />
         <Button id={article.data.id} onClick={toggle_like}>
-          {article.data.liked ? "unlike" : "like"}
+          {article.data.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </Button>
         <Button id={article.data.id} onClick={archive}>
-          {article.data.archived ? "unarchive" : "archive"}
+          {article.data.archived ? <UnarchiveIcon /> : <ArchiveIcon />}
         </Button>
         <Button id={article.data.id} onClick={delete_article}>
-          delete
+          <DeleteForeverIcon />
         </Button>
         <div>
           {article.data.tags.map((x, index) => {
@@ -170,7 +184,9 @@ export default function ArticleElement(props: ElementProps) {
                     <Link href={"/tags/" + x}>
                       <code id={article.data.id + "_delete_tag"}>{x}</code>
                     </Link>
-                    <Button onClick={(e) => delete_tag(e)}>x</Button>
+                    <Button onClick={(e) => delete_tag(e)}>
+                      <LabelOffIcon />
+                    </Button>
                     &nbsp;
                   </form>
                 </div>
@@ -180,8 +196,10 @@ export default function ArticleElement(props: ElementProps) {
         </div>
         <Tags tags={article.data.tags} />
         <form>
-          <input id={article.data.id + "_add_tag"} type="text" />
-          <Button onClick={(e) => add_tag(e)}>add tag</Button>
+          <Input id={article.data.id + "_add_tag"} type="text" />
+          <Button onClick={(e) => add_tag(e)}>
+            <LabelIcon />
+          </Button>
         </form>
       </ul>
     </>

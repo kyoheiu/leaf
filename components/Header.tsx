@@ -2,6 +2,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Input } from "@mui/material";
 import Button from "@mui/material/Button";
+import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
+import { Add } from "@mui/icons-material";
 
 export const Header = () => {
   const [url, setUrl] = useState<string>("");
@@ -32,12 +35,16 @@ export const Header = () => {
               onChange={(e) => setUrl(() => e.target.value)}
               type="URL"
             />
-            <Button type="submit">Add</Button>
+            <Button type="submit">
+              <Add />
+            </Button>
           </form>
           <ul>
             <form action="/search" method="GET">
               <Input type="text" id="query" name="q" />
-              <Button type="submit">Search</Button>
+              <Button type="submit">
+                <SearchIcon />
+              </Button>
             </form>
           </ul>
           <ul>
