@@ -2,8 +2,8 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import { CircularProgress, CircularProgressLabel } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import Button from "@mui/material/Button";
+import { CircularProgress } from "@mui/material";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -151,29 +151,14 @@ export default function ArticleElement(props: ElementProps) {
             <img className="og" src={article.data.og} />
           )}
         </div>
-        <CircularProgress value={article.data.progress} />
-        <Button
-          colorScheme="pink"
-          size="xs"
-          id={article.data.id}
-          onClick={toggle_like}
-        >
+        <CircularProgress variant="determinate" value={article.data.progress} />
+        <Button id={article.data.id} onClick={toggle_like}>
           {article.data.liked ? "unlike" : "like"}
         </Button>
-        <Button
-          colorScheme="green"
-          size="xs"
-          id={article.data.id}
-          onClick={archive}
-        >
+        <Button id={article.data.id} onClick={archive}>
           {article.data.archived ? "unarchive" : "archive"}
         </Button>
-        <Button
-          colorScheme="red"
-          size="xs"
-          id={article.data.id}
-          onClick={delete_article}
-        >
+        <Button id={article.data.id} onClick={delete_article}>
           delete
         </Button>
         <div>
@@ -185,9 +170,7 @@ export default function ArticleElement(props: ElementProps) {
                     <Link href={"/tags/" + x}>
                       <code id={article.data.id + "_delete_tag"}>{x}</code>
                     </Link>
-                    <Button size="xs" onClick={(e) => delete_tag(e)}>
-                      x
-                    </Button>
+                    <Button onClick={(e) => delete_tag(e)}>x</Button>
                     &nbsp;
                   </form>
                 </div>
@@ -198,9 +181,7 @@ export default function ArticleElement(props: ElementProps) {
         <Tags tags={article.data.tags} />
         <form>
           <input id={article.data.id + "_add_tag"} type="text" />
-          <Button size="xs" onClick={(e) => add_tag(e)}>
-            add tag
-          </Button>
+          <Button onClick={(e) => add_tag(e)}>add tag</Button>
         </form>
       </ul>
     </>
