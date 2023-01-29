@@ -24,7 +24,7 @@ export const Header = () => {
           <ul>
             <Link href="/">acidpaper</Link>
           </ul>
-          <form onSubmit={(e) => handle_input(e)}>
+          <form action="api/create" method="POST">
             <input
               name="url"
               onChange={(e) => setUrl(() => e.target.value)}
