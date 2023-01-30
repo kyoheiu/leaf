@@ -5,19 +5,32 @@ import { createContext, useContext, useState } from "react";
 import { PaletteMode } from "@mui/material";
 import React from "react";
 import { ColorMode } from "../context/ColorMode";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [mode, setMode] = useState<PaletteMode>("light");
+  const [isLight, setIsLight] = useState<boolean>(true);
 
-  const theme = createTheme({
+  const light = createTheme({
     palette: {
-      mode: mode,
+      mode: "light",
+      primary: {
+        main: "#444",
+      },
+    },
+  });
+
+  const dark = createTheme({
+    palette: {
+      mode: "dark",
+      primary: {
+        main: "#bbb",
+      },
     },
   });
 
   return (
-    <ColorMode.Provider value={{ mode, setMode }}>
-      <ThemeProvider theme={theme}>
+    <ColorMode.Provider value={{ isLight, setIsLight }}>
+      <ThemeProvider theme={isLight ? light : dark}>
         <CssBaseline />
         <Component {...pageProps} />
       </ThemeProvider>

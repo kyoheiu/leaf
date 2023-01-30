@@ -13,7 +13,7 @@ import { ColorMode } from "../context/ColorMode";
 
 export const Header = () => {
   const [url, setUrl] = useState<string>("");
-  const { mode, setMode } = useContext(ColorMode);
+  const { isLight, setIsLight } = useContext(ColorMode);
 
   const handle_input = async (e: any) => {
     e.preventDefault();
@@ -29,13 +29,7 @@ export const Header = () => {
   };
 
   const toggle_theme = () => {
-    setMode(() => {
-      if (mode === ("light" as PaletteMode)) {
-        return "dark" as PaletteMode;
-      } else {
-        return "light" as PaletteMode;
-      }
-    });
+    setIsLight(() => !isLight);
   };
 
   return (

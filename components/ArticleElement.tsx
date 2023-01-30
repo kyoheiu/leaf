@@ -2,7 +2,7 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import { Button, Container } from "@mui/material";
+import { Button, Container, Grid, LinearProgress } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Input } from "@mui/material";
 import { Avatar } from "@mui/material";
@@ -151,21 +151,31 @@ export default function ArticleElement(props: ElementProps) {
     <>
       <div key={article.data.id} id={article.data.id}>
         <div className="timestamp">{article.data.timestamp}</div>
-        <div className="title">
-          <a href={"/articles/" + article.data.id}>{article.data.title}</a>
-        </div>
-        <div className="beginning">{article.data.beginning}</div>
-        <div>
-          {article.data.og !== "" && (
-            <Avatar
-              className="og"
-              sx={{ width: 100, height: 100 }}
-              variant="rounded"
-              src={article.data.og}
-            />
-          )}
-        </div>
-        <CircularProgress variant="determinate" value={article.data.progress} />
+        <Grid container>
+          <Grid item xs={9} className="title">
+            <a href={"/articles/" + article.data.id}>{article.data.title}</a>
+          </Grid>
+        </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={9} className="beginning">
+            {article.data.beginning}
+          </Grid>
+          <Grid item xs={3}>
+            {article.data.og !== "" && (
+              <Avatar
+                className="og"
+                sx={{ width: 100, height: 100 }}
+                variant="rounded"
+                src={article.data.og}
+              />
+            )}
+          </Grid>
+        </Grid>
+        <LinearProgress
+          variant="determinate"
+          sx={{ width: 1 / 4 }}
+          value={article.data.progress}
+        />
         <Button id={article.data.id} onClick={toggle_like}>
           {article.data.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </Button>

@@ -4,11 +4,11 @@ import React from "react";
 import { createContext } from "react";
 
 type ColorModeType = {
-  mode: PaletteMode;
-  setMode: React.Dispatch<React.SetStateAction<PaletteMode>>;
+  isLight: boolean;
+  setIsLight: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const ColorMode = createContext<ColorModeType>({
-  mode: "light" as PaletteMode,
-  setMode: () => {},
+  isLight: true,
+  setIsLight: () => {},
 });
