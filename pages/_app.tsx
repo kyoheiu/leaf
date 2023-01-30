@@ -1,13 +1,13 @@
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import { PaletteMode } from "@mui/material";
-
-export const ColorMode = createContext<PaletteMode>("light");
+import React from "react";
+import { ColorMode } from "../context/ColorMode";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const mode = useContext(ColorMode);
+  const [mode, setMode] = useState<PaletteMode>("light");
 
   const theme = createTheme({
     palette: {
@@ -16,7 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   });
 
   return (
-    <ColorMode.Provider value={mode}>
+    <ColorMode.Provider value={{ mode, setMode }}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} />

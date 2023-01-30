@@ -9,11 +9,11 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import IconButton from "@mui/material/IconButton";
 import InvertColorsIcon from "@mui/icons-material/InvertColors";
 import { ThemeContext } from "@emotion/react";
-import ColorMode from "../pages/_app";
+import { ColorMode } from "../context/ColorMode";
 
 export const Header = () => {
-  const mode = useContext<PaletteMode>(ColorMode);
   const [url, setUrl] = useState<string>("");
+  const { mode, setMode } = useContext(ColorMode);
 
   const handle_input = async (e: any) => {
     e.preventDefault();
@@ -28,7 +28,15 @@ export const Header = () => {
     }
   };
 
-  const toggle_theme = () => {};
+  const toggle_theme = () => {
+    setMode(() => {
+      if (mode === ("light" as PaletteMode)) {
+        return "dark" as PaletteMode;
+      } else {
+        return "light" as PaletteMode;
+      }
+    });
+  };
 
   return (
     <>
