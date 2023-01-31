@@ -18,6 +18,7 @@ use sanitize_html::rules::Element;
 use sanitize_html::sanitize_str;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
+use tantivy::query::{BooleanQuery, Occur, Query, TermQuery};
 use tantivy::schema::Schema;
 use tantivy::Term;
 use tower_http::cors::{Any, CorsLayer};
@@ -199,21 +200,46 @@ impl Core {
         info!("query: {}", query);
         let title = self.schema.get_field("title").unwrap();
         let plain = self.schema.get_field("plain").unwrap();
+
+        let mut queries = vec![];
+        for query in query.split_whitespace() {
+            let q_title: Box<dyn Query> = Box::new(TermQuery::new(
+                Term::from_field_text(title, query),
+                tantivy::schema::IndexRecordOption::Basic,
+            ));
+            let q_plain: Box<dyn Query> = Box::new(TermQuery::new(
+                Term::from_field_text(plain, query),
+                tantivy::schema::IndexRecordOption::Basic,
+            ));
+            queries.push((Occur::Should, q_title));
+            queries.push((Occur::Must, q_plain));
+        }
+        let queries = BooleanQuery::new(queries);
+
         let searcher = self.reader.searcher();
-        let query_parser = tantivy::query::QueryParser::for_index(&self.index, vec![title, plain]);
-        let query = query_parser.parse_query(query).unwrap();
+        let found = searcher.search(&queries, &TopDocs::with_limit(50)).unwrap();
 
-        let mut top_docs = searcher.search(&query, &TopDocs::with_limit(50)).unwrap();
-        top_docs.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap());
+        let result: Vec<String> = found
+            .iter()
+            .map(|x| {
+                let field = self.schema.get_field("id").unwrap();
+                let id = searcher
+                    .doc(x.1)
+                    .unwrap()
+                    .get_first(field)
+                    .unwrap()
+                    .as_text()
+                    .unwrap()
+                    .to_owned();
+                id
+            })
+            .collect();
+
         let mut articles = vec![];
-        let field = self.schema.get_field("id").unwrap();
-        for doc in top_docs {
+        for id in result {
             let mut article = ArticleData::new();
-            let retrieved = searcher.doc(doc.1).unwrap();
-            let id = retrieved.get_first(field).unwrap().as_text().unwrap();
-
             self.db
-                .iterate(state_read(id), |pairs| {
+                .iterate(state_read(&id), |pairs| {
                     for &(column, value) in pairs.iter() {
                         match column {
                             "id" => article.id = value.unwrap().to_owned(),
