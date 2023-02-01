@@ -13,7 +13,6 @@ use axum::{
     Router,
 };
 use log::info;
-use sanitize_html::rules::pattern::Pattern;
 use sanitize_html::rules::Element;
 use sanitize_html::sanitize_str;
 use std::{net::TcpListener, sync::Arc};
@@ -139,10 +138,23 @@ impl Core {
         if let Ok(product) = extracted {
             let ulid = ulid::Ulid::new().to_string();
             let title = product.title.replace('\'', "''");
-            let mut rule = sanitize_html::rules::predefined::default();
-            let img = Element::new("img").attribute("src", Pattern::any());
-            let figure = Element::new("figure");
-            rule = rule.element(img).element(figure);
+
+            let rule = sanitize_html::rules::predefined::default();
+            let rule = rule
+                .element(Element::new("a"))
+                .element(Element::new("b"))
+                .element(Element::new("br"))
+                .element(Element::new("code"))
+                .element(Element::new("em"))
+                .element(Element::new("i"))
+                .element(Element::new("img"))
+                .element(Element::new("li"))
+                .element(Element::new("ol"))
+                .element(Element::new("ul"))
+                .element(Element::new("p"))
+                .element(Element::new("pre"))
+                .element(Element::new("strike"))
+                .element(Element::new("strong"));
             let sanitized: String = sanitize_str(&rule, &product.content).unwrap();
             let html = sanitized.replace('\'', "''");
 

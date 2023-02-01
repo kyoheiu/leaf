@@ -14,6 +14,7 @@ export default async function handler(
     res.status(404).end();
   } else {
     const crawl = async (url: string): Promise<string> => {
+      console.log(url);
       const browser = await puppeteer.launch();
       const page = await browser.newPage();
       await page.goto(url);
@@ -21,10 +22,10 @@ export default async function handler(
       return text;
     };
 
+    console.log(req.body);
     let url: string = req.body.url;
     const html = await crawl(url);
     const body = JSON.stringify({ url: url, html: html });
-    console.log(body);
     const response = await fetch("http://127.0.0.1:8000/articles", {
       method: "POST",
       headers: {

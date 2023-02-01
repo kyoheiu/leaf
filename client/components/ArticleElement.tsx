@@ -2,7 +2,7 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import { Button, Container, Grid, LinearProgress } from "@mui/material";
+import { Button, Chip, Container, Grid, LinearProgress } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Input } from "@mui/material";
 import { Avatar } from "@mui/material";
@@ -192,7 +192,7 @@ export default function ArticleElement(props: ElementProps) {
                 <div key={index}>
                   <form>
                     <Link href={"/tags/" + x}>
-                      <code id={article.data.id + "_delete_tag"}>{x}</code>
+                      <Chip label={x} id={article.data.id + "_delete_tag"} />
                     </Link>
                     <Button onClick={(e) => delete_tag(e)}>
                       <LabelOffIcon />

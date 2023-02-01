@@ -2,6 +2,7 @@ import { ArticleContent } from "../../types/types";
 import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
+import hljs from "highlight.js";
 
 type Data = ArticleContent;
 
@@ -66,10 +67,12 @@ export default function Searched({
     return <h1>No article found.</h1>;
   }
 
+  const html = hljs.highlightAuto(data.html).value;
+
   return (
     <>
       <div className="title">{data.title}</div>
-      <div dangerouslySetInnerHTML={{ __html: data.html }}></div>
+      <div dangerouslySetInnerHTML={{ __html: html }}></div>
     </>
   );
 }
