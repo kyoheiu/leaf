@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Link as MuiLink } from "@mui/material";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Grid, Input, PaletteMode, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -23,7 +24,9 @@ export const Header = () => {
     <>
       <Grid container spacing={1} className="header">
         <Grid item xs={3}>
-          <Link href="/">acidpaper</Link>
+          <MuiLink component={Link} underline="none" href="/">
+            acidpaper
+          </MuiLink>
         </Grid>
         <Grid item xs={3}>
           <form action="api/create" method="POST">
@@ -50,14 +53,14 @@ export const Header = () => {
           </form>
         </Grid>
         <Grid item xs={1}>
-          <Link href="/archived">
+          <MuiLink component={Link} href="/archived">
             <ArchiveIcon sx={{ fontSize: 20 }} />
-          </Link>
+          </MuiLink>
         </Grid>
         <Grid item xs={1}>
-          <Link href="/liked">
+          <MuiLink component={Link} href="/liked">
             <FavoriteIcon sx={{ fontSize: 20 }} />
-          </Link>
+          </MuiLink>
         </Grid>
         <Grid item xs={1}>
           <IconButton onClick={toggle_theme}>
