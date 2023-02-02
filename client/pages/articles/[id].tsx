@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import hljs from "highlight.js";
+import Head from "next/head";
 
 type Data = ArticleContent;
 
@@ -67,12 +68,18 @@ export default function Searched({
     return <h1>No article found.</h1>;
   }
 
-  const html = hljs.highlightAuto(data.html).value;
-
   return (
     <>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
+        />
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+      </Head>
       <div className="title">{data.title}</div>
-      <div dangerouslySetInnerHTML={{ __html: html }}></div>
+      <div dangerouslySetInnerHTML={{ __html: data.html }}></div>
+      <script>hljs.highlightAll();</script>
     </>
   );
 }
