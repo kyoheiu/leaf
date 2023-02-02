@@ -68,6 +68,10 @@ export default function Searched({
     return <h1>No article found.</h1>;
   }
 
+  const create_markup = () => {
+    return { __html: data.html };
+  };
+
   return (
     <>
       <Head>
@@ -77,8 +81,10 @@ export default function Searched({
         />
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
       </Head>
-      <div className="title">{data.title}</div>
-      <div dangerouslySetInnerHTML={{ __html: data.html }}></div>
+      <div style={{ margin: "auto" }}>
+        <div className="title">{data.title}</div>
+        <div dangerouslySetInnerHTML={create_markup()}></div>
+      </div>
       <script>hljs.highlightAll();</script>
     </>
   );
