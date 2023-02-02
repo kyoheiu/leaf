@@ -2,6 +2,7 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
+import { Link as MuiLink, Typography } from "@mui/material";
 import { Button, Chip, Container, Grid, LinearProgress } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Input } from "@mui/material";
@@ -153,12 +154,18 @@ export default function ArticleElement(props: ElementProps) {
         <div className="timestamp">{article.data.timestamp}</div>
         <Grid container>
           <Grid item xs={9} className="title">
-            <a href={"/articles/" + article.data.id}>{article.data.title}</a>
+            <MuiLink
+              color="primary"
+              underline="hover"
+              href={"/articles/" + article.data.id}
+            >
+              {article.data.title}
+            </MuiLink>
           </Grid>
         </Grid>
         <Grid container spacing={2}>
           <Grid item xs={9} className="beginning">
-            {article.data.beginning}
+            <Typography>{article.data.beginning}</Typography>
           </Grid>
           <Grid item xs={3}>
             {article.data.og !== "" && (
