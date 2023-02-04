@@ -143,16 +143,16 @@ impl Core {
             let rule = rule
                 .element(Element::new("a"))
                 .element(Element::new("b"))
-                .element(Element::new("br"))
                 .element(Element::new("code"))
                 .element(Element::new("em"))
+                .element(Element::new("h1"))
+                .element(Element::new("h2"))
+                .element(Element::new("h3"))
+                .element(Element::new("h4"))
+                .element(Element::new("h5"))
+                .element(Element::new("h6"))
                 .element(Element::new("i"))
                 .element(Element::new("img"))
-                .element(Element::new("li"))
-                .element(Element::new("ol"))
-                .element(Element::new("ul"))
-                .element(Element::new("p"))
-                .element(Element::new("pre"))
                 .element(Element::new("strike"))
                 .element(Element::new("strong"));
             let sanitized: String = sanitize_str(&rule, &product.content).unwrap();
