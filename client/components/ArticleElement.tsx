@@ -2,7 +2,16 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import { Link as MuiLink, Typography } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Link as MuiLink,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Button, Chip, Container, Grid, LinearProgress } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Input } from "@mui/material";
@@ -17,8 +26,39 @@ import LabelOffIcon from "@mui/icons-material/LabelOff";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
-
   const kind = props.kind;
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const submitAndClose = async () => {
+    const element = document.getElementById(article.data.id + "_add_tag");
+    const tag = (element as HTMLInputElement).value;
+    console.log(tag);
+    const target =
+      "http://localhost:8000/articles/" + article.data.id + "?kind=add";
+    const res = await fetch(target, {
+      method: "POST",
+      body: tag,
+    });
+    if (!res.ok) {
+      console.log("Cannot add tag.");
+    }
+    setArticle((x) => ({
+      ...x,
+      data: {
+        ...x.data,
+        tags: [...x.data.tags, tag.toLowerCase()],
+      },
+    }));
+    setOpen(false);
+  };
 
   const toggle_like = async () => {
     const target =
@@ -86,38 +126,14 @@ export default function ArticleElement(props: ElementProps) {
     }));
   };
 
-  const add_tag = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const delete_tag = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    id: string,
+    tag: string
+  ) => {
     e.preventDefault();
-    const element = document.getElementById(article.data.id + "_add_tag");
-    const tag = (element as HTMLInputElement).value;
     console.log(tag);
-    const target =
-      "http://localhost:8000/articles/" + article.data.id + "?kind=add";
-    const res = await fetch(target, {
-      method: "POST",
-      body: tag,
-    });
-    if (!res.ok) {
-      console.log("Cannot add tag.");
-    }
-    setArticle((x) => ({
-      ...x,
-      data: {
-        ...x.data,
-        tags: [...x.data.tags, tag.toLowerCase()],
-      },
-    }));
-    (element as HTMLInputElement).value = "";
-  };
-
-  const delete_tag = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const tag = document.getElementById(
-      article.data.id + "_delete_tag"
-    )!.innerHTML;
-    console.log(tag);
-    const target =
-      "http://localhost:8000/articles/" + article.data.id + "?kind=delete";
+    const target = "http://localhost:8000/articles/" + id + "?kind=delete";
     const res = await fetch(target, {
       method: "POST",
       body: tag,
@@ -203,10 +219,9 @@ export default function ArticleElement(props: ElementProps) {
                     <Link href={"/tags/" + x}>
                       <Chip label={x} id={article.data.id + "_delete_tag"} />
                     </Link>
-                    <Button onClick={(e) => delete_tag(e)}>
+                    <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
                       <LabelOffIcon />
                     </Button>
-                    &nbsp;
                   </form>
                 </div>
               );
@@ -214,12 +229,27 @@ export default function ArticleElement(props: ElementProps) {
           })}
         </div>
         <Tags tags={article.data.tags} />
-        <form>
-          <Input id={article.data.id + "_add_tag"} type="text" />
-          <Button onClick={(e) => add_tag(e)}>
-            <LabelIcon />
-          </Button>
-        </form>
+        <Button variant="outlined" onClick={handleClickOpen}>
+          Add new tag
+        </Button>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Add new tag</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id={article.data.id + "_add_tag"}
+              label="New tag name"
+              type="text"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={submitAndClose}>Add</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </>
   );
