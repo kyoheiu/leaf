@@ -6,23 +6,20 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Link as MuiLink,
   TextField,
   Typography,
 } from "@mui/material";
-import { Button, Chip, Container, Grid, LinearProgress } from "@mui/material";
-import { CircularProgress } from "@mui/material";
-import { Input } from "@mui/material";
+import { Button, Chip, Grid, LinearProgress } from "@mui/material";
 import { Avatar } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import LabelIcon from "@mui/icons-material/Label";
 import LabelOffIcon from "@mui/icons-material/LabelOff";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -201,55 +198,64 @@ export default function ArticleElement(props: ElementProps) {
           sx={{ width: 1 / 4 }}
           value={article.data.progress}
         />
-        <Button id={article.data.id} onClick={toggle_like}>
-          {article.data.liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-        </Button>
-        <Button id={article.data.id} onClick={archive}>
-          {article.data.archived ? <UnarchiveIcon /> : <ArchiveIcon />}
-        </Button>
-        <Button id={article.data.id} onClick={delete_article}>
-          <DeleteForeverIcon />
-        </Button>
         <div>
           {article.data.tags.map((x, index) => {
             {
               return (
-                <div key={index}>
-                  <form>
-                    <Link href={"/tags/" + x}>
-                      <Chip label={x} id={article.data.id + "_delete_tag"} />
-                    </Link>
-                    <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
-                      <LabelOffIcon />
-                    </Button>
-                  </form>
-                </div>
+                <>
+                  <Link href={"/tags/" + x}>
+                    <Chip label={x} id={article.data.id + "_delete_tag"} />
+                  </Link>
+                  <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
+                    <RemoveCircleIcon sx={{ fontSize: 20 }} />
+                  </Button>
+                </>
               );
             }
           })}
+          <Chip
+            label={article.data.tags.length ? "+" : "Add new tag"}
+            onClick={handleClickOpen}
+          />
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Add new tag.</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id={article.data.id + "_add_tag"}
+                label="New tag name"
+                type="text"
+                fullWidth
+                variant="standard"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button onClick={submitAndClose}>Add</Button>
+            </DialogActions>
+          </Dialog>
         </div>
-        <Tags tags={article.data.tags} />
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Add new tag
-        </Button>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Add new tag</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id={article.data.id + "_add_tag"}
-              label="New tag name"
-              type="text"
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={submitAndClose}>Add</Button>
-          </DialogActions>
-        </Dialog>
+        <div>
+          <Button id={article.data.id} onClick={toggle_like}>
+            {article.data.liked ? (
+              <FavoriteIcon sx={{ fontSize: 20 }} />
+            ) : (
+              <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+            )}
+          </Button>
+          <Button id={article.data.id} onClick={archive}>
+            {article.data.archived ? (
+              <UnarchiveIcon sx={{ fontSize: 20 }} />
+            ) : (
+              <ArchiveIcon sx={{ fontSize: 20 }} />
+            )}
+          </Button>
+          <Button id={article.data.id} onClick={delete_article}>
+            <DeleteForeverIcon sx={{ fontSize: 20 }} />
+          </Button>
+          <Tags tags={article.data.tags} />
+        </div>
       </div>
     </>
   );

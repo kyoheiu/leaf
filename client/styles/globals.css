@@ -10,7 +10,6 @@ body {
     margin-right: auto;
     margin-top: 1em;
     margin-bottom: 1em;
-    font-family: "IBM Plex Sans", serif;
 }
 
 img, video {
@@ -19,8 +18,4 @@ img, video {
 
 .header {
     margin-bottom: 1em;
-}
-
-code {
-    font: "IBM Plex Mono", monospace !important;
 }
