@@ -155,9 +155,11 @@ export default function ArticleElement(props: ElementProps) {
         <Grid container>
           <Grid item xs={9} className="title">
             <MuiLink
+              component={Link}
               color="primary"
               underline="hover"
               href={"/articles/" + article.data.id}
+              scroll={false}
             >
               {article.data.title}
             </MuiLink>

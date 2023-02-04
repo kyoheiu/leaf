@@ -2,8 +2,7 @@ import { ArticleContent } from "../../types/types";
 import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import hljs from "highlight.js";
-import Head from "next/head";
+import Router, { useRouter } from "next/router";
 
 type Data = ArticleContent;
 
@@ -21,9 +20,13 @@ export const getServerSideProps: GetServerSideProps<{
   }
 };
 
-export default function Searched({
+export default function Document({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter();
+
+  const [shouldSaveScroll, setShouldSaveScroll] = useState(true);
+
   const getScrollPosition = () => {
     const bodyheight = document.documentElement.scrollHeight;
     const scrolled = document.documentElement.scrollTop;
@@ -37,32 +40,55 @@ export default function Searched({
     }
   };
 
-  const fetch_pos = () => {
-    const n = getScrollPosition();
-    console.log("pos: " + n.pos + " prog: " + n.prog);
-    const target =
-      "http://localhost:8000/articles/" +
-      data.id +
-      "?pos=" +
-      n.pos +
-      "&prog=" +
-      n.prog;
-    fetch(target, { method: "POST" }).then((res) => {
-      if (!res.ok) {
-        console.error("Cannot update progress.");
+  const saveScrollPos = () => {
+    if (shouldSaveScroll) {
+      const n = getScrollPosition();
+      if (n.pos !== 0) {
+        console.log("pos: " + n.pos + " prog: " + n.prog);
+        const target =
+          "http://localhost:8000/articles/" +
+          data.id +
+          "?pos=" +
+          n.pos +
+          "&prog=" +
+          n.prog;
+        fetch(target, { method: "POST" }).then((res) => {
+          if (!res.ok) {
+            console.error("Cannot update progress.");
+          }
+        });
       }
-    });
+    }
   };
 
-  useEffect(() => {
+  const restoreScrollPos = () => {
     const scroll = Math.round(
       (document.documentElement.scrollHeight * data.position) / 100
     );
     console.log(data.position);
     globalThis.scrollTo(0, scroll);
+  };
+
+  useEffect(() => {
+    restoreScrollPos();
   }, []);
 
-  useEffect(() => globalThis.addEventListener("scroll", fetch_pos), []);
+  useEffect(() => globalThis.addEventListener("scroll", saveScrollPos), []);
+
+  useEffect(() => {
+    const setSaveOff = () => {
+      setShouldSaveScroll((_v) => false);
+    };
+    router.beforePopState(({}) => {
+      setShouldSaveScroll(() => false);
+      console.log(shouldSaveScroll);
+      return true;
+    });
+    router.events.on("routeChangeStart", setSaveOff);
+    return () => {
+      router.events.off("routeChangeStart", setSaveOff);
+    };
+  }, []);
 
   if (!data) {
     return <h1>No article found.</h1>;
@@ -74,18 +100,8 @@ export default function Searched({
 
   return (
     <>
-      <Head>
-        <link
-          rel="stylesheet"
-          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css"
-        />
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-      </Head>
-      <div style={{ margin: "auto" }}>
-        <div className="title">{data.title}</div>
-        <div dangerouslySetInnerHTML={create_markup()}></div>
-      </div>
-      <script>hljs.highlightAll();</script>
+      <div className="title">{data.title}</div>
+      <div dangerouslySetInnerHTML={create_markup()}></div>
     </>
   );
 }

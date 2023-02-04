@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Link as MuiLink } from "@mui/material";
+import { Button, Link as MuiLink } from "@mui/material";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Grid, Input, PaletteMode, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -7,10 +7,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { Add } from "@mui/icons-material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
-import IconButton from "@mui/material/IconButton";
 import InvertColorsIcon from "@mui/icons-material/InvertColors";
 import { ThemeContext } from "@emotion/react";
 import { ColorMode } from "../context/ColorMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 
 export const Header = () => {
   const [url, setUrl] = useState<string>("");
@@ -63,9 +64,13 @@ export const Header = () => {
           </MuiLink>
         </Grid>
         <Grid item xs={1}>
-          <IconButton onClick={toggle_theme}>
-            <InvertColorsIcon sx={{ fontSize: 20 }} />
-          </IconButton>
+          <Button onClick={toggle_theme}>
+            {isLight ? (
+              <DarkModeIcon sx={{ fontSize: 20 }} />
+            ) : (
+              <LightModeIcon sx={{ fontSize: 20 }} />
+            )}
+          </Button>
         </Grid>
       </Grid>
     </>
