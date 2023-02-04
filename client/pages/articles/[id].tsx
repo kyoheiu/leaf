@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import Router, { useRouter } from "next/router";
+import { Divider } from "@mui/material";
 
 type Data = ArticleContent;
 
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps<{
   }
 };
 
-export default function Document({
+export default function Article({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
@@ -100,7 +101,9 @@ export default function Document({
 
   return (
     <>
-      <div className="title">{data.title}</div>
+      <div className="article-title">{data.title}</div>
+      <div className="article-url">{data.url}</div>
+      <Divider className="article-divider" />
       <div dangerouslySetInnerHTML={create_markup()}></div>
     </>
   );

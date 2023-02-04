@@ -19,7 +19,7 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import LabelOffIcon from "@mui/icons-material/LabelOff";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -164,9 +164,9 @@ export default function ArticleElement(props: ElementProps) {
   return (
     <>
       <div key={article.data.id} id={article.data.id}>
-        <div className="timestamp">{article.data.timestamp}</div>
+        <div className="element-timestamp">{article.data.timestamp}</div>
         <Grid container>
-          <Grid item xs={9} className="title">
+          <Grid item xs={9} className="element-title">
             <MuiLink
               component={Link}
               color="primary"
@@ -178,6 +178,11 @@ export default function ArticleElement(props: ElementProps) {
             </MuiLink>
           </Grid>
         </Grid>
+        <div className="element-url">
+          <MuiLink color="primary" underline="hover" href={article.data.url}>
+            {article.data.url.slice(0, 30) + ".."}
+          </MuiLink>
+        </div>
         <Grid container spacing={2}>
           <Grid item xs={9} className="beginning">
             <Typography>{article.data.beginning}</Typography>
@@ -193,49 +198,53 @@ export default function ArticleElement(props: ElementProps) {
             )}
           </Grid>
         </Grid>
+        <Grid container>
+          <Grid item xs={9}>
+            {article.data.tags.map((x, index) => {
+              {
+                return (
+                  <>
+                    <Link href={"/tags/" + x}>
+                      <Chip label={x} id={article.data.id + "_delete_tag"} />
+                    </Link>
+                    <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
+                      <RemoveCircleOutlineIcon sx={{ fontSize: 20 }} />
+                    </Button>
+                    &nbsp; &nbsp;
+                  </>
+                );
+              }
+            })}
+            &nbsp;
+            <Chip
+              label={article.data.tags.length ? "+" : "Add new tag"}
+              onClick={handleClickOpen}
+            />
+            <Dialog open={open} onClose={handleClose}>
+              <DialogTitle>Add new tag.</DialogTitle>
+              <DialogContent>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id={article.data.id + "_add_tag"}
+                  label="New tag name"
+                  type="text"
+                  fullWidth
+                  variant="standard"
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button onClick={submitAndClose}>Add</Button>
+              </DialogActions>
+            </Dialog>
+          </Grid>
+        </Grid>
         <LinearProgress
           variant="determinate"
-          sx={{ width: 1 / 4 }}
+          sx={{ width: 3 / 4 }}
           value={article.data.progress}
         />
-        <div>
-          {article.data.tags.map((x, index) => {
-            {
-              return (
-                <>
-                  <Link href={"/tags/" + x}>
-                    <Chip label={x} id={article.data.id + "_delete_tag"} />
-                  </Link>
-                  <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
-                    <RemoveCircleIcon sx={{ fontSize: 20 }} />
-                  </Button>
-                </>
-              );
-            }
-          })}
-          <Chip
-            label={article.data.tags.length ? "+" : "Add new tag"}
-            onClick={handleClickOpen}
-          />
-          <Dialog open={open} onClose={handleClose}>
-            <DialogTitle>Add new tag.</DialogTitle>
-            <DialogContent>
-              <TextField
-                autoFocus
-                margin="dense"
-                id={article.data.id + "_add_tag"}
-                label="New tag name"
-                type="text"
-                fullWidth
-                variant="standard"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={submitAndClose}>Add</Button>
-            </DialogActions>
-          </Dialog>
-        </div>
         <div>
           <Button id={article.data.id} onClick={toggle_like}>
             {article.data.liked ? (

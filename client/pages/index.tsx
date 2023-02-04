@@ -68,7 +68,7 @@ export default function Home({
   return (
     <>
       <Header />
-      <Stack spacing={2}>
+      <Stack spacing={5}>
         {wrapped.map((e, index) => {
           return (
             <ArticleElement key={index} element={e} kind={ElementKind.Top} />
