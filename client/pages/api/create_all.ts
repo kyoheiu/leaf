@@ -6,18 +6,18 @@ interface Content {
   html: string;
 }
 
-const crawl = async (url: string, browser: Browser): Promise<string> => {
-  console.log(url);
-  const page = await browser.newPage();
-  await page.goto(url);
-  const text = await page.content();
-  return text;
-};
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const crawl = async (url: string, browser: Browser): Promise<string> => {
+    console.log(url);
+    const page = await browser.newPage();
+    await page.goto(url);
+    const text = await page.content();
+    return text;
+  };
+
   if (req.method !== "POST") {
     res.status(404).end();
   } else {
@@ -26,7 +26,7 @@ export default async function handler(
     const browser = await puppeteer.launch();
     for (let x of url) {
       const html = await crawl(x, browser);
-      const body = JSON.stringify({ url: url, html: html });
+      const body = JSON.stringify({ url: x, html: html });
       const response = await fetch("http://127.0.0.1:8000/articles", {
         method: "POST",
         headers: {
@@ -35,7 +35,7 @@ export default async function handler(
         body: body,
       });
       if (!response.ok) {
-        console.log("Cannot create new article.");
+        console.log(response.status);
       }
     }
 
