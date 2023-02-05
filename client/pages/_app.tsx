@@ -8,7 +8,12 @@ import { ColorMode } from "../context/ColorMode";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [isLight, setIsLight] = useState<boolean>(true);
+  const session = globalThis.sessionStorage.getItem("acidpaperTheme");
+  let initial = true;
+  if (session === "dark") {
+    initial = false;
+  }
+  const [isLight, setIsLight] = useState<boolean>(initial);
 
   const light = createTheme({
     palette: {

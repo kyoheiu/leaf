@@ -30,6 +30,10 @@ export const Header = () => {
 
   const toggle_theme = () => {
     setIsLight(() => !isLight);
+    globalThis.sessionStorage.setItem(
+      "acidPaperTheme",
+      isLight ? "light" : "dark"
+    );
   };
 
   const [addOpen, setAddOpen] = useState(false);
