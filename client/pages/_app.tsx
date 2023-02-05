@@ -16,6 +16,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       primary: {
         main: "#444",
       },
+      secondary: {
+        main: "#777",
+      },
     },
   });
 
@@ -24,6 +27,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       mode: "dark",
       primary: {
         main: "#bbb",
+      },
+      secondary: {
+        main: "#888",
       },
     },
   });

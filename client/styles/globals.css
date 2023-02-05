@@ -48,6 +48,7 @@ img, video {
 }
 
 .article-divider {
+    margin-top: 1em;
     margin-bottom: 1em;
 }
 
@@ -80,8 +81,25 @@ h6 {
     font-weight: bold;
 }
 
-pre > code {
-    width: 90%;
+:not(pre) > code {
     font-size: 0.9em;
+    font-family: 'IBM Plex Mono', monospace;
+    color: #ddd;
+    background-color: #333;
+}
+
+pre {
     overflow: scroll;
+    padding: 1em;
+    border: 1px solid white;
+}
+
+pre > code {
+    max-width: 90%;
+    font-size: 0.9em;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.ending {
+    text-align: center;
 }

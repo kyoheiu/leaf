@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import Router, { useRouter } from "next/router";
-import { Divider } from "@mui/material";
+import { Divider, Typography } from "@mui/material";
 
 type Data = ArticleContent;
 
@@ -105,6 +105,10 @@ export default function Article({
       <div className="article-url">{data.url}</div>
       <Divider className="article-divider" />
       <div dangerouslySetInnerHTML={create_markup()}></div>
+      <Divider className="article-divider" />
+      <Typography className="ending" color="secondary">
+        End of this article.
+      </Typography>
     </>
   );
 }
