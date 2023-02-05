@@ -20,8 +20,11 @@ import { ColorMode } from "../context/ColorMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import CloseIcon from "@mui/icons-material/Close";
+import { useRouter } from "next/router";
 
 export const Header = () => {
+  const router = useRouter();
+
   const [url, setUrl] = useState<string>("");
   const { isLight, setIsLight } = useContext(ColorMode);
 
@@ -59,7 +62,8 @@ export const Header = () => {
     if (!res.ok) {
       console.log("Cannot create new article.");
     } else {
-      globalThis.location.href = "/";
+      router.push("/");
+      router.reload();
     }
   };
 
@@ -71,7 +75,7 @@ export const Header = () => {
       .split(/(\s+)/)
       .filter((x) => x.trim().length > 0)
       .join("+");
-    globalThis.location.href = "/search?q=" + split;
+    router.push("/search?q=" + split);
   };
 
   return (
