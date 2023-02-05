@@ -183,6 +183,10 @@ impl Core {
                         "plain" => article.plain = value.unwrap().to_owned(),
                         "position" => article.position = value.unwrap().parse().unwrap(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
+                        "archived" => {
+                            article.archived = if value.unwrap() == "0" { false } else { true }
+                        }
+                        "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
                         "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
                         _ => {}
                     }
