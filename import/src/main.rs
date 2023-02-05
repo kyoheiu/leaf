@@ -17,15 +17,37 @@ async fn main() {
         }
     } else if args.len() == 2 {
         let number = args.nth(1).unwrap();
-        let limit = number.parse::<usize>().unwrap();
+        let limit: usize = number.parse::<usize>().unwrap();
+        let mut urls = vec![];
         for (index, result) in rdr.deserialize().enumerate() {
             let article: Article = result.unwrap();
-            send_req(article).await;
+            urls.push(article.url);
             if index == limit {
                 break;
             }
         }
+        send_multiple_req(urls).await;
     }
+}
+
+async fn send_multiple_req(urls: Vec<String>) {
+    let req = Reqs { url: urls };
+    let j = serde_json::to_string(&req).unwrap();
+    let mut headers = HeaderMap::new();
+    headers.insert(
+        "Content-Type",
+        header::HeaderValue::from_str("application/json").unwrap(),
+    );
+    let client = reqwest::Client::builder()
+        .default_headers(headers)
+        .build()
+        .unwrap();
+    let _res = client
+        .post("http://localhost:3000/api/create_all")
+        .body(j)
+        .send()
+        .await
+        .unwrap();
 }
 
 async fn send_req(article: Article) {
@@ -68,4 +90,9 @@ struct Article {
 #[derive(Debug, Serialize, Deserialize)]
 struct Req {
     url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Reqs {
+    url: Vec<String>,
 }
