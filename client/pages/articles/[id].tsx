@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import Router, { useRouter } from "next/router";
-import { Divider, Typography } from "@mui/material";
+import { Button, Divider, Typography } from "@mui/material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ArchiveIcon from "@mui/icons-material/Archive";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 type Data = ArticleContent;
 
@@ -25,6 +30,7 @@ export default function Article({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
+  const [articleContent, setArticleContent] = useState<ArticleContent>(data);
 
   const [shouldSaveScroll, setShouldSaveScroll] = useState(true);
 
@@ -48,7 +54,7 @@ export default function Article({
         console.log("pos: " + n.pos + " prog: " + n.prog);
         const target =
           "http://localhost:8000/articles/" +
-          data.id +
+          articleContent.id +
           "?pos=" +
           n.pos +
           "&prog=" +
@@ -64,9 +70,9 @@ export default function Article({
 
   const restoreScrollPos = () => {
     const scroll = Math.round(
-      (document.documentElement.scrollHeight * data.position) / 100
+      (document.documentElement.scrollHeight * articleContent.position) / 100
     );
-    console.log(data.position);
+    console.log(articleContent.position);
     globalThis.scrollTo(0, scroll);
   };
 
@@ -91,21 +97,86 @@ export default function Article({
     };
   }, []);
 
-  if (!data) {
+  const toggle_like = async () => {
+    const target =
+      "http://localhost:8000/articles/" + articleContent.id + "?toggle=liked";
+    const res = await fetch(target, { method: "POST" });
+    if (!res.ok) {
+      console.log("Cannot toggle like.");
+    }
+
+    setArticleContent((x) => ({
+      ...x,
+      liked: !x.liked,
+    }));
+  };
+
+  const toggle_archive = async () => {
+    const target =
+      "http://localhost:8000/articles/" +
+      articleContent.id +
+      "?toggle=archived";
+    const res = await fetch(target, { method: "POST" });
+    if (!res.ok) {
+      console.log("Cannot archive article.");
+    }
+
+    setArticleContent((x) => ({
+      ...x,
+      archived: !x.archived,
+    }));
+  };
+
+  const delete_article = async () => {
+    const target = "http://localhost:8000/articles/" + articleContent.id;
+    const res = await fetch(target, { method: "DELETE" });
+    if (!res.ok) {
+      console.log("Cannot delete article.");
+    } else {
+      globalThis.location.href = "/";
+    }
+  };
+  if (!articleContent) {
     return <h1>No article found.</h1>;
   }
 
   const create_markup = () => {
-    return { __html: data.html };
+    return { __html: articleContent.html };
+  };
+
+  const Buttons = ({ data }: { data: ArticleContent }) => {
+    return (
+      <div className="buttons">
+        <Button onClick={toggle_like}>
+          {data.liked ? (
+            <FavoriteIcon sx={{ fontSize: 20 }} />
+          ) : (
+            <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+          )}
+        </Button>
+        <Button onClick={toggle_archive}>
+          {data.archived ? (
+            <UnarchiveIcon sx={{ fontSize: 20 }} />
+          ) : (
+            <ArchiveIcon sx={{ fontSize: 20 }} />
+          )}
+        </Button>
+        <Button onClick={delete_article}>
+          <DeleteForeverIcon sx={{ fontSize: 20 }} />
+        </Button>
+      </div>
+    );
   };
 
   return (
     <>
-      <div className="article-title">{data.title}</div>
-      <div className="article-url">{data.url}</div>
+      <div className="article-title">{articleContent.title}</div>
+      <div className="article-url">{articleContent.url}</div>
+      <Buttons data={articleContent} />
       <Divider className="article-divider" />
       <div dangerouslySetInnerHTML={create_markup()}></div>
       <Divider className="article-divider" />
+      <Buttons data={articleContent} />
       <Typography className="ending" color="secondary">
         End of this article.
       </Typography>
