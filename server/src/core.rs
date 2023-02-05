@@ -13,8 +13,6 @@ use axum::{
     Router,
 };
 use log::info;
-use sanitize_html::rules::Element;
-use sanitize_html::sanitize_str;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
 use tantivy::query::{BooleanQuery, Occur, Query, TermQuery};
@@ -139,28 +137,10 @@ impl Core {
             let ulid = ulid::Ulid::new().to_string();
             let title = product.title.replace('\'', "''");
 
-            let rule = sanitize_html::rules::predefined::default();
-            let rule = rule
-                .element(Element::new("a"))
-                .element(Element::new("b"))
-                .element(Element::new("code"))
-                .element(Element::new("em"))
-                .element(Element::new("h1"))
-                .element(Element::new("h2"))
-                .element(Element::new("h3"))
-                .element(Element::new("h4"))
-                .element(Element::new("h5"))
-                .element(Element::new("h6"))
-                .element(Element::new("i"))
-                .element(Element::new("img"))
-                .element(Element::new("li"))
-                .element(Element::new("ol"))
-                .element(Element::new("p"))
-                .element(Element::new("pre"))
-                .element(Element::new("strike"))
-                .element(Element::new("strong"))
-                .element(Element::new("ul"));
-            let sanitized: String = sanitize_str(&rule, &product.content).unwrap();
+            let mut cleaner = ammonia::Builder::default();
+            let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
+            let sanitized = cleaner.clean(&product.content).to_string();
+
             let html = sanitized.replace('\'', "''");
 
             let og = match og {
