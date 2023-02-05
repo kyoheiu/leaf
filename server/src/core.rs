@@ -153,6 +153,7 @@ impl Core {
                 .element(Element::new("h6"))
                 .element(Element::new("i"))
                 .element(Element::new("img"))
+                .element(Element::new("pre"))
                 .element(Element::new("strike"))
                 .element(Element::new("strong"));
             let sanitized: String = sanitize_str(&rule, &product.content).unwrap();
