@@ -153,9 +153,13 @@ impl Core {
                 .element(Element::new("h6"))
                 .element(Element::new("i"))
                 .element(Element::new("img"))
+                .element(Element::new("li"))
+                .element(Element::new("ol"))
+                .element(Element::new("p"))
                 .element(Element::new("pre"))
                 .element(Element::new("strike"))
-                .element(Element::new("strong"));
+                .element(Element::new("strong"))
+                .element(Element::new("ul"));
             let sanitized: String = sanitize_str(&rule, &product.content).unwrap();
             let html = sanitized.replace('\'', "''");
 
