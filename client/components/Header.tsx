@@ -77,7 +77,7 @@ export const Header = () => {
   return (
     <>
       <Grid container spacing={1} className="header">
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <MuiLink component={Link} underline="none" href="/">
             acidpaper
           </MuiLink>
@@ -92,7 +92,7 @@ export const Header = () => {
             <FavoriteIcon sx={{ fontSize: 20 }} />
           </MuiLink>
         </Grid>
-        <Grid item xs={4}></Grid>
+        <Grid item xs={5}></Grid>
         <Grid item xs={1}>
           <Button size="small" onClick={handleClickAddOpen}>
             <Add sx={{ fontSize: 20 }} />
