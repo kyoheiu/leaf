@@ -84,7 +84,7 @@ export default function ArticleElement(props: ElementProps) {
     }
   };
 
-  const archive = async () => {
+  const toggle_archive = async () => {
     const target =
       "http://localhost:8000/articles/" + article.data.id + "?toggle=archived";
     const res = await fetch(target, { method: "POST" });
@@ -252,7 +252,7 @@ export default function ArticleElement(props: ElementProps) {
             <FavoriteBorderIcon sx={{ fontSize: 20 }} />
           )}
         </Button>
-        <Button id={article.data.id} onClick={archive}>
+        <Button id={article.data.id} onClick={toggle_archive}>
           {article.data.archived ? (
             <UnarchiveIcon sx={{ fontSize: 20 }} />
           ) : (

@@ -23,7 +23,7 @@ export default async function handler(
     };
 
     console.log(req.body);
-    let url: string = req.body.url;
+    let url: string = req.body;
     const html = await crawl(url);
     const body = JSON.stringify({ url: url, html: html });
     const response = await fetch("http://127.0.0.1:8000/articles", {
