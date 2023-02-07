@@ -35,8 +35,14 @@ export default function Searched({
     <>
       <Header />
       <div className="count">RESULTS: {data.length}</div>
-      {wrapped.map((e) => {
-        return <ArticleElement element={e} kind={ElementKind.Searched} />;
+      {wrapped.map((e, index) => {
+        return (
+          <ArticleElement
+            key={"searched-element" + { index }}
+            element={e}
+            kind={ElementKind.Searched}
+          />
+        );
       })}
     </>
   );

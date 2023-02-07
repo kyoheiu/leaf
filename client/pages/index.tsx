@@ -20,10 +20,6 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  if (!data) {
-    return <h1>No article found.</h1>;
-  }
-
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -60,6 +56,10 @@ export default function Home({
     }
   });
 
+  if (!data) {
+    return <h1>No article found.</h1>;
+  }
+
   const wrapped: WrappedData[] = list.map((x) => ({
     visible: true,
     data: x,
@@ -71,7 +71,11 @@ export default function Home({
       <Stack spacing={5}>
         {wrapped.map((e, index) => {
           return (
-            <ArticleElement key={index} element={e} kind={ElementKind.Top} />
+            <ArticleElement
+              key={"index-element" + index.toString()}
+              element={e}
+              kind={ElementKind.Top}
+            />
           );
         })}
       </Stack>

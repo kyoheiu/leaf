@@ -80,7 +80,10 @@ export default function Article({
     restoreScrollPos();
   }, []);
 
-  useEffect(() => globalThis.addEventListener("scroll", saveScrollPos), []);
+  useEffect(() => {
+    globalThis.addEventListener("scroll", saveScrollPos);
+    return () => globalThis.removeEventListener("scroll", saveScrollPos);
+  }, []);
 
   useEffect(() => {
     const setSaveOff = () => {

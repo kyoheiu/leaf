@@ -20,10 +20,6 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Liked({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  if (!data) {
-    return <h1>No article found.</h1>;
-  }
-
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -60,6 +56,10 @@ export default function Liked({
     }
   });
 
+  if (!data) {
+    return <h1>No article found.</h1>;
+  }
+
   const wrapped: WrappedData[] = list.map((x) => ({
     visible: true,
     data: x,
@@ -68,8 +68,14 @@ export default function Liked({
   return (
     <>
       <Header />
-      {wrapped.map((e) => {
-        return <ArticleElement element={e} kind={ElementKind.Liked} />;
+      {wrapped.map((e, index) => {
+        return (
+          <ArticleElement
+            key={"liked-element" + { index }}
+            element={e}
+            kind={ElementKind.Liked}
+          />
+        );
       })}
       <Footer isLast={isLast} />
     </>

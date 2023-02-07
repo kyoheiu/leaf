@@ -19,10 +19,6 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Archived({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  if (!data) {
-    return <h1>No article found.</h1>;
-  }
-
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -60,6 +56,10 @@ export default function Archived({
     }
   });
 
+  if (!data) {
+    return <h1>No article found.</h1>;
+  }
+
   const wrapped: WrappedData[] = list.map((x) => ({
     visible: true,
     data: x,
@@ -68,8 +68,14 @@ export default function Archived({
   return (
     <>
       <Header />
-      {wrapped.map((e) => {
-        return <ArticleElement element={e} kind={ElementKind.Archived} />;
+      {wrapped.map((e, index) => {
+        return (
+          <ArticleElement
+            key={"archived-element" + { index }}
+            element={e}
+            kind={ElementKind.Archived}
+          />
+        );
       })}
       <Footer isLast={isLast} />
     </>

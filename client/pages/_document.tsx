@@ -5,8 +5,10 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <style>
-          @import
-          url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap');
+          <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans&display=swap"
+            rel="stylesheet"
+          />
         </style>
       </Head>
       <body>
