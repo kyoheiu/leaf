@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
   const query = context.query.q;
-  const target = "http://127.0.0.1:8000/search?q=" + query;
+  const target = "http://server:8000/search?q=" + query;
   const res = await fetch(target);
   const data = await res.json();
   return { props: { data } };
