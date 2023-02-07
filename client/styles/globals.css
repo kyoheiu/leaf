@@ -6,10 +6,7 @@ body {
     width: 90%;
     min-width: 200px;
     max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin: 1em auto !important;
 }
 
 img, video {
@@ -91,15 +88,18 @@ h6 {
 pre {
     overflow: scroll;
     padding: 1em;
-    border: 1px solid white;
+    border: 1px solid #666;
 }
 
 pre > code {
     max-width: 90%;
-    font-size: 0.9em;
-    font-family: 'IBM Plex Mono', monospace;
+      font-family: 'IBM Plex Mono', monospace;
 }
 
 .ending {
     text-align: center;
+}
+
+a {
+    color: inherit;
 }
