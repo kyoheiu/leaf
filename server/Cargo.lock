@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "acidpaper"
+name = "acidpaper-server"
 version = "0.1.0"
 dependencies = [
  "ammonia",

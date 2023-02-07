@@ -30,7 +30,7 @@ pub struct Core {
 pub fn router(core: Core) -> axum::Router {
     let shared_core = Arc::new(core);
 
-    let origins = ["http://localhost:3000".parse().unwrap()];
+    let origins = ["http://0.0.0.0:3000".parse().unwrap()];
     let layer = CorsLayer::new()
         .allow_origin(origins)
         .allow_headers(Any)

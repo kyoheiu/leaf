@@ -16,7 +16,7 @@ use std::net::TcpListener;
 async fn main() -> Result<(), AcidError> {
     env_logger::init();
     let core = Core::new()?;
-    let listener = TcpListener::bind("127.0.0.1:8000").expect("Failed to listen.");
+    let listener = TcpListener::bind("0.0.0.0:8000").expect("Failed to listen.");
     info!("Start listening on {:?}", listener);
     run(listener, core).await;
     Ok(())
