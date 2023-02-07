@@ -1,19 +1,22 @@
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createContext, useContext, useState } from "react";
-import { PaletteMode } from "@mui/material";
+import { useEffect, useState } from "react";
 import React from "react";
 import { ColorMode } from "../context/ColorMode";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const session = globalThis.sessionStorage.getItem("acidpaperTheme");
-  let initial = true;
-  if (session === "dark") {
-    initial = false;
-  }
-  const [isLight, setIsLight] = useState<boolean>(initial);
+  const [isLight, setIsLight] = useState<boolean>(true);
+
+  useEffect(() => {
+    const session = globalThis.sessionStorage.getItem("acidpaperTheme");
+    if (!session || session === "light") {
+      setIsLight(() => true);
+    } else {
+      setIsLight(() => false);
+    }
+  }, []);
 
   const light = createTheme({
     palette: {

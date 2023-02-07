@@ -29,11 +29,13 @@ export const Header = () => {
   const { isLight, setIsLight } = useContext(ColorMode);
 
   const toggle_theme = () => {
-    setIsLight(() => !isLight);
-    globalThis.sessionStorage.setItem(
-      "acidPaperTheme",
-      isLight ? "light" : "dark"
-    );
+    setIsLight(() => {
+      globalThis.sessionStorage.setItem(
+        "acidpaperTheme",
+        isLight ? "dark" : "light"
+      );
+      return !isLight;
+    });
   };
 
   const [addOpen, setAddOpen] = useState(false);
