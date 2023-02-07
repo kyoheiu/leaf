@@ -4,9 +4,10 @@ use tantivy::IndexReader;
 use tantivy::ReloadPolicy;
 
 pub fn initialize_schema() -> (Schema, Index, IndexReader) {
-    let search_dir = std::path::PathBuf::from(".search_dir");
+    let search_path = "/home/server/databases/.search";
+    let search_dir = std::path::PathBuf::from(search_path);
     if !search_dir.exists() {
-        std::fs::create_dir(".search_dir").unwrap();
+        std::fs::create_dir(search_path).unwrap();
     }
 
     let mut schema_builder = Schema::builder();
@@ -15,7 +16,7 @@ pub fn initialize_schema() -> (Schema, Index, IndexReader) {
     schema_builder.add_text_field("plain", TEXT);
     let schema = schema_builder.build();
 
-    let meta_file = std::path::PathBuf::from(".search_dir/meta.json");
+    let meta_file = search_dir.join("meta.json");
     if meta_file.exists() {
         let index = Index::open_in_dir(&search_dir).unwrap();
         let reader = index
