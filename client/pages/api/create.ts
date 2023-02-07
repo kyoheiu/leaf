@@ -1,10 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 
 interface Content {
   url: string;
   html: string;
 }
+
+const crawl = async (url: string, browser: Browser): Promise<string> => {
+  console.log(url);
+  const page = await browser.newPage();
+  await page.goto(url);
+  const text = await page.content();
+  await page.close();
+  return text;
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,18 +22,19 @@ export default async function handler(
   if (req.method !== "POST") {
     res.status(404).end();
   } else {
-    const crawl = async (url: string): Promise<string> => {
-      console.log(url);
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      await page.goto(url);
-      const text = await page.content();
-      return text;
-    };
-
     console.log(req.body);
     let url: string = req.body;
-    const html = await crawl(url);
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+      ],
+    });
+    const html = await crawl(url, browser);
     const body = JSON.stringify({ url: url, html: html });
     const response = await fetch("http://server:8000/articles", {
       method: "POST",
