@@ -1,5 +1,5 @@
-dev:
-	cd client && yarn run dev & cd server && cargo run -r && fg
+build:
+	sudo docker-compose build
 
-kill:
-	killall node; killall acidpaper
+run:
+	sudo docker-compose up
