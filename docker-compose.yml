@@ -1,0 +1,14 @@
+version: "3"
+services:
+  server:
+    build: server
+    container_name: server
+    volumes:
+      - ./server/databases:/home/server/databases
+    ports:
+      - 8000:8000
+  client:
+    build: client
+    container_name: client
+    ports:
+      - 3000:3000
