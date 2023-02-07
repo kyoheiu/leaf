@@ -1,4 +1,3 @@
-import useSWR, { Fetcher } from "swr";
 import { ArticleData, ElementKind, WrappedData } from "../../types/types";
 import ArticleElement from "../../components/ArticleElement";
 import { Header } from "../../components/Header";

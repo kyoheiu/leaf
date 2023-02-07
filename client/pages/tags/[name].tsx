@@ -1,9 +1,6 @@
 import { WrappedData, ElementKind, ArticleData } from "../../types/types";
 import { Header } from "../../components/Header";
 import ArticleElement from "../../components/ArticleElement";
-import useSWR, { Fetcher } from "swr";
-import { useReducer } from "react";
-import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 
