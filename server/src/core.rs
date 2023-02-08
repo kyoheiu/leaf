@@ -13,6 +13,7 @@ use axum::{
     Router,
 };
 use log::{error, info};
+use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
 use tantivy::query::{BooleanQuery, Occur, Query, TermQuery};
@@ -63,7 +64,10 @@ pub async fn run(listener: TcpListener, core: Core) {
 
 impl Core {
     pub fn new() -> Result<Core, AcidError> {
-        let db_path = std::path::Path::new("/home/server/databases/.sqlite");
+        let db_path = match std::env::var("DATABASE_PATH") {
+            Ok(p) => PathBuf::from(&p),
+            Err(_) => PathBuf::from("./databases/.sqlite"),
+        };
         let connection = sqlite::Connection::open_with_full_mutex(&db_path).unwrap();
         connection.execute(state_create_articles_table()).unwrap();
         connection.execute(state_create_tags_table()).unwrap();
