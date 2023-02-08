@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async (context) => {
   if (context.params) {
     const id = context.params.id;
-    const target = "http://server:8000/articles/" + id;
+    const target = `http://${process.env.HOST}:8000/articles/` + id;
     const res = await fetch(target);
     const data = await res.json();
     return { props: { data } };

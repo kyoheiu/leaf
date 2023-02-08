@@ -36,7 +36,7 @@ export default async function handler(
     });
     const html = await crawl(url, browser);
     const body = JSON.stringify({ url: url, html: html });
-    const response = await fetch("http://server:8000/articles", {
+    const response = await fetch(`http://${process.env.HOST}:8000/articles`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

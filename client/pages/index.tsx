@@ -12,7 +12,7 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async () => {
-  const res = await fetch("http://server:8000/articles");
+  const res = await fetch(`http://${process.env.HOST}:8000/articles`);
   const data = await res.json();
   return { props: { data } };
 };
@@ -42,7 +42,8 @@ export default function Home({
   useEffect(() => {
     if (isBottom) {
       const target =
-        "http://server:8000/articles?reload=" + list.slice(-1)[0].id;
+        `http://${process.env.HOST}:8000/articles?reload=` +
+        list.slice(-1)[0].id;
       fetch(target).then((res) =>
         res.json().then((j) => {
           if (j.length === 0) {
