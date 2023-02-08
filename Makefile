@@ -1,3 +1,12 @@
+init:
+	cd server && cargo run -- init
+
+dev:
+	cd client && yarn run dev & cd server && cargo run -r && fg
+
+stop:
+	killall node && killall acidpaper
+
 build:
 	sudo docker-compose build
 
