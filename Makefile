@@ -2,6 +2,8 @@ init:
 	cd server && cargo run -- init
 
 dev:
+	cd client && sudo rm -rf .next
+	cd server && sudo chown -R ${USER}:${GROUP} databases
 	cd client && yarn run dev & cd server && cargo run -r && fg
 
 stop:
