@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { ColorMode } from "../context/ColorMode";
 import "../styles/globals.css";
+import { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   const [isLight, setIsLight] = useState<boolean>(true);
 
   useEffect(() => {
@@ -46,7 +48,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ColorMode.Provider value={{ isLight, setIsLight }}>
       <ThemeProvider theme={isLight ? light : dark}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <SessionProvider session={pageProps.session}>
+          <Component {...pageProps} />
+        </SessionProvider>
       </ThemeProvider>
     </ColorMode.Provider>
   );

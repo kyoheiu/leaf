@@ -5,7 +5,8 @@ import Footer from "../components/Footer";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 type Data = ArticleData[];
 
@@ -20,6 +21,8 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { data: session } = useSession();
+
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -66,9 +69,10 @@ export default function Home({
     data: x,
   }))!;
 
-  return (
+  return session ? (
     <>
       <Header />
+      <Button onClick={() => signOut()}>Sign Out</Button>
       <Stack spacing={5}>
         {wrapped.map((e, index) => {
           return (
@@ -81,6 +85,11 @@ export default function Home({
         })}
       </Stack>
       <Footer isLast={isLast} />
+    </>
+  ) : (
+    <>
+      Please log in.
+      <Button onClick={() => signIn()}>Sign in</Button>
     </>
   );
 }
