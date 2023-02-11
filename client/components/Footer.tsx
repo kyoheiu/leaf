@@ -3,5 +3,5 @@ interface FooterProps {
 }
 
 export default function Footer({ isLast }: FooterProps) {
-  return <footer>{isLast ? "end of the list." : ""}</footer>;
+  return <footer>{isLast ? "End of the list." : ""}</footer>;
 }
