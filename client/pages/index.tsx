@@ -7,6 +7,7 @@ import { InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
 import { Button, Stack } from "@mui/material";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Login from "../components/Login";
 
 type Data = ArticleData[];
 
@@ -72,8 +73,7 @@ export default function Home({
   return session ? (
     <>
       <Header />
-      <Button onClick={() => signOut()}>Sign Out</Button>
-      <Stack spacing={5}>
+      <Stack className="articles-list" spacing={5}>
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
@@ -88,8 +88,7 @@ export default function Home({
     </>
   ) : (
     <>
-      Please log in.
-      <Button onClick={() => signIn()}>Sign in</Button>
+      <Login />
     </>
   );
 }

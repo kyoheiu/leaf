@@ -3,6 +3,8 @@ import { Header } from "../../components/Header";
 import ArticleElement from "../../components/ArticleElement";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
+import Login from "../../components/Login";
+import { useSession } from "next-auth/react";
 
 type Data = ArticleData[];
 
@@ -23,6 +25,8 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Searched({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { data: session } = useSession();
+
   if (!data) {
     return <h1>No article found.</h1>;
   }
@@ -32,7 +36,7 @@ export default function Searched({
     data: x,
   }))!;
 
-  return (
+  return session ? (
     <>
       <Header />
       <div className="count">RESULTS: {data.length}</div>
@@ -46,5 +50,7 @@ export default function Searched({
         );
       })}
     </>
+  ) : (
+    <Login />
   );
 }

@@ -13,8 +13,8 @@ img, video {
     max-width: 90%;
 }
 
-.header {
-    margin-bottom: 1em;
+.articles-list {
+    padding-top: 30px;
 }
 
 .article-element {
@@ -81,8 +81,10 @@ h6 {
 :not(pre) > code {
     font-size: 0.9em;
     font-family: 'IBM Plex Mono', monospace;
-    color: #ddd;
+    color: #eee;
     background-color: #333;
+    padding: 2px;
+    border-radius: 8px;
 }
 
 pre {
@@ -102,4 +104,19 @@ pre > code {
 
 a {
     color: inherit;
+}
+
+.login {
+    width: 50%;
+    max-width: 400px;
+    margin: 200px auto;
+    padding: 50px;
+    text-align: center;
+    background-image: linear-gradient(to bottom right, #73c2fb, #b0e0e6);
+    color: #333;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.login-button {
+    margin: 10px;
 }

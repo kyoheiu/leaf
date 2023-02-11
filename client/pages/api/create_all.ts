@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "next-auth/react";
 import puppeteer, { Browser, Puppeteer } from "puppeteer";
 
 interface Content {
@@ -10,6 +11,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const session = await getSession({ req });
+
   const crawl = async (url: string, browser: Browser): Promise<string> => {
     console.log(url);
     const page = await browser.newPage();
@@ -18,7 +21,7 @@ export default async function handler(
     return text;
   };
 
-  if (req.method !== "POST") {
+  if (!session || req.method !== "POST") {
     res.status(404).end();
   } else {
     console.log(req.body);

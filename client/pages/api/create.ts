@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "next-auth/react";
 import puppeteer, { Browser } from "puppeteer";
 
 interface Content {
@@ -19,7 +20,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  if (req.method !== "POST") {
+  const session = await getSession({ req });
+
+  if (!session || req.method !== "POST") {
     res.status(404).end();
   } else {
     console.log(req.body);

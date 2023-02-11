@@ -9,6 +9,8 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import Login from "../../components/Login";
+import { useSession } from "next-auth/react";
 
 type Data = ArticleContent;
 
@@ -29,6 +31,8 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Article({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { data: session } = useSession();
+
   const router = useRouter();
   const [articleContent, setArticleContent] = useState<ArticleContent>(data);
 
@@ -171,7 +175,7 @@ export default function Article({
     );
   };
 
-  return (
+  return session ? (
     <>
       <div className="article-title">{articleContent.title}</div>
       <div className="article-url">{articleContent.url}</div>
@@ -184,5 +188,7 @@ export default function Article({
         End of this article.
       </Typography>
     </>
+  ) : (
+    <Login />
   );
 }

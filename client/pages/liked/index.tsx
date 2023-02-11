@@ -5,6 +5,8 @@ import Footer from "../../components/Footer";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { useState, useEffect } from "react";
+import Login from "../../components/Login";
+import { useSession } from "next-auth/react";
 
 type Data = ArticleData[];
 
@@ -19,6 +21,8 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Liked({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { data: session } = useSession();
+
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -65,7 +69,7 @@ export default function Liked({
     data: x,
   }))!;
 
-  return (
+  return session ? (
     <>
       <Header />
       {wrapped.map((e, index) => {
@@ -79,5 +83,7 @@ export default function Liked({
       })}
       <Footer isLast={isLast} />
     </>
+  ) : (
+    <Login />
   );
 }
