@@ -166,6 +166,11 @@ export const Header = () => {
             )}
           </Button>
         </Grid>
+        <Grid item xs={0.6}>
+          <MuiLink href="#" onClick={() => signOut()}>
+            <LogoutIcon sx={{ fontSize: 20 }} />
+          </MuiLink>
+        </Grid>
       </Grid>
     </>
   );
