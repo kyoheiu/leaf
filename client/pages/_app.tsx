@@ -7,6 +7,7 @@ import { ColorMode } from "../context/ColorMode";
 import "../styles/globals.css";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import Login from "../components/Login";
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   const [isLight, setIsLight] = useState<boolean>(true);
@@ -40,6 +41,9 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
       },
       secondary: {
         main: "#888",
+      },
+      text: {
+        primary: "#ddd",
       },
     },
   });
