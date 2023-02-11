@@ -20,7 +20,9 @@ import { ColorMode } from "../context/ColorMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useRouter } from "next/router";
+import { signOut } from "next-auth/react";
 
 export const Header = () => {
   const router = useRouter();
@@ -88,25 +90,30 @@ export const Header = () => {
     <>
       <Grid container spacing={1} className="header">
         <Grid item xs={2}>
-          <MuiLink component={Link} underline="none" href="/">
+          <MuiLink
+            className="site-title"
+            component={Link}
+            underline="none"
+            href="/"
+          >
             acidpaper
           </MuiLink>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={6.4}></Grid>
+        <Grid item xs={0.6}>
           <MuiLink component={Link} href="/archived">
             <ArchiveIcon sx={{ fontSize: 20 }} />
           </MuiLink>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={0.6}>
           <MuiLink component={Link} href="/liked">
             <FavoriteIcon sx={{ fontSize: 20 }} />
           </MuiLink>
         </Grid>
-        <Grid item xs={5}></Grid>
-        <Grid item xs={1}>
-          <Button size="small" onClick={handleClickAddOpen}>
+        <Grid item xs={0.6}>
+          <MuiLink href="#" onClick={handleClickAddOpen}>
             <Add sx={{ fontSize: 20 }} />
-          </Button>
+          </MuiLink>
           <Dialog open={addOpen} onClose={handleAddClose}>
             <DialogTitle>Add new article.</DialogTitle>
             <DialogContent>
@@ -130,10 +137,10 @@ export const Header = () => {
             </DialogActions>
           </Dialog>
         </Grid>
-        <Grid item xs={1}>
-          <Button size="small" onClick={handleClickSearchOpen}>
+        <Grid item xs={0.6}>
+          <MuiLink href="#" onClick={handleClickSearchOpen}>
             <SearchIcon sx={{ fontSize: 20 }} />
-          </Button>
+          </MuiLink>
           <Dialog open={searchOpen} onClose={handleSearchClose}>
             <DialogTitle>Search.</DialogTitle>
             <DialogContent>
@@ -157,14 +164,14 @@ export const Header = () => {
             </DialogActions>
           </Dialog>
         </Grid>
-        <Grid item xs={1}>
-          <Button size="small" onClick={toggle_theme}>
+        <Grid item xs={0.6}>
+          <MuiLink href="#" onClick={toggle_theme}>
             {isLight ? (
               <DarkModeIcon sx={{ fontSize: 20 }} />
             ) : (
               <LightModeIcon sx={{ fontSize: 20 }} />
             )}
-          </Button>
+          </MuiLink>
         </Grid>
         <Grid item xs={0.6}>
           <MuiLink href="#" onClick={() => signOut()}>
