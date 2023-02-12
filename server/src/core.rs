@@ -157,14 +157,14 @@ impl Core {
         ))?;
 
         //add to schema
-        self.add_to_index(&ulid, &title, &plain);
+        self.add_to_index(&ulid, &title, &plain)?;
         Ok(())
     }
 
     pub async fn delete(&self, id: &str) -> Result<(), AcidError> {
         self.db.execute(state_delete(id))?;
         info!("DELETED: {}", id);
-        self.delete_from_index(id);
+        self.delete_from_index(id)?;
         info!("DELETED FROM INEX: {}", id);
         Ok(())
     }
