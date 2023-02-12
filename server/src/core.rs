@@ -68,9 +68,9 @@ impl Core {
             Ok(p) => PathBuf::from(&p),
             Err(_) => PathBuf::from("./databases/.sqlite"),
         };
-        let connection = sqlite::Connection::open_with_full_mutex(&db_path).unwrap();
-        connection.execute(state_create_articles_table()).unwrap();
-        connection.execute(state_create_tags_table()).unwrap();
+        let connection = sqlite::Connection::open_with_full_mutex(&db_path)?;
+        connection.execute(state_create_articles_table())?;
+        connection.execute(state_create_tags_table())?;
 
         let (schema, index, reader) = initialize_schema();
 
@@ -82,127 +82,119 @@ impl Core {
         })
     }
 
-    pub async fn list_up(&self, statement: &str) -> Json<Vec<ArticleData>> {
+    pub async fn list_up(&self, statement: &str) -> Result<Json<Vec<ArticleData>>, AcidError> {
         let mut articles = vec![];
-        self.db
-            .iterate(statement, |pairs| {
-                let mut article = ArticleData::new();
-                for &(column, value) in pairs.iter() {
-                    match column {
-                        "id" => article.id = value.unwrap().to_owned(),
-                        "title" => article.title = value.unwrap().to_owned(),
-                        "url" => article.url = value.unwrap().to_owned(),
-                        "og" => article.og = value.unwrap().to_owned(),
-                        "beginning" => article.beginning = value.unwrap().to_owned(),
-                        "progress" => article.progress = value.unwrap().parse().unwrap(),
-                        "archived" => {
-                            article.archived = if value.unwrap() == "0" { false } else { true }
-                        }
-                        "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
-                        "timestamp" => article.timestamp = value.unwrap().to_owned(),
-                        "tag" => article.tags.push(value.unwrap().to_owned()),
-                        _ => {}
+        self.db.iterate(statement, |pairs| {
+            let mut article = ArticleData::new();
+            for &(column, value) in pairs.iter() {
+                match column {
+                    "id" => article.id = value.unwrap().to_owned(),
+                    "title" => article.title = value.unwrap().to_owned(),
+                    "url" => article.url = value.unwrap().to_owned(),
+                    "og" => article.og = value.unwrap().to_owned(),
+                    "beginning" => article.beginning = value.unwrap().to_owned(),
+                    "progress" => article.progress = value.unwrap().parse().unwrap(),
+                    "archived" => {
+                        article.archived = if value.unwrap() == "0" { false } else { true }
                     }
+                    "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
+                    "timestamp" => article.timestamp = value.unwrap().to_owned(),
+                    "tag" => article.tags.push(value.unwrap().to_owned()),
+                    _ => {}
                 }
-                articles.push(article);
-                true
-            })
-            .unwrap();
+            }
+            articles.push(article);
+            true
+        })?;
 
         //get tags
         for mut article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
-            self.db
-                .iterate(state_list_tags(&id), |pairs| {
-                    for &(column, value) in pairs.iter() {
-                        match column {
-                            "tag" => tags.push(value.unwrap().to_owned()),
-                            _ => {}
-                        }
-                    }
-                    true
-                })
-                .unwrap();
-            article.tags = tags;
-        }
-
-        Json(articles)
-    }
-
-    pub async fn create(&self, payload: Payload) {
-        let url = payload.url;
-        info!("url: {}", url);
-
-        let mut input_u8 = payload.html.as_bytes();
-        let url_reqwest = reqwest::Url::parse(&url).unwrap();
-        let og = scrape_og(&payload.html);
-        let extracted = readability_fork::extractor::extract(&mut input_u8, &url_reqwest);
-        if let Ok(product) = extracted {
-            let ulid = ulid::Ulid::new().to_string();
-            let title = product.title.replace('\'', "''");
-
-            let mut cleaner = ammonia::Builder::default();
-            let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
-            let sanitized = cleaner.clean(&product.content).to_string();
-
-            let html = sanitized.replace('\'', "''");
-
-            let og = match og {
-                Some(og) => og,
-                None => "".to_owned(),
-            };
-            let plain = product.text.replace('\'', "''");
-            info!("plain: {}", plain);
-            let beginning = create_beginning(&plain);
-            info!("beginning: {}", beginning);
-            info!("{}: {} ({})", ulid, title, url);
-            self.db
-                .execute(state_add(
-                    &ulid, &url, &title, &html, &og, &plain, &beginning,
-                ))
-                .unwrap();
-
-            //add to schema
-            self.add_to_index(&ulid, &title, &plain);
-        }
-    }
-
-    pub async fn delete(&self, id: &str) {
-        self.db.execute(state_delete(id)).unwrap();
-        info!("DELETED: {}", id);
-        self.delete_from_index(id);
-        info!("DELETED FROM INEX: {}", id);
-    }
-
-    pub async fn read(&self, id: &str) -> Json<ArticleContent> {
-        let mut article = ArticleContent::new();
-        self.db
-            .iterate(state_read(id), |pairs| {
+            self.db.iterate(state_list_tags(&id), |pairs| {
                 for &(column, value) in pairs.iter() {
                     match column {
-                        "id" => article.id = value.unwrap().to_owned(),
-                        "url" => article.url = value.unwrap().to_owned(),
-                        "title" => article.title = value.unwrap().to_owned(),
-                        "html" => article.html = value.unwrap().to_owned(),
-                        "plain" => article.plain = value.unwrap().to_owned(),
-                        "position" => article.position = value.unwrap().parse().unwrap(),
-                        "progress" => article.progress = value.unwrap().parse().unwrap(),
-                        "archived" => {
-                            article.archived = if value.unwrap() == "0" { false } else { true }
-                        }
-                        "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
-                        "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
+                        "tag" => tags.push(value.unwrap().to_owned()),
                         _ => {}
                     }
                 }
                 true
-            })
-            .unwrap();
-        Json(article)
+            })?;
+            article.tags = tags;
+        }
+
+        Ok(Json(articles))
     }
 
-    pub async fn search(&self, query: &str) -> Json<Vec<ArticleData>> {
+    pub async fn create(&self, payload: Payload) -> Result<(), AcidError> {
+        let url = payload.url;
+        info!("url: {}", url);
+
+        let mut input_u8 = payload.html.as_bytes();
+        let url_reqwest = reqwest::Url::parse(&url)?;
+        let og = scrape_og(&payload.html);
+        let product = readability_fork::extractor::extract(&mut input_u8, &url_reqwest)?;
+
+        let ulid = ulid::Ulid::new().to_string();
+
+        let title = product.title.replace('\'', "''");
+
+        let mut cleaner = ammonia::Builder::default();
+        let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
+        let sanitized = cleaner.clean(&product.content).to_string();
+        let html = sanitized.replace('\'', "''");
+
+        let og = match og {
+            Some(og) => og,
+            None => "".to_owned(),
+        };
+
+        let plain = product.text.replace('\'', "''");
+        let beginning = create_beginning(&plain);
+        info!("{}: {} ({})", ulid, title, url);
+        self.db.execute(state_add(
+            &ulid, &url, &title, &html, &og, &plain, &beginning,
+        ))?;
+
+        //add to schema
+        self.add_to_index(&ulid, &title, &plain);
+        Ok(())
+    }
+
+    pub async fn delete(&self, id: &str) -> Result<(), AcidError> {
+        self.db.execute(state_delete(id))?;
+        info!("DELETED: {}", id);
+        self.delete_from_index(id);
+        info!("DELETED FROM INEX: {}", id);
+        Ok(())
+    }
+
+    pub async fn read(&self, id: &str) -> Result<Json<ArticleContent>, AcidError> {
+        let mut article = ArticleContent::new();
+        self.db.iterate(state_read(id), |pairs| {
+            for &(column, value) in pairs.iter() {
+                match column {
+                    "id" => article.id = value.unwrap().to_owned(),
+                    "url" => article.url = value.unwrap().to_owned(),
+                    "title" => article.title = value.unwrap().to_owned(),
+                    "html" => article.html = value.unwrap().to_owned(),
+                    "plain" => article.plain = value.unwrap().to_owned(),
+                    "position" => article.position = value.unwrap().parse().unwrap(),
+                    "progress" => article.progress = value.unwrap().parse().unwrap(),
+                    "archived" => {
+                        article.archived = if value.unwrap() == "0" { false } else { true }
+                    }
+                    "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
+                    "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
+                    _ => {}
+                }
+            }
+            true
+        })?;
+        Ok(Json(article))
+    }
+
+    pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, AcidError> {
         info!("query: {}", query);
         let title = self.schema.get_field("title").unwrap();
         let plain = self.schema.get_field("plain").unwrap();
@@ -223,7 +215,7 @@ impl Core {
         let queries = BooleanQuery::new(queries);
 
         let searcher = self.reader.searcher();
-        let found = searcher.search(&queries, &TopDocs::with_limit(50)).unwrap();
+        let found = searcher.search(&queries, &TopDocs::with_limit(50))?;
 
         let result: Vec<String> = found
             .iter()
@@ -244,28 +236,24 @@ impl Core {
         let mut articles = vec![];
         for id in result {
             let mut article = ArticleData::new();
-            self.db
-                .iterate(state_read(&id), |pairs| {
-                    for &(column, value) in pairs.iter() {
-                        match column {
-                            "id" => article.id = value.unwrap().to_owned(),
-                            "url" => article.url = value.unwrap().to_owned(),
-                            "title" => article.title = value.unwrap().to_owned(),
-                            "beginning" => article.beginning = value.unwrap().to_owned(),
-                            "progress" => article.progress = value.unwrap().parse().unwrap(),
-                            "archived" => {
-                                article.archived = if value.unwrap() == "0" { false } else { true }
-                            }
-                            "liked" => {
-                                article.liked = if value.unwrap() == "0" { false } else { true }
-                            }
-                            "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
-                            _ => {}
+            self.db.iterate(state_read(&id), |pairs| {
+                for &(column, value) in pairs.iter() {
+                    match column {
+                        "id" => article.id = value.unwrap().to_owned(),
+                        "url" => article.url = value.unwrap().to_owned(),
+                        "title" => article.title = value.unwrap().to_owned(),
+                        "beginning" => article.beginning = value.unwrap().to_owned(),
+                        "progress" => article.progress = value.unwrap().parse().unwrap(),
+                        "archived" => {
+                            article.archived = if value.unwrap() == "0" { false } else { true }
                         }
+                        "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
+                        "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
+                        _ => {}
                     }
-                    true
-                })
-                .unwrap();
+                }
+                true
+            })?;
             articles.push(article);
         }
 
@@ -273,82 +261,80 @@ impl Core {
         for mut article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
-            self.db
-                .iterate(state_list_tags(&id), |pairs| {
-                    for &(column, value) in pairs.iter() {
-                        match column {
-                            "tag" => tags.push(value.unwrap().to_owned()),
-                            _ => {}
-                        }
-                    }
-                    true
-                })
-                .unwrap();
-            article.tags = tags;
-        }
-
-        info!("{:#?}", articles);
-        Json(articles)
-    }
-
-    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) {
-        info!("id: {}, position: {}, progress: {}", id, pos, prog);
-        self.db
-            .execute(state_upgrade_progress(pos, prog, id))
-            .unwrap();
-    }
-
-    pub async fn toggle(&self, id: &str, toggle: &str) {
-        self.db.execute(state_toggle(toggle, id)).unwrap();
-        info!("TOGGLED: {} - {}", id, toggle);
-
-        self.db
-            .iterate(state_read(id), |pairs| {
+            self.db.iterate(state_list_tags(&id), |pairs| {
                 for &(column, value) in pairs.iter() {
                     match column {
-                        "archived" => info!("now archived: {}", value.unwrap()),
-                        "liked" => info!("now liked: {}", value.unwrap()),
+                        "tag" => tags.push(value.unwrap().to_owned()),
                         _ => {}
                     }
                 }
                 true
-            })
-            .unwrap();
+            })?;
+            article.tags = tags;
+        }
+
+        info!("{:#?}", articles);
+        Ok(Json(articles))
     }
 
-    pub async fn add_tag(&self, id: &str, tag: &str) {
-        self.db.execute(state_add_tag(id, tag)).unwrap();
+    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), AcidError> {
+        info!("id: {}, position: {}, progress: {}", id, pos, prog);
+        self.db.execute(state_upgrade_progress(pos, prog, id))?;
+        Ok(())
+    }
+
+    pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), AcidError> {
+        self.db.execute(state_toggle(toggle, id))?;
+        info!("TOGGLED: {} - {}", id, toggle);
+
+        self.db.iterate(state_read(id), |pairs| {
+            for &(column, value) in pairs.iter() {
+                match column {
+                    "archived" => info!("now archived: {}", value.unwrap()),
+                    "liked" => info!("now liked: {}", value.unwrap()),
+                    _ => {}
+                }
+            }
+            true
+        })?;
+        Ok(())
+    }
+
+    pub async fn add_tag(&self, id: &str, tag: &str) -> Result<(), AcidError> {
+        self.db.execute(state_add_tag(id, tag))?;
         info!("Add tag {} to ID {}", tag, id);
+        Ok(())
     }
 
-    pub async fn delete_tag(&self, id: &str, tag: &str) {
-        self.db.execute(state_delete_tag(id, tag)).unwrap();
+    pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), AcidError> {
+        self.db.execute(state_delete_tag(id, tag))?;
         info!("Delete tag {} to ID {}", tag, id);
+        Ok(())
     }
     //add to schema
-    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) {
-        let mut index_writer = self.index.writer(50_000_000).unwrap();
+    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), AcidError> {
+        let mut index_writer = self.index.writer(50_000_000)?;
         let schema_id = self.schema.get_field("id").unwrap();
         let schema_title = self.schema.get_field("title").unwrap();
         let schema_plain = self.schema.get_field("plain").unwrap();
-        index_writer
-            .add_document(tantivy::doc!(
-                schema_id => ulid,
-                schema_title => title,
-                schema_plain => plain
-            ))
-            .unwrap();
-        index_writer.commit().unwrap();
+        index_writer.add_document(tantivy::doc!(
+            schema_id => ulid,
+            schema_title => title,
+            schema_plain => plain
+        ))?;
+        index_writer.commit()?;
         drop(index_writer);
+        Ok(())
     }
 
-    fn delete_from_index(&self, id: &str) {
-        let mut index_writer = self.index.writer(50_000_000).unwrap();
+    fn delete_from_index(&self, id: &str) -> Result<(), AcidError> {
+        let mut index_writer = self.index.writer(50_000_000)?;
         let schema_id = self.schema.get_field("id").unwrap();
         let term = Term::from_field_text(schema_id, id);
         index_writer.delete_term(term);
-        index_writer.commit().unwrap();
+        index_writer.commit()?;
         drop(index_writer);
+        Ok(())
     }
 
     pub async fn health(&self) -> String {

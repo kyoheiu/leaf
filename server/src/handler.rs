@@ -22,7 +22,7 @@ pub async fn health(State(core): State<Arc<Core>>) -> String {
 pub async fn list_up(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Json<Vec<ArticleData>> {
+) -> Result<Json<Vec<ArticleData>>, AcidError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("reload after {}", id);
@@ -36,7 +36,7 @@ pub async fn list_up(
 pub async fn list_up_archived(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Json<Vec<ArticleData>> {
+) -> Result<Json<Vec<ArticleData>>, AcidError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         core.list_up(&state_reload_archived(&id)).await
@@ -49,7 +49,7 @@ pub async fn list_up_archived(
 pub async fn list_up_liked(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Json<Vec<ArticleData>> {
+) -> Result<Json<Vec<ArticleData>>, AcidError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         core.list_up(&state_reload_liked(&id)).await
@@ -59,18 +59,26 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create(State(core): State<Arc<Core>>, Json(payload): Json<Payload>) {
-    info!("{:#?}", payload);
-    core.create(payload).await;
+pub async fn create(
+    State(core): State<Arc<Core>>,
+    Json(payload): Json<Payload>,
+) -> Result<(), AcidError> {
+    core.create(payload).await
 }
 
 #[debug_handler]
-pub async fn read(State(core): State<Arc<Core>>, Path(id): Path<String>) -> Json<ArticleContent> {
+pub async fn read(
+    State(core): State<Arc<Core>>,
+    Path(id): Path<String>,
+) -> Result<Json<ArticleContent>, AcidError> {
     core.read(&id).await
 }
 
 #[debug_handler]
-pub async fn delete_article(State(core): State<Arc<Core>>, Path(id): Path<String>) {
+pub async fn delete_article(
+    State(core): State<Arc<Core>>,
+    Path(id): Path<String>,
+) -> Result<(), AcidError> {
     core.delete(&id).await
 }
 
@@ -80,11 +88,11 @@ pub async fn update_article(
     Path(id): Path<String>,
     Query(param): Query<BTreeMap<String, String>>,
     body: String,
-) {
+) -> Result<(), AcidError> {
     if param.contains_key("toggle") {
         let to_toggle = param.get("toggle").unwrap();
         log::info!("query: {} {}", id, to_toggle);
-        core.toggle(&id, &to_toggle).await
+        core.toggle_state(&id, &to_toggle).await
     } else if param.contains_key("pos") && param.contains_key("prog") {
         let pos = param.get("pos").unwrap().parse::<u16>().unwrap();
         let prog = param.get("prog").unwrap().parse::<u16>().unwrap();
@@ -95,8 +103,11 @@ pub async fn update_article(
                 Kind::Add => core.add_tag(&id, &body.trim().to_lowercase()).await,
                 Kind::Delete => core.delete_tag(&id, &body.trim().to_lowercase()).await,
             }
+        } else {
+            Ok(())
         }
     } else {
+        Ok(())
     }
 }
 
@@ -104,7 +115,7 @@ pub async fn update_article(
 pub async fn search(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Json<Vec<ArticleData>> {
+) -> Result<Json<Vec<ArticleData>>, AcidError> {
     let mut query = String::new();
     for (k, v) in param {
         if k == "q" {
@@ -120,6 +131,6 @@ pub async fn search(
 pub async fn list_up_tag(
     State(core): State<Arc<Core>>,
     Path(name): Path<String>,
-) -> Json<Vec<ArticleData>> {
+) -> Result<Json<Vec<ArticleData>>, AcidError> {
     core.list_up(&state_list_tag(&name.to_lowercase())).await
 }

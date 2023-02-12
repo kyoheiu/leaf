@@ -33,7 +33,7 @@ async fn main() -> Result<(), AcidError> {
                     }
                 }
             } else {
-                std::fs::create_dir(db_path).unwrap();
+                std::fs::create_dir(db_path)?;
                 info!("Created databases directory.");
                 let _core = Core::new()?;
                 Ok(info!("Created databases."))
