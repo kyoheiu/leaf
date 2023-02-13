@@ -1,14 +1,14 @@
 version: "3"
 services:
   server:
-    build: server
+    image: docker.io/kyoheiudev/acidpaper-server:v0.1.0
     container_name: server
     volumes:
       - ./server/databases:/home/server/databases
     ports:
       - 8000:8000
   client:
-    build: client
+    image: docker.io/kyoheiudev/acidpaper-client:v0.1.0
     container_name: client
     ports:
       - 3000:3000
