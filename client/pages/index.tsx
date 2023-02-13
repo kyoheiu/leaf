@@ -45,9 +45,9 @@ export default function Home({
 
   useEffect(() => {
     if (isBottom) {
-      const target =
-        `http://${process.env.HOST}:8000/articles?reload=` +
-        list.slice(-1)[0].id;
+      const target = `http://${process.env.HOST}:8000/articles?reload=${
+        list.slice(-1)[0].id
+      }`;
       fetch(target).then((res) =>
         res.json().then((j) => {
           if (j.length === 0) {
@@ -77,7 +77,7 @@ export default function Home({
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
-              key={"index-element" + index.toString()}
+              key={`index-element${index.toString()}`}
               element={e}
               kind={ElementKind.Top}
             />

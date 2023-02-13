@@ -83,7 +83,7 @@ export const Header = () => {
       .split(/(\s+)/)
       .filter((x) => x.trim().length > 0)
       .join("+");
-    router.push("/search?q=" + split);
+    router.push(`/search?q=${split}`);
   };
 
   return (
@@ -97,17 +97,6 @@ export const Header = () => {
             href="/"
           >
             acidpaper
-          </MuiLink>
-        </Grid>
-        <Grid item xs={6.4}></Grid>
-        <Grid item xs={0.6}>
-          <MuiLink component={Link} href="/archived">
-            <ArchiveIcon sx={{ fontSize: 20 }} />
-          </MuiLink>
-        </Grid>
-        <Grid item xs={0.6}>
-          <MuiLink component={Link} href="/liked">
-            <FavoriteIcon sx={{ fontSize: 20 }} />
           </MuiLink>
         </Grid>
         <Grid item xs={0.6}>
@@ -163,6 +152,17 @@ export const Header = () => {
               </Button>
             </DialogActions>
           </Dialog>
+        </Grid>
+        <Grid item xs={6.4} />
+        <Grid item xs={0.6}>
+          <MuiLink component={Link} href="/archived">
+            <ArchiveIcon sx={{ fontSize: 20 }} />
+          </MuiLink>
+        </Grid>
+        <Grid item xs={0.6}>
+          <MuiLink component={Link} href="/liked">
+            <FavoriteIcon sx={{ fontSize: 20 }} />
+          </MuiLink>
         </Grid>
         <Grid item xs={0.6}>
           <MuiLink href="#" onClick={toggle_theme}>
