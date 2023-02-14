@@ -8,11 +8,8 @@ use super::statements::*;
 use super::types::{ArticleContent, ArticleData};
 
 use axum::Json;
-use axum::{
-    routing::{delete, get, post, put},
-    Router,
-};
-use log::{error, info};
+use axum::{routing::get, Router};
+use log::info;
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
@@ -279,25 +276,12 @@ impl Core {
     }
 
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), AcidError> {
-        info!("id: {}, position: {}, progress: {}", id, pos, prog);
         self.db.execute(state_upgrade_progress(pos, prog, id))?;
         Ok(())
     }
 
     pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), AcidError> {
         self.db.execute(state_toggle(toggle, id))?;
-        info!("TOGGLED: {} - {}", id, toggle);
-
-        self.db.iterate(state_read(id), |pairs| {
-            for &(column, value) in pairs.iter() {
-                match column {
-                    "archived" => info!("now archived: {}", value.unwrap()),
-                    "liked" => info!("now liked: {}", value.unwrap()),
-                    _ => {}
-                }
-            }
-            true
-        })?;
         Ok(())
     }
 
@@ -309,7 +293,7 @@ impl Core {
 
     pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), AcidError> {
         self.db.execute(state_delete_tag(id, tag))?;
-        info!("Delete tag {} to ID {}", tag, id);
+        info!("Delete tag {} of ID {}", tag, id);
         Ok(())
     }
     //add to schema

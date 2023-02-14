@@ -25,7 +25,7 @@ async fn main() -> Result<(), AcidError> {
                     Ok(_) => {
                         info!("Deleted old databases directory.");
                         let _core = Core::new()?;
-                        Ok(info!("Created databases."))
+                        Ok(info!("Created new databases."))
                     }
                     Err(e) => {
                         error!("{}", e);
@@ -36,7 +36,7 @@ async fn main() -> Result<(), AcidError> {
                 std::fs::create_dir(db_path)?;
                 info!("Created databases directory.");
                 let _core = Core::new()?;
-                Ok(info!("Created databases."))
+                Ok(info!("Created new databases."))
             }
         } else {
             warn!("Invalid argument.");

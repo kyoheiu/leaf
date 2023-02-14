@@ -8,7 +8,6 @@ use super::types::*;
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
-use log::info;
 use std::collections::BTreeMap;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -25,7 +24,6 @@ pub async fn list_up(
 ) -> Result<Json<Vec<ArticleData>>, AcidError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
-        info!("reload after {}", id);
         core.list_up(&state_reload(&id)).await
     } else {
         core.list_up(&state_list_up()).await
@@ -91,7 +89,6 @@ pub async fn update_article(
 ) -> Result<(), AcidError> {
     if param.contains_key("toggle") {
         let to_toggle = param.get("toggle").unwrap();
-        log::info!("query: {} {}", id, to_toggle);
         core.toggle_state(&id, &to_toggle).await
     } else if param.contains_key("pos") && param.contains_key("prog") {
         let pos = param.get("pos").unwrap().parse::<u16>().unwrap();
