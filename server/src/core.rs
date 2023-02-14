@@ -21,6 +21,8 @@ use tantivy::schema::Schema;
 use tantivy::Term;
 use tower_http::cors::{Any, CorsLayer};
 
+const SEARCH_LIMIT: usize = 100;
+
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
     pub schema: Schema,
@@ -215,7 +217,7 @@ impl Core {
         let queries = BooleanQuery::new(queries);
 
         let searcher = self.reader.searcher();
-        let found = searcher.search(&queries, &TopDocs::with_limit(50))?;
+        let found = searcher.search(&queries, &TopDocs::with_limit(SEARCH_LIMIT))?;
 
         let result: Vec<String> = found
             .iter()
@@ -273,7 +275,6 @@ impl Core {
             article.tags = tags;
         }
 
-        info!("{:#?}", articles);
         Ok(Json(articles))
     }
 
