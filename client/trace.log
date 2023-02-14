@@ -1,0 +1,517 @@
+Explanation:
+module /Users/next-user/src/magic-ui/pages/index.js 24s (total 33s, self 163 ms) [read-resource 873 µs, next-babel-turbo-loader 135 ms]
+       ════════╤═══════════════════════════════════ ═╤═        ═╤═       ═╤════   ═══════════╤════════════════════════════════════════
+               └─ name of the processed module       │          │         │                  └─ timings of nested steps
+                                                     │          │         └─ building the module itself (including overlapping parallel actions)
+                                                     │          └─ total build time of this modules and all nested ones (including overlapping parallel actions)
+                                                     └─ how long until the module and all nested modules took compiling (wall time, without overlapping actions)
+
+module lodash (lodash/camelCase.js + 281) 295 ms (self 958 ms) [read-resource 936 ms]
+       ═╤════  ══════╤════════════   ═╤═
+        │            │                └─ number of modules that are merged into that line
+        │            └─ first module that is imported
+        └─ npm package name
+
+
+hot reloader
+├─ start 66 ms (self 2 µs)
+│  ├─ clean 286 µs
+│  └─ get-webpack-config 64 ms
+│     ├─ get-page-paths 953 µs
+│     ├─ create-pages-mapping 336 µs
+│     ├─ create-entrypoints 2 ms
+│     └─ generate-webpack-config 61 ms
+├─ client compilation 2s
+│  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  ├─ entry next/dist/client/dev/amp-dev
+│  ├─ entry next/dist/client/next-dev.js
+│  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  ├─ entry next/dist/client/router.js
+│  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  ├─ module next (next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=private-next-pages%2F_app&page=%2F_app!) 1.7s (total 3.3s, self 16 ms) [next-client-pages-loader 621 µs]
+│  │  └─ module /home/kyohei/acidpaper/client/pages/_app.tsx 1.6s (total 3.3s, self 35 ms) [next-swc-loader 23 ms]
+│  │     ├─ module /home/kyohei/acidpaper/client/context/ColorMode.ts 6.6 ms [next-swc-loader 3.9 ms]
+│  │     ├─ module next-auth (next-auth/react/index.js + 5) 1.2s (total 1.8s, self 1.8s) [read-resource 1.8s]
+│  │     │  ├─ module react (react/jsx-runtime.js + 1) 107 ms (self 160 ms) [read-resource 148 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/interopRequireDefault.js) 13 ms [read-resource 12 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/typeof.js) 12 ms [read-resource 11 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/defineProperty.js + 2) 13 ms (self 30 ms) [read-resource 29 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/asyncToGenerator.js) 14 ms [read-resource 14 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/slicedToArray.js + 5) 15 ms (self 58 ms) [read-resource 56 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/regenerator/index.js + 1) 15 ms (self 36 ms) [read-resource 31 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/assertThisInitialized.js) 196 ms [read-resource 196 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/classCallCheck.js) 196 ms [read-resource 195 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/createClass.js) 196 ms [read-resource 196 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/inherits.js + 1) 197 ms (self 206 ms) [read-resource 205 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/possibleConstructorReturn.js) 202 ms [read-resource 201 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/getPrototypeOf.js) 204 ms [read-resource 203 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/wrapNativeSuper.js + 3) 204 ms (self 251 ms) [read-resource 249 ms]
+│  │     │  └─ module next (next/dist/build/polyfills/process.js + 1) 44 ms (self 67 ms) [read-resource 66 ms]
+│  │     ├─ module /home/kyohei/acidpaper/client/styles/globals.css 819 ms (total 772 ms, self 4.4 ms) [next-style-loader 1.1 ms]
+│  │     │  ├─ module /home/kyohei/acidpaper/client/styles/globals.css 701 ms (total 655 ms, self 547 ms) [read-resource 48 ms, postcss-loader 466 ms, css-loader 29 ms]
+│  │     │  │  └─ module next (next/dist/build/webpack/loaders/css-loader/src/runtime/api.js) 108 ms [read-resource 107 ms]
+│  │     │  └─ module next (next/dist/build/webpack/loaders/next-style-loader/runtime/injectStylesIntoStyleTag.js) 113 ms [read-resource 105 ms]
+│  │     ├─ module react (react/jsx-dev-runtime.js + 1) 72 ms (self 176 ms) [read-resource 167 ms]
+│  │     ├─ module react (react/index.js + 1) 404 ms (self 499 ms) [read-resource 468 ms]
+│  │     ├─ module @mui/material (@mui/material/styles/index.js + 33) 749 ms (total 164 ms, self 1.1s) [read-resource 1.1s]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/esm/extends.js) 6.8 ms [read-resource 6 ms]
+│  │     │  ├─ module @babel/runtime (@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js) 7 ms [read-resource 6.7 ms]
+│  │     │  ├─ module @mui/utils (@mui/utils/esm/index.js + 40) 230 ms (total 9.3 ms, self 1.2s) [read-resource 1.2s]
+│  │     │  │  └─ module react-is (react-is/index.js + 1) 3.4 ms (self 8 ms) [read-resource 6.6 ms]
+│  │     │  └─ module @mui/system (@mui/system/esm/index.js + 60) 326 ms (total 112 ms, self 2s) [read-resource 2s]
+│  │     │     ├─ module @mui/styled-engine (@mui/styled-engine/index.js + 4) 144 ms (total 94 ms, self 45 ms) [read-resource 43 ms]
+│  │     │     │  ├─ module @emotion/styled (@emotion/styled/dist/emotion-styled.browser.esm.js + 1) 85 ms (total 32 ms, self 9.7 ms) [read-resource 7.5 ms]
+│  │     │     │  │  ├─ module @emotion/utils (@emotion/utils/dist/emotion-utils.browser.esm.js) 1.6 ms [read-resource 1.1 ms]
+│  │     │     │  │  ├─ module @emotion/is-prop-valid (@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js) 3.8 ms [read-resource 2 ms]
+│  │     │     │  │  ├─ module @emotion/use-insertion-effect-with-fallbacks (@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.browser.esm.js) 1.3 ms [read-resource 1 ms]
+│  │     │     │  │  └─ module @emotion/serialize (@emotion/serialize/dist/emotion-serialize.browser.esm.js) 40 ms (total 23 ms, self 6.2 ms) [read-resource 3.7 ms]
+│  │     │     │  │     ├─ module @emotion/unitless (@emotion/unitless/dist/emotion-unitless.esm.js) 3.7 ms [read-resource 3.3 ms]
+│  │     │     │  │     └─ module @emotion/hash (@emotion/hash/dist/emotion-hash.esm.js) 13 ms [read-resource 12 ms]
+│  │     │     │  └─ module @emotion/react (@emotion/react/dist/emotion-react.browser.esm.js + 2) 71 ms (total 47 ms, self 19 ms) [read-resource 12 ms]
+│  │     │     │     ├─ module hoist-non-react-statics (hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js) 24 ms (total 12 ms, self 6.8 ms) [read-resource 6.2 ms]
+│  │     │     │     │  └─ module react-is (react-is/index.js + 1) 5.4 ms (self 13 ms) [read-resource 12 ms]
+│  │     │     │     ├─ module @emotion/weak-memoize (@emotion/weak-memoize/dist/emotion-weak-memoize.esm.js) 6.8 ms [read-resource 6.6 ms]
+│  │     │     │     └─ module @emotion/cache (@emotion/cache/dist/emotion-cache.browser.esm.js) 27 ms (total 21 ms, self 10 ms) [read-resource 6.8 ms]
+│  │     │     │        ├─ module stylis (stylis/index.js + 7) 1.6 ms (self 62 ms) [read-resource 53 ms]
+│  │     │     │        ├─ module @emotion/memoize (@emotion/memoize/dist/emotion-memoize.esm.js) 5 ms [read-resource 4.6 ms]
+│  │     │     │        └─ module @emotion/sheet (@emotion/sheet/dist/emotion-sheet.browser.esm.js) 4.2 ms [read-resource 2.8 ms]
+│  │     │     ├─ module @mui/private-theming (@mui/private-theming/index.js + 6) 3.1 ms (self 54 ms) [read-resource 51 ms]
+│  │     │     └─ module clsx (clsx/dist/clsx.m.js) 3.7 ms [read-resource 3.3 ms]
+│  │     └─ module @mui/material (@mui/material/CssBaseline/index.js + 3) 652 ms (total 101 ms, self 160 ms) [read-resource 157 ms]
+│  │        └─ module prop-types (prop-types/index.js + 4) 210 ms (total 72 ms, self 100 ms) [read-resource 96 ms]
+│  │           ├─ module next (next/dist/build/polyfills/object-assign.js) 21 ms [read-resource 21 ms]
+│  │           └─ module react-is (react-is/index.js + 1) 14 ms (self 17 ms) [read-resource 15 ms]
+│  ├─ module next (next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=private-next-pages%2F_error&page=%2F_error!) 2 ms [next-client-pages-loader 186 µs]
+│  ├─ module next (next/dist/compiled/@next/react-refresh-utils/dist/runtime.js + 3) 21 ms (self 534 ms) [read-resource 514 ms]
+│  ├─ module next (next/dist/client/next-dev.js + 51) 1.5s (total 1.1s, self 2.2s) [next-swc-loader 1.7s, read-resource 213 ms]
+│  │  ├─ module @swc/helpers (@swc/helpers/lib/_interop_require_wildcard.js) 406 ms [read-resource 405 ms]
+│  │  ├─ module @swc/helpers (@swc/helpers/lib/_extends.js) 407 ms [read-resource 406 ms]
+│  │  ├─ module @swc/helpers (@swc/helpers/lib/_object_without_properties_loose.js) 36 ms [read-resource 34 ms]
+│  │  ├─ module react-dom (react-dom/client.js) 105 ms [read-resource 104 ms]
+│  │  └─ module react-dom (react-dom/index.js + 1) 480 ms (total 26 ms, self 209 ms) [read-resource 35 ms]
+│  │     └─ module scheduler (scheduler/index.js + 1) 15 ms (self 22 ms) [read-resource 19 ms]
+│  ├─ module next (next/dist/client/dev/amp-dev.js) 884 ms (total 479 ms, self 73 ms) [next-swc-loader 61 ms]
+│  │  └─ module @swc/helpers (@swc/helpers/lib/_async_to_generator.js) 406 ms [read-resource 406 ms]
+│  ├─ module next (next/dist/client/router.js + 31) 882 ms (total 486 ms, self 1.2s) [next-swc-loader 943 ms, read-resource 145 ms, build-module 626 µs]
+│  │  └─ module @swc/helpers (@swc/helpers/lib/_interop_require_default.js) 405 ms [read-resource 405 ms]
+│  ├─ webpack-compilation-seal 305 ms
+│  ├─ webpack-compilation-chunk-graph 11 ms
+│  ├─ webpack-compilation-optimize 1.5 ms
+│  ├─ webpack-compilation-optimize-modules 41 µs
+│  ├─ webpack-compilation-optimize-chunks 618 µs
+│  ├─ webpack-compilation-optimize-tree 141 µs
+│  ├─ webpack-compilation-hash 29 ms
+│  ├─ NextJsBuildManifest-createassets 2 ms
+│  └─ NextJsBuildManifest-generateClientManifest 1.1 ms
+├─ make 1.7s
+├─ emit 70 ms
+├─ server compilation 130 ms
+│  ├─ entry private-next-pages/_app
+│  ├─ entry private-next-pages/_error
+│  ├─ entry private-next-pages/_document
+│  ├─ module /home/kyohei/acidpaper/client/pages/_app.tsx 24 ms (total 8.6 ms, self 3.4 ms) [next-swc-loader 1.3 ms]
+│  │  ├─ module react/jsx-dev-runtime 341 µs
+│  │  ├─ module react 26 µs
+│  │  ├─ module next-auth/react 155 µs
+│  │  ├─ module /home/kyohei/acidpaper/client/context/ColorMode.ts 2.4 ms [next-swc-loader 1.8 ms]
+│  │  ├─ module /home/kyohei/acidpaper/client/styles/globals.css 2.3 ms [read-resource 1.2 ms]
+│  │  ├─ module @mui/material/styles 39 µs
+│  │  └─ module @mui/material/CssBaseline 17 µs
+│  ├─ module next (next/dist/pages/_error.js + 1) 32 ms (total 24 ms, self 8 ms) [next-swc-loader 4.5 ms]
+│  │  ├─ module @swc/helpers (@swc/helpers/lib/_interop_require_default.js) 16 ms [read-resource 16 ms]
+│  │  ├─ module ./side-effect 30 µs
+│  │  ├─ module ./amp-context 18 µs
+│  │  ├─ module ./head-manager-context 11 µs
+│  │  ├─ module ./amp-mode 20 µs
+│  │  ├─ module ./utils/warn-once 14 µs
+│  │  ├─ module @swc/helpers (@swc/helpers/lib/_extends.js) 2.1 ms [read-resource 1.7 ms]
+│  │  └─ module @swc/helpers (@swc/helpers/lib/_interop_require_wildcard.js) 1.4 ms [read-resource 872 µs]
+│  ├─ module next (next/dist/pages/_document.js + 2) 31 ms (total 20 ms, self 24 ms) [next-swc-loader 12 ms, read-resource 3 ms]
+│  │  ├─ module ../shared/lib/constants 23 µs
+│  │  ├─ module ../shared/lib/html-context 21 µs
+│  │  ├─ module ../server/get-page-files 21 µs
+│  │  ├─ module ../server/htmlescape 15 µs
+│  │  ├─ module ../server/utils 17 µs
+│  │  └─ module ../shared/lib/is-plain-object 28 µs
+│  ├─ webpack-compilation-seal 19 ms
+│  ├─ webpack-compilation-chunk-graph 456 µs
+│  ├─ webpack-compilation-optimize 680 µs
+│  ├─ webpack-compilation-optimize-modules 10 µs
+│  ├─ webpack-compilation-optimize-chunks 185 µs
+│  ├─ webpack-compilation-optimize-tree 40 µs
+│  └─ webpack-compilation-hash 2.3 ms
+├─ make 109 ms
+├─ emit 2.6 ms
+├─ edge-server compilation 6 ms
+│  ├─ webpack-compilation-seal 1.5 ms
+│  ├─ webpack-compilation-chunk-graph 36 µs
+│  ├─ webpack-compilation-optimize 118 µs
+│  ├─ webpack-compilation-optimize-modules 7 µs
+│  ├─ webpack-compilation-optimize-chunks 13 µs
+│  ├─ webpack-compilation-optimize-tree 7 µs
+│  └─ webpack-compilation-hash 111 µs
+├─ make 1.9 ms
+├─ emit 13 ms
+├─ client recompilation (new page discovered) 11s
+│  ├─ client compilation 11s
+│  │  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  │  ├─ entry next/dist/client/dev/amp-dev
+│  │  ├─ entry next/dist/client/next-dev.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  │  ├─ entry next/dist/client/router.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!
+│  │  ├─ module next (next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!) 7.9s (total 1.5s, self 2.5 ms) [next-client-pages-loader 77 µs]
+│  │  │  └─ module /home/kyohei/acidpaper/client/pages/index.tsx 7.8s (total 1.5s, self 9.5 ms) [next-swc-loader 3.4 ms]
+│  │  │     ├─ module /home/kyohei/acidpaper/client/components/ArticleElement.tsx 214 ms (total 164 ms, self 32 ms) [next-swc-loader 24 ms]
+│  │  │     │  ├─ module /home/kyohei/acidpaper/client/components/Tags.tsx 4.5 ms [next-swc-loader 2.8 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/FavoriteBorder.js) 30 ms [read-resource 30 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/Unarchive.js) 31 ms [read-resource 31 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/DeleteForever.js) 33 ms [read-resource 33 ms]
+│  │  │     │  └─ module @mui/icons-material (@mui/icons-material/RemoveCircleOutline.js) 33 ms [read-resource 31 ms]
+│  │  │     ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 436 ms (total 548 ms, self 24 ms) [next-swc-loader 12 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/Search.js) 27 ms [read-resource 27 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/Archive.js) 27 ms [read-resource 26 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/Favorite.js) 28 ms [read-resource 28 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/LightMode.js) 30 ms [read-resource 28 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/DarkMode.js) 28 ms [read-resource 27 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/Close.js) 31 ms [read-resource 30 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/Logout.js) 31 ms [read-resource 31 ms]
+│  │  │     │  ├─ module @mui/icons-material (@mui/icons-material/esm/index.js + 10555) 256 ms (self 🔥259s) [read-resource 🔥258s]
+│  │  │     │  ├─ module next (next/link.js + 3) 33 ms (self 73 ms) [read-resource 33 ms, next-swc-loader 25 ms]
+│  │  │     │  └─ module next (next/router.js) 34 ms [read-resource 33 ms]
+│  │  │     ├─ module /home/kyohei/acidpaper/client/components/Footer.tsx 5.4 ms [next-swc-loader 1.7 ms]
+│  │  │     ├─ module /home/kyohei/acidpaper/client/components/Login.tsx 206 ms (total 39 ms, self 12 ms) [next-swc-loader 9.5 ms]
+│  │  │     │  └─ module @mui/icons-material (@mui/icons-material/Login.js + 1) 27 ms (self 53 ms) [read-resource 50 ms]
+│  │  │     ├─ module /home/kyohei/acidpaper/client/types/types.ts 8.9 ms [next-swc-loader 5.8 ms]
+│  │  │     └─ module @mui/material (@mui/material/index.js + 472) 7.8s (total 772 ms, self 24s) [read-resource 24s]
+│  │  │        ├─ module @mui/base (@mui/base/composeClasses/index.js) 45 ms [read-resource 45 ms]
+│  │  │        ├─ module @mui/base (@mui/base/className/index.js) 44 ms [read-resource 44 ms]
+│  │  │        ├─ module @mui/base (@mui/base/ClickAwayListener/index.js + 1) 85 ms (self 111 ms) [read-resource 108 ms]
+│  │  │        ├─ module @mui/base (@mui/base/index.js + 98) 90 ms (self 5.2s) [read-resource 5.2s]
+│  │  │        ├─ module @mui/base (@mui/base/ModalUnstyled/index.js + 6) 41 ms (self 183 ms) [read-resource 179 ms]
+│  │  │        ├─ module @mui/base (@mui/base/NoSsr/index.js + 2) 42 ms (self 109 ms) [read-resource 108 ms]
+│  │  │        ├─ module @mui/base (@mui/base/Portal/index.js + 2) 53 ms (self 127 ms) [read-resource 126 ms]
+│  │  │        ├─ module @mui/base (@mui/base/TextareaAutosize/index.js + 1) 74 ms (self 114 ms) [read-resource 113 ms]
+│  │  │        ├─ module @mui/base (@mui/base/FocusTrap/index.js + 2) 70 ms (self 163 ms) [read-resource 158 ms]
+│  │  │        ├─ module @mui/base (@mui/base/BadgeUnstyled/index.js + 4) 71 ms (self 258 ms) [read-resource 257 ms]
+│  │  │        ├─ module react-transition-group (react-transition-group/esm/index.js + 10) 276 ms (total 55 ms, self 159 ms) [read-resource 150 ms]
+│  │  │        │  ├─ module @babel/runtime (@babel/runtime/helpers/esm/inheritsLoose.js + 1) 11 ms (self 12 ms) [read-resource 11 ms]
+│  │  │        │  ├─ module @babel/runtime (@babel/runtime/helpers/esm/assertThisInitialized.js) 10 ms [read-resource 10 ms]
+│  │  │        │  ├─ module dom-helpers (dom-helpers/esm/addClass.js + 1) 1.8 ms (self 8.2 ms) [read-resource 7.5 ms]
+│  │  │        │  └─ module dom-helpers (dom-helpers/esm/removeClass.js) 6.4 ms [read-resource 6 ms]
+│  │  │        ├─ module @mui/base (@mui/base/utils/index.js + 9) 27 ms (self 111 ms) [read-resource 108 ms]
+│  │  │        ├─ module @mui/base (@mui/base/PopperUnstyled/index.js + 2) 255 ms (total 25 ms, self 60 ms) [read-resource 57 ms]
+│  │  │        │  └─ module @popperjs/core (@popperjs/core/lib/index.js + 59) 662 µs (self 415 ms) [read-resource 392 ms]
+│  │  │        └─ module @mui/base (@mui/base/SliderUnstyled/index.js + 5) 32 ms (self 157 ms) [read-resource 151 ms]
+│  │  ├─ webpack-compilation-seal 2.5s
+│  │  ├─ webpack-compilation-chunk-graph 114 ms
+│  │  ├─ webpack-compilation-optimize 9.6 ms
+│  │  ├─ webpack-compilation-optimize-modules 45 µs
+│  │  ├─ webpack-compilation-optimize-chunks 1.6 ms
+│  │  ├─ webpack-compilation-optimize-tree 148 µs
+│  │  ├─ webpack-compilation-hash 401 ms
+│  │  ├─ NextJsBuildManifest-createassets 1.8 ms
+│  │  └─ NextJsBuildManifest-generateClientManifest 1.1 ms
+│  ├─ make 8s
+│  └─ emit 765 ms
+├─ server recompilation (new page discovered) 12s
+│  ├─ server compilation 771 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ module /home/kyohei/acidpaper/client/pages/index.tsx 138 ms (total 36 ms, self 5.2 ms) [next-swc-loader 1.6 ms]
+│  │  │  ├─ module /home/kyohei/acidpaper/client/components/ArticleElement.tsx 28 ms (total 11 ms, self 9.6 ms) [next-swc-loader 6.8 ms]
+│  │  │  │  ├─ module @mui/icons-material/FavoriteBorder 7 µs
+│  │  │  │  ├─ module @mui/icons-material/Unarchive 6 µs
+│  │  │  │  ├─ module @mui/icons-material/DeleteForever 7 µs
+│  │  │  │  ├─ module @mui/icons-material/RemoveCircleOutline 6 µs
+│  │  │  │  └─ module /home/kyohei/acidpaper/client/components/Tags.tsx 1.3 ms [next-swc-loader 797 µs]
+│  │  │  ├─ module /home/kyohei/acidpaper/client/components/Footer.tsx 3.5 ms [next-swc-loader 3 ms]
+│  │  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 125 ms (total 12 ms, self 5.5 ms) [next-swc-loader 3.3 ms]
+│  │  │  │  ├─ module @mui/icons-material 31 µs
+│  │  │  │  ├─ module @mui/icons-material/Search 10 µs
+│  │  │  │  ├─ module @mui/icons-material/Favorite 8 µs
+│  │  │  │  ├─ module @mui/icons-material/Archive 11 µs
+│  │  │  │  ├─ module @mui/icons-material/LightMode 7 µs
+│  │  │  │  ├─ module @mui/icons-material/DarkMode 6 µs
+│  │  │  │  ├─ module @mui/icons-material/Logout 6 µs
+│  │  │  │  ├─ module @mui/icons-material/Close 6 µs
+│  │  │  │  ├─ module next/router 15 µs
+│  │  │  │  └─ module next (next/link.js + 17) 97 ms (total 6.1 ms, self 153 ms) [read-resource 15 ms, next-swc-loader 93 ms]
+│  │  │  │     ├─ module ../shared/lib/router-context 39 µs
+│  │  │  │     ├─ module ../shared/lib/app-router-context 12 µs
+│  │  │  │     ├─ module ../shared/lib/router/utils/format-url 8 µs
+│  │  │  │     ├─ module ../shared/lib/router/utils/add-path-prefix 59 µs
+│  │  │  │     ├─ module @swc/helpers (@swc/helpers/lib/_object_without_properties_loose.js) 1.8 ms [read-resource 1.3 ms]
+│  │  │  │     ├─ module ../shared/lib/router/utils/remove-trailing-slash 39 µs
+│  │  │  │     ├─ module ../shared/lib/router/utils/parse-path 11 µs
+│  │  │  │     ├─ module ../mitt 35 µs
+│  │  │  │     ├─ module ../utils 8 µs
+│  │  │  │     ├─ module ./utils/is-dynamic 6 µs
+│  │  │  │     ├─ module ./utils/parse-relative-url 4 µs
+│  │  │  │     ├─ module ./utils/querystring 5 µs
+│  │  │  │     ├─ module ./utils/resolve-rewrites 4 µs
+│  │  │  │     ├─ module ./utils/route-matcher 4 µs
+│  │  │  │     ├─ module ./utils/route-regex 4 µs
+│  │  │  │     ├─ module ./utils/get-next-pathname-info 4 µs
+│  │  │  │     ├─ module ./utils/format-next-pathname-info 4 µs
+│  │  │  │     ├─ module ./utils/compare-states 5 µs
+│  │  │  │     ├─ module ./utils/is-bot 4 µs
+│  │  │  │     ├─ module ../page-path/denormalize-page-path 17 µs
+│  │  │  │     ├─ module ../i18n/normalize-locale-path 7 µs
+│  │  │  │     ├─ module react-dom 17 µs
+│  │  │  │     ├─ module ../shared/lib/router/utils/get-asset-path-from-route 17 µs
+│  │  │  │     ├─ module @swc/helpers (@swc/helpers/lib/_async_to_generator.js) 2.9 ms [read-resource 2.4 ms]
+│  │  │  │     ├─ module ../shared/lib/router/utils/path-has-prefix 10 µs
+│  │  │  │     └─ module next/dist/compiled/react-is 20 µs
+│  │  │  ├─ module /home/kyohei/acidpaper/client/components/Login.tsx 26 ms (total 2.1 ms, self 2.1 ms) [next-swc-loader 1.1 ms]
+│  │  │  │  └─ module @mui/icons-material/Login 16 µs
+│  │  │  ├─ module /home/kyohei/acidpaper/client/types/types.ts 2.4 ms [next-swc-loader 2 ms]
+│  │  │  └─ module @mui/material 182 µs
+│  │  ├─ webpack-compilation-seal 45 ms
+│  │  ├─ webpack-compilation-chunk-graph 728 µs
+│  │  ├─ webpack-compilation-optimize 861 µs
+│  │  ├─ webpack-compilation-optimize-modules 9 µs
+│  │  ├─ webpack-compilation-optimize-chunks 93 µs
+│  │  ├─ webpack-compilation-optimize-tree 38 µs
+│  │  └─ webpack-compilation-hash 2 ms
+│  ├─ make 714 ms
+│  └─ emit 11 ms
+├─ client-success 0 µs
+├─ server recompilation (new page discovered) 45 ms
+│  ├─ server compilation 38 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ entry ./pages/api/auth/[...nextauth].ts
+│  │  ├─ module /home/kyohei/acidpaper/client/pages/api/auth/[...nextauth].ts 4.7 ms (total 2.9 ms, self 2.8 ms) [next-swc-loader 838 µs]
+│  │  │  ├─ module next-auth/providers/github 30 µs
+│  │  │  └─ module next-auth 7 µs
+│  │  ├─ webpack-compilation-seal 8.9 ms
+│  │  ├─ webpack-compilation-chunk-graph 750 µs
+│  │  ├─ webpack-compilation-optimize 384 µs
+│  │  ├─ webpack-compilation-optimize-modules 9 µs
+│  │  ├─ webpack-compilation-optimize-chunks 74 µs
+│  │  ├─ webpack-compilation-optimize-tree 8 µs
+│  │  └─ webpack-compilation-hash 2 ms
+│  ├─ make 28 ms
+│  └─ emit 2.3 ms
+├─ client-success 0 µs
+├─ client recompilation (/home/kyohei/acidpaper/client/components/Header.tsx) 1s
+│  ├─ client compilation 762 ms
+│  │  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  │  ├─ entry next/dist/client/dev/amp-dev
+│  │  ├─ entry next/dist/client/next-dev.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  │  ├─ entry next/dist/client/router.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!
+│  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 20 ms [next-swc-loader 3 ms]
+│  │  ├─ webpack-compilation-seal 508 ms
+│  │  ├─ webpack-compilation-chunk-graph 46 ms
+│  │  ├─ webpack-compilation-optimize 8.2 ms
+│  │  ├─ webpack-compilation-optimize-modules 9 µs
+│  │  ├─ webpack-compilation-optimize-chunks 757 µs
+│  │  ├─ webpack-compilation-optimize-tree 9 µs
+│  │  ├─ webpack-compilation-hash 57 ms
+│  │  ├─ NextJsBuildManifest-createassets 1.7 ms
+│  │  └─ NextJsBuildManifest-generateClientManifest 1.1 ms
+│  ├─ make 237 ms
+│  └─ emit 168 ms
+├─ server recompilation (/home/kyohei/acidpaper/client/components/Header.tsx) 1.1s
+│  ├─ server compilation 116 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 9.5 ms [next-swc-loader 2.6 ms]
+│  │  ├─ webpack-compilation-seal 16 ms
+│  │  ├─ webpack-compilation-chunk-graph 825 µs
+│  │  ├─ webpack-compilation-optimize 319 µs
+│  │  ├─ webpack-compilation-optimize-modules 9 µs
+│  │  ├─ webpack-compilation-optimize-chunks 60 µs
+│  │  ├─ webpack-compilation-optimize-tree 8 µs
+│  │  └─ webpack-compilation-hash 1.5 ms
+│  ├─ make 99 ms
+│  └─ emit 3.6 ms
+├─ client-success 1 µs
+├─ server recompilation (new page discovered) 20 ms
+│  ├─ server compilation 13 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ entry ./pages/api/auth/[...nextauth].ts
+│  │  ├─ webpack-compilation-seal 4.9 ms
+│  │  ├─ webpack-compilation-chunk-graph 404 µs
+│  │  ├─ webpack-compilation-optimize 441 µs
+│  │  ├─ webpack-compilation-optimize-modules 9 µs
+│  │  ├─ webpack-compilation-optimize-chunks 235 µs
+│  │  ├─ webpack-compilation-optimize-tree 11 µs
+│  │  └─ webpack-compilation-hash 1.4 ms
+│  ├─ make 7 ms
+│  └─ emit 1.6 ms
+├─ client recompilation (/home/kyohei/acidpaper/client/components/Header.tsx) 658 ms
+│  ├─ client compilation 613 ms
+│  │  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  │  ├─ entry next/dist/client/dev/amp-dev
+│  │  ├─ entry next/dist/client/next-dev.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  │  ├─ entry next/dist/client/router.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!
+│  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 18 ms [next-swc-loader 4.7 ms]
+│  │  ├─ webpack-compilation-seal 333 ms
+│  │  ├─ webpack-compilation-chunk-graph 75 ms
+│  │  ├─ webpack-compilation-optimize 8.4 ms
+│  │  ├─ webpack-compilation-optimize-modules 95 µs
+│  │  ├─ webpack-compilation-optimize-chunks 2.1 ms
+│  │  ├─ webpack-compilation-optimize-tree 11 µs
+│  │  ├─ webpack-compilation-hash 28 ms
+│  │  ├─ NextJsBuildManifest-createassets 504 µs
+│  │  └─ NextJsBuildManifest-generateClientManifest 326 µs
+│  ├─ make 259 ms
+│  └─ emit 9.7 ms
+├─ server recompilation (/home/kyohei/acidpaper/client/components/Header.tsx) 759 ms
+│  ├─ server compilation 84 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 8.1 ms [next-swc-loader 2.7 ms]
+│  │  ├─ webpack-compilation-seal 3.8 ms
+│  │  ├─ webpack-compilation-chunk-graph 341 µs
+│  │  ├─ webpack-compilation-optimize 240 µs
+│  │  ├─ webpack-compilation-optimize-modules 7 µs
+│  │  ├─ webpack-compilation-optimize-chunks 46 µs
+│  │  ├─ webpack-compilation-optimize-tree 8 µs
+│  │  └─ webpack-compilation-hash 945 µs
+│  ├─ make 79 ms
+│  └─ emit 9.5 ms
+├─ client-success 0 µs
+├─ client recompilation (/home/kyohei/acidpaper/client/components/Header.tsx) 433 ms
+│  ├─ client compilation 391 ms
+│  │  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  │  ├─ entry next/dist/client/dev/amp-dev
+│  │  ├─ entry next/dist/client/next-dev.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  │  ├─ entry next/dist/client/router.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!
+│  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 7 ms [next-swc-loader 2.6 ms]
+│  │  ├─ webpack-compilation-seal 217 ms
+│  │  ├─ webpack-compilation-chunk-graph 56 ms
+│  │  ├─ webpack-compilation-optimize 7.2 ms
+│  │  ├─ webpack-compilation-optimize-modules 9 µs
+│  │  ├─ webpack-compilation-optimize-chunks 1.5 ms
+│  │  ├─ webpack-compilation-optimize-tree 12 µs
+│  │  ├─ webpack-compilation-hash 25 ms
+│  │  ├─ NextJsBuildManifest-createassets 308 µs
+│  │  └─ NextJsBuildManifest-generateClientManifest 201 µs
+│  ├─ make 165 ms
+│  └─ emit 6.8 ms
+├─ server recompilation (/home/kyohei/acidpaper/client/components/Header.tsx) 513 ms
+│  ├─ server compilation 71 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ module /home/kyohei/acidpaper/client/components/Header.tsx 6 ms [next-swc-loader 2 ms]
+│  │  ├─ webpack-compilation-seal 3.4 ms
+│  │  ├─ webpack-compilation-chunk-graph 332 µs
+│  │  ├─ webpack-compilation-optimize 243 µs
+│  │  ├─ webpack-compilation-optimize-modules 6 µs
+│  │  ├─ webpack-compilation-optimize-chunks 78 µs
+│  │  ├─ webpack-compilation-optimize-tree 7 µs
+│  │  └─ webpack-compilation-hash 785 µs
+│  ├─ make 66 ms
+│  └─ emit 953 µs
+├─ client-success 0 µs
+├─ client recompilation (new page discovered) 886 ms
+│  ├─ client compilation 814 ms
+│  │  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  │  ├─ entry next/dist/client/dev/amp-dev
+│  │  ├─ entry next/dist/client/next-dev.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  │  ├─ entry next/dist/client/router.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Farticles%2F%5Bid%5D.tsx&page=%2Farticles%2F%5Bid%5D!
+│  │  ├─ module next (next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Farticles%2F%5Bid%5D.tsx&page=%2Farticles%2F%5Bid%5D!) 375 ms (total 12 ms, self 3.2 ms) [next-client-pages-loader 404 µs]
+│  │  │  └─ module /home/kyohei/acidpaper/client/pages/articles/[id].tsx 8.4 ms [next-swc-loader 3 ms]
+│  │  ├─ webpack-compilation-seal 233 ms
+│  │  ├─ webpack-compilation-chunk-graph 41 ms
+│  │  ├─ webpack-compilation-optimize 7 ms
+│  │  ├─ webpack-compilation-optimize-modules 106 µs
+│  │  ├─ webpack-compilation-optimize-chunks 863 µs
+│  │  ├─ webpack-compilation-optimize-tree 9 µs
+│  │  ├─ webpack-compilation-hash 31 ms
+│  │  ├─ NextJsBuildManifest-createassets 419 µs
+│  │  └─ NextJsBuildManifest-generateClientManifest 249 µs
+│  ├─ make 572 ms
+│  └─ emit 33 ms
+├─ server recompilation (new page discovered) 998 ms
+│  ├─ server compilation 106 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ entry ./pages/articles/[id].tsx
+│  │  ├─ module /home/kyohei/acidpaper/client/pages/articles/[id].tsx 11 ms [next-swc-loader 2.3 ms]
+│  │  ├─ webpack-compilation-seal 6.2 ms
+│  │  ├─ webpack-compilation-chunk-graph 364 µs
+│  │  ├─ webpack-compilation-optimize 283 µs
+│  │  ├─ webpack-compilation-optimize-modules 6 µs
+│  │  ├─ webpack-compilation-optimize-chunks 52 µs
+│  │  ├─ webpack-compilation-optimize-tree 10 µs
+│  │  └─ webpack-compilation-hash 923 µs
+│  ├─ make 99 ms
+│  └─ emit 1.8 ms
+├─ client-success 0 µs
+├─ client recompilation (new page discovered) 701 ms
+│  ├─ client compilation 476 ms
+│  │  ├─ entry next/dist/compiled/@next/react-refresh-utils/dist/runtime.js
+│  │  ├─ entry next/dist/client/dev/amp-dev
+│  │  ├─ entry next/dist/client/next-dev.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_app&page=%2F_app!
+│  │  ├─ entry next/dist/client/router.js
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=private-next-pages%2F_error&page=%2F_error!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Findex.tsx&page=%2F!
+│  │  ├─ entry next-client-pages-loader?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Farchived%2Findex.tsx&page=%2Farchived!
+│  │  ├─ module next (next/dist/build/webpack/loaders/next-client-pages-loader.js?absolutePagePath=%2Fhome%2Fkyohei%2Facidpaper%2Fclient%2Fpages%2Farchived%2Findex.tsx&page=%2Farchived!) 142 ms (total 6.9 ms, self 862 µs) [next-client-pages-loader 54 µs]
+│  │  │  └─ module /home/kyohei/acidpaper/client/pages/archived/index.tsx 6 ms [next-swc-loader 1.8 ms]
+│  │  ├─ webpack-compilation-seal 303 ms
+│  │  ├─ webpack-compilation-chunk-graph 47 ms
+│  │  ├─ webpack-compilation-optimize 5.8 ms
+│  │  ├─ webpack-compilation-optimize-modules 6 µs
+│  │  ├─ webpack-compilation-optimize-chunks 1.1 ms
+│  │  ├─ webpack-compilation-optimize-tree 10 µs
+│  │  ├─ webpack-compilation-hash 53 ms
+│  │  ├─ NextJsBuildManifest-createassets 239 µs
+│  │  └─ NextJsBuildManifest-generateClientManifest 110 µs
+│  ├─ make 164 ms
+│  └─ emit 182 ms
+├─ server recompilation (new page discovered) 853 ms
+│  ├─ server compilation 139 ms
+│  │  ├─ entry private-next-pages/_app
+│  │  ├─ entry private-next-pages/_error
+│  │  ├─ entry private-next-pages/_document
+│  │  ├─ entry ./pages/index.tsx
+│  │  ├─ entry ./pages/archived/index.tsx
+│  │  ├─ module /home/kyohei/acidpaper/client/pages/archived/index.tsx 6.3 ms [next-swc-loader 2.2 ms]
+│  │  ├─ webpack-compilation-seal 8.4 ms
+│  │  ├─ webpack-compilation-chunk-graph 556 µs
+│  │  ├─ webpack-compilation-optimize 367 µs
+│  │  ├─ webpack-compilation-optimize-modules 6 µs
+│  │  ├─ webpack-compilation-optimize-chunks 71 µs
+│  │  ├─ webpack-compilation-optimize-tree 11 µs
+│  │  └─ webpack-compilation-hash 988 µs
+│  ├─ make 129 ms
+│  └─ emit 3.5 ms
+├─ client-success 0 µs
+├─ client-hmr-latency 1.2s
+├─ client-hmr-latency 968 ms
+└─ client-hmr-latency 836 ms

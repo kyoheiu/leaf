@@ -1,26 +1,22 @@
 import Link from "next/link";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Link as MuiLink,
-} from "@mui/material";
-import { createContext, useContext, useEffect, useState } from "react";
-import { Grid, Input, PaletteMode, TextField } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { useContext, useState } from "react";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { Link as MuiLink } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import SearchIcon from "@mui/icons-material/Search";
-import { Add } from "@mui/icons-material";
+import Add from "@mui/icons-material/Add";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
-import InvertColorsIcon from "@mui/icons-material/InvertColors";
-import { ThemeContext } from "@emotion/react";
-import { ColorMode } from "../context/ColorMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { ColorMode } from "../context/ColorMode";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 

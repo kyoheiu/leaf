@@ -1,5 +1,3 @@
-import { Palette } from "@mui/icons-material";
-import { PaletteMode } from "@mui/material";
 import React from "react";
 import { createContext } from "react";
 

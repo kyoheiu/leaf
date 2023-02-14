@@ -19,4 +19,4 @@ down:
 	sudo docker-compose down --remove-orphans
 
 remove:
-	docker rmi $(docker images -q) -f
+	sudo docker rmi $(sudo docker images -q) -f

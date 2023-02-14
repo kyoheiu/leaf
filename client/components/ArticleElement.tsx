@@ -2,23 +2,23 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Link as MuiLink,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { Button, Chip, Grid, LinearProgress } from "@mui/material";
-import { Avatar } from "@mui/material";
+import { Link as MuiLink } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Avatar from "@mui/material/Avatar";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import LabelOffIcon from "@mui/icons-material/LabelOff";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 export default function ArticleElement(props: ElementProps) {
@@ -35,11 +35,10 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const submitAndClose = async () => {
-    const element = document.getElementById(article.data.id + "_add_tag");
+    const element = document.getElementById(`${article.data.id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
     console.log(tag);
-    const target =
-      "http://localhost:8000/articles/" + article.data.id + "?kind=add";
+    const target = `http://localhost:8000/articles/${article.data.id}?kind=add`;
     const res = await fetch(target, {
       method: "POST",
       body: tag,
@@ -58,8 +57,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggle_like = async () => {
-    const target =
-      "http://localhost:8000/articles/" + article.data.id + "?toggle=liked";
+    const target = `http://localhost:8000/articles/${article.data.id}?toggle=liked`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot toggle like.");
@@ -85,8 +83,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggle_archive = async () => {
-    const target =
-      "http://localhost:8000/articles/" + article.data.id + "?toggle=archived";
+    const target = `http://localhost:8000/articles/${article.data.id}?toggle=archived`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot archive article.");
@@ -112,7 +109,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const delete_article = async () => {
-    const target = "http://localhost:8000/articles/" + article.data.id;
+    const target = `http://localhost:8000/articles/${article.data.id}`;
     const res = await fetch(target, { method: "DELETE" });
     if (!res.ok) {
       console.log("Cannot delete article.");
@@ -130,7 +127,7 @@ export default function ArticleElement(props: ElementProps) {
   ) => {
     e.preventDefault();
     console.log(tag);
-    const target = "http://localhost:8000/articles/" + id + "?kind=delete";
+    const target = `http://localhost:8000/articles/${id}?kind=delete`;
     const res = await fetch(target, {
       method: "POST",
       body: tag,
@@ -170,7 +167,7 @@ export default function ArticleElement(props: ElementProps) {
             component={Link}
             color="primary"
             underline="hover"
-            href={"/articles/" + article.data.id}
+            href={`/articles/${article.data.id}`}
             scroll={false}
           >
             {article.data.title}
@@ -179,7 +176,7 @@ export default function ArticleElement(props: ElementProps) {
       </Grid>
       <div className="element-url">
         <MuiLink color="primary" underline="hover" href={article.data.url}>
-          {article.data.url.slice(0, 30) + ".."}
+          {`${article.data.url.slice(0, 30)}..`}
         </MuiLink>
       </div>
       <Grid container spacing={2}>
@@ -203,8 +200,8 @@ export default function ArticleElement(props: ElementProps) {
             {
               return (
                 <>
-                  <Link href={"/tags/" + x}>
-                    <Chip label={x} id={article.data.id + "_delete_tag"} />
+                  <Link href={`/tags/${x}`}>
+                    <Chip label={x} id={`${article.data.id}_delete_tag`} />
                   </Link>
                   <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
                     <RemoveCircleOutlineIcon sx={{ fontSize: 20 }} />
@@ -225,7 +222,7 @@ export default function ArticleElement(props: ElementProps) {
               <TextField
                 autoFocus
                 margin="dense"
-                id={article.data.id + "_add_tag"}
+                id={`${article.data.id}_add_tag`}
                 label="New tag name"
                 type="text"
                 fullWidth

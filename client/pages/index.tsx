@@ -2,11 +2,10 @@ import { ArticleData, ElementKind, WrappedData } from "../types/types";
 import ArticleElement from "../components/ArticleElement";
 import { Header } from "../components/Header";
 import Footer from "../components/Footer";
-import { GetServerSideProps } from "next";
-import { InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
-import { Button, Stack } from "@mui/material";
-import { signIn, signOut, useSession } from "next-auth/react";
+import Stack from "@mui/material/Stack";
+import { useSession } from "next-auth/react";
 import Login from "../components/Login";
 
 type Data = ArticleData[];

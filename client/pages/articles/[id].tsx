@@ -1,9 +1,10 @@
 import { ArticleContent } from "../../types/types";
 import { useEffect, useState } from "react";
-import { GetServerSideProps } from "next";
-import { InferGetServerSidePropsType } from "next";
-import Router, { useRouter } from "next/router";
-import { Button, Divider, Typography } from "@mui/material";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Typography from "@mui/material/Typography";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -19,7 +20,7 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async (context) => {
   if (context.params) {
     const id = context.params.id;
-    const target = `http://${process.env.HOST}:8000/articles/` + id;
+    const target = `http://${process.env.HOST}:8000/articles/${id}`;
     const res = await fetch(target);
     const data = await res.json();
     return { props: { data } };
@@ -55,14 +56,7 @@ export default function Article({
     if (shouldSaveScroll) {
       const n = getScrollPosition();
       if (n.pos !== 0) {
-        console.log("pos: " + n.pos + " prog: " + n.prog);
-        const target =
-          "http://localhost:8000/articles/" +
-          articleContent.id +
-          "?pos=" +
-          n.pos +
-          "&prog=" +
-          n.prog;
+        const target = `http://localhost:8000/articles/${articleContent.id}?pos=${n.pos}&prog=${n.prog}`;
         fetch(target, { method: "POST" }).then((res) => {
           if (!res.ok) {
             console.error("Cannot update progress.");
@@ -105,8 +99,7 @@ export default function Article({
   }, []);
 
   const toggle_like = async () => {
-    const target =
-      "http://localhost:8000/articles/" + articleContent.id + "?toggle=liked";
+    const target = `http://localhost:8000/articles/${articleContent.id}?toggle=liked`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot toggle like.");
@@ -119,10 +112,7 @@ export default function Article({
   };
 
   const toggle_archive = async () => {
-    const target =
-      "http://localhost:8000/articles/" +
-      articleContent.id +
-      "?toggle=archived";
+    const target = `http://localhost:8000/articles/${articleContent.id}?toggle=archived`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot archive article.");
@@ -135,7 +125,7 @@ export default function Article({
   };
 
   const delete_article = async () => {
-    const target = "http://localhost:8000/articles/" + articleContent.id;
+    const target = `http://localhost:8000/articles/${articleContent.id}`;
     const res = await fetch(target, { method: "DELETE" });
     if (!res.ok) {
       console.log("Cannot delete article.");
@@ -181,7 +171,7 @@ export default function Article({
       <div className="article-url">{articleContent.url}</div>
       <Buttons data={articleContent} />
       <Divider className="article-divider" />
-      <div dangerouslySetInnerHTML={create_markup()}></div>
+      <div dangerouslySetInnerHTML={create_markup()} />
       <Divider className="article-divider" />
       <Buttons data={articleContent} />
       <Typography className="ending" color="secondary">
