@@ -44,9 +44,9 @@ export default function Archived({
 
   useEffect(() => {
     if (isBottom) {
-      const target =
-        `http://${process.env.HOST}:8000/articles/archived?reload=` +
-        list.slice(-1)[0].id;
+      const target = `http://${
+        process.env.HOST
+      }:8000/articles/archived?reload=${list.slice(-1)[0].id}`;
       fetch(target).then((res) =>
         res.json().then((j) => {
           if (j.length === 0) {
@@ -75,7 +75,7 @@ export default function Archived({
       {wrapped.map((e, index) => {
         return (
           <ArticleElement
-            key={"archived-element" + { index }}
+            key={`archived-element${{ index }}`}
             element={e}
             kind={ElementKind.Archived}
           />

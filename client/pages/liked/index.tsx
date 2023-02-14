@@ -44,9 +44,9 @@ export default function Liked({
 
   useEffect(() => {
     if (isBottom) {
-      const target =
-        `http://${process.env.HOST}:8000/articles/liked?reload=` +
-        list.slice(-1)[0].id;
+      const target = `http://${process.env.HOST}:8000/articles/liked?reload=${
+        list.slice(-1)[0].id
+      }`;
       fetch(target).then((res) =>
         res.json().then((j) => {
           if (j.length === 0) {
@@ -75,7 +75,7 @@ export default function Liked({
       {wrapped.map((e, index) => {
         return (
           <ArticleElement
-            key={"liked-element" + { index }}
+            key={`liked-element${{ index }}`}
             element={e}
             kind={ElementKind.Liked}
           />

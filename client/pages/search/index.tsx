@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
   const query = context.query.q;
-  const target = `http://${process.env.HOST}:8000/search?q=` + query;
+  const target = `http://${process.env.HOST}:8000/search?q=${query}`;
   const res = await fetch(target);
   const data = await res.json();
   return { props: { data } };
@@ -39,7 +39,7 @@ export default function Searched({
       {wrapped.map((e, index) => {
         return (
           <ArticleElement
-            key={"searched-element" + { index }}
+            key={`searched-element${{ index }}`}
             element={e}
             kind={ElementKind.Searched}
           />
