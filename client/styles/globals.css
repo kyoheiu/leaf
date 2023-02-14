@@ -13,6 +13,8 @@ body {
 
 img, video {
     max-width: 90%;
+    display: table;
+    margin: auto;
 }
 
 .articles-list {
@@ -98,6 +100,30 @@ pre {
 pre > code {
     max-width: 90%;
       font-family: 'IBM Plex Mono', monospace;
+}
+
+blockquote {
+  border-left: 3px solid #666;
+  font-style: italic;
+  padding: 0.5rem;
+  margin: 0.3rem;
+}
+
+table {
+  max-width: 90%;
+}
+
+table th {
+  padding: 10px;
+}
+
+table th,
+td {
+  border: 1px solid #666;
+}
+
+table td {
+  padding: 10px;
 }
 
 .ending {
