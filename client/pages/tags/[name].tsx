@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async (context) => {
   if (context.params) {
     const tag_name = context.params.name;
-    const target = `http://${process.env.HOST}:8000/tags/` + tag_name;
+    const target = `http://${process.env.HOST}:8000/tags/${tag_name}`;
     const res = await fetch(target);
     const data = await res.json();
     return { props: { data } };
@@ -43,7 +43,7 @@ export default function Searched({
       {wrapped.map((e, index) => {
         return (
           <ArticleElement
-            key={"tag-element" + { index }}
+            key={`tag-element${{ index }}`}
             element={e}
             kind={ElementKind.Searched}
           />
