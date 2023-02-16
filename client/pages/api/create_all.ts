@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import puppeteer, { Browser, Puppeteer } from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 
 interface Content {
   url: string;

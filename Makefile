@@ -10,7 +10,10 @@ stop:
 	killall node && killall acidpaper
 
 build:
-	sudo docker-compose build
+	sudo docker build --tag=kyoheiudev/acidpaper-server:$(VER) server 
+
+push:
+	sudo docker push kyoheiudev/acidpaper-server:$(VER)
 
 run:
 	sudo docker-compose up
