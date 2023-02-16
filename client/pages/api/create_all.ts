@@ -30,13 +30,16 @@ export default async function handler(
     for (let x of url) {
       const html = await crawl(x, browser);
       const body = JSON.stringify({ url: x, html: html });
-      const response = await fetch(`http://${process.env.HOST}:8000/articles`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
-      });
+      const response = await fetch(
+        `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: body,
+        }
+      );
       if (!response.ok) {
         console.log(response.status);
       }

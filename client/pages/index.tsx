@@ -13,7 +13,9 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async () => {
-  const res = await fetch(`http://${process.env.HOST}:8000/articles`);
+  const res = await fetch(
+    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles`
+  );
   const data = await res.json();
   return { props: { data } };
 };
@@ -44,18 +46,21 @@ export default function Home({
 
   useEffect(() => {
     if (isBottom) {
-      const target = `http://${process.env.HOST}:8000/articles?reload=${
-        list.slice(-1)[0].id
-      }`;
-      fetch(target).then((res) =>
+      const target = `http://${
+        process.env.NEXT_PUBLIC_HOST
+      }:8000/articles?reload=${list.slice(-1)[0].id}`;
+      fetch(target).then((res) => {
+        if (res.ok) {
+          console.error(res.body);
+        }
         res.json().then((j) => {
           if (j.length === 0) {
             setIsLast(true);
           } else {
             setList((arr) => arr.concat(j));
           }
-        })
-      );
+        });
+      });
       setIsBottom(false);
     }
   });

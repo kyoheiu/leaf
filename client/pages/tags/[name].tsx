@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async (context) => {
   if (context.params) {
     const tag_name = context.params.name;
-    const target = `http://${process.env.HOST}:8000/tags/${tag_name}`;
+    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/tags/${tag_name}`;
     const res = await fetch(target);
     const data = await res.json();
     return { props: { data } };

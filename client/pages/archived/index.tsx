@@ -13,7 +13,9 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async () => {
-  const res = await fetch(`http://${process.env.HOST}:8000/articles/archived`);
+  const res = await fetch(
+    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/archived`
+  );
   const data = await res.json();
   return { props: { data } };
 };
@@ -45,7 +47,7 @@ export default function Archived({
   useEffect(() => {
     if (isBottom) {
       const target = `http://${
-        process.env.HOST
+        process.env.NEXT_PUBLIC_HOST
       }:8000/articles/archived?reload=${list.slice(-1)[0].id}`;
       fetch(target).then((res) =>
         res.json().then((j) => {

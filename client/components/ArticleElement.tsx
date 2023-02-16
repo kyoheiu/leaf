@@ -38,7 +38,7 @@ export default function ArticleElement(props: ElementProps) {
     const element = document.getElementById(`${article.data.id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
     console.log(tag);
-    const target = `http://localhost:8000/articles/${article.data.id}?kind=add`;
+    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${article.data.id}?kind=add`;
     const res = await fetch(target, {
       method: "POST",
       body: tag,
@@ -57,7 +57,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggle_like = async () => {
-    const target = `http://localhost:8000/articles/${article.data.id}?toggle=liked`;
+    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${article.data.id}?toggle=liked`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot toggle like.");
@@ -83,7 +83,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggle_archive = async () => {
-    const target = `http://localhost:8000/articles/${article.data.id}?toggle=archived`;
+    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${article.data.id}?toggle=archived`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot archive article.");
@@ -109,7 +109,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const delete_article = async () => {
-    const target = `http://localhost:8000/articles/${article.data.id}`;
+    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${article.data.id}`;
     const res = await fetch(target, { method: "DELETE" });
     if (!res.ok) {
       console.log("Cannot delete article.");
@@ -127,7 +127,7 @@ export default function ArticleElement(props: ElementProps) {
   ) => {
     e.preventDefault();
     console.log(tag);
-    const target = `http://localhost:8000/articles/${id}?kind=delete`;
+    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${id}?kind=delete`;
     const res = await fetch(target, {
       method: "POST",
       body: tag,
