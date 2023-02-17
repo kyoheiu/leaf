@@ -4,12 +4,12 @@ COPY . .
 RUN cargo build --release
 
 FROM archlinux:latest
-WORKDIR /acidpaper-server
+WORKDIR /hmstr-server
 RUN pacman -Syu --noconfirm
 RUN pacman -S openssl-1.1 --noconfirm
-COPY --from=builder /home/server/target/release/acidpaper-server . 
+COPY --from=builder /home/server/target/release/hmstr-server . 
 ENV RUST_LOG info
-ENV DATABASE_PATH "/home/server/databases/.sqlite"
-ENV SEARCH_PATH "/home/server/databases/.search"
+ENV DATABASE_PATH "/var/hmstr/databases/.sqlite"
+ENV SEARCH_PATH "/var/hmstr/databases/.search"
 EXPOSE 8000
-ENTRYPOINT [ "./acidpaper-server" ]
+ENTRYPOINT [ "./hmstr-server" ]
