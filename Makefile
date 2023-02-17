@@ -16,10 +16,10 @@ push:
 	sudo docker push kyoheiudev/hmstr-server:$(VER)
 
 run:
-	sudo docker-compose up
+	sudo docker compose up -d
 
 down:
-	sudo docker-compose down --remove-orphans
+	sudo docker compose down --remove-orphans
 
 remove:
 	sudo docker rmi $(sudo docker images -q) -f
