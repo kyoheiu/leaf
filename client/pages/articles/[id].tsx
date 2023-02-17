@@ -56,7 +56,7 @@ export default function Article({
     if (shouldSaveScroll) {
       const n = getScrollPosition();
       if (n.pos !== 0) {
-        const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${articleContent.id}?pos=${n.pos}&prog=${n.prog}`;
+        const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}?pos=${n.pos}&prog=${n.prog}`;
         fetch(target, { method: "POST" }).then((res) => {
           if (!res.ok) {
             console.error("Cannot update progress.");
@@ -99,7 +99,7 @@ export default function Article({
   }, []);
 
   const toggle_like = async () => {
-    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${articleContent.id}?toggle=liked`;
+    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}?toggle=liked`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot toggle like.");
@@ -112,7 +112,7 @@ export default function Article({
   };
 
   const toggle_archive = async () => {
-    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${articleContent.id}?toggle=archived`;
+    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}?toggle=archived`;
     const res = await fetch(target, { method: "POST" });
     if (!res.ok) {
       console.log("Cannot archive article.");
@@ -125,7 +125,7 @@ export default function Article({
   };
 
   const delete_article = async () => {
-    const target = `http://localNEXT_PUBLIC_HOST:8000/articles/${articleContent.id}`;
+    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}`;
     const res = await fetch(target, { method: "DELETE" });
     if (!res.ok) {
       console.log("Cannot delete article.");
@@ -133,6 +133,11 @@ export default function Article({
       globalThis.location.href = "/";
     }
   };
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
+
   if (!articleContent) {
     return <h1>No article found.</h1>;
   }
