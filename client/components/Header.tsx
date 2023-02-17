@@ -17,6 +17,7 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import CloseIcon from "@mui/icons-material/Close";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { ColorMode } from "../context/ColorMode";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 
@@ -98,7 +99,7 @@ export const Header = () => {
             underline="none"
             href="/"
           >
-            <img src="logo.png" alt="hmstr" height={logo_size} />
+            <Image src="logo.png" alt="hmstr" height={logo_size} />
           </MuiLink>
         </Grid>
         <Grid item xs={button_width}>
