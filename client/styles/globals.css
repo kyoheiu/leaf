@@ -148,3 +148,8 @@ a {
 .login-button {
     margin: 10px;
 }
+
+.element-beginning {
+    margin-top: 10px;
+    margin-bottom: 24px;
+}
