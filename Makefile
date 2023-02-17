@@ -7,13 +7,13 @@ dev:
 	cd client && yarn run dev & cd server && RUST_LOG=info cargo run -r && fg
 
 stop:
-	killall node && killall acidpaper
+	killall node && killall hmstr-server
 
 build:
-	sudo docker build --tag=kyoheiudev/acidpaper-server:$(VER) server 
+	sudo docker build --tag=kyoheiudev/hmstr-server:$(VER) server 
 
 push:
-	sudo docker push kyoheiudev/acidpaper-server:$(VER)
+	sudo docker push kyoheiudev/hmstr-server:$(VER)
 
 run:
 	sudo docker-compose up
