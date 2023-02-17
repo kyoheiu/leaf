@@ -8,12 +8,12 @@ mod types;
 
 use crate::core::{run, Core};
 
-use error::AcidError;
+use error::HmstrError;
 use log::{error, info, warn};
 use std::{net::TcpListener, path::PathBuf};
 
 #[tokio::main]
-async fn main() -> Result<(), AcidError> {
+async fn main() -> Result<(), HmstrError> {
     env_logger::init();
     let mut args = std::env::args();
 

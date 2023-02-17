@@ -1,7 +1,7 @@
 use crate::scrape::scrape_og;
 use crate::types::Payload;
 
-use super::error::AcidError;
+use super::error::HmstrError;
 use super::handler::*;
 use super::schema::initialize_schema;
 use super::statements::*;
@@ -62,7 +62,7 @@ pub async fn run(listener: TcpListener, core: Core) {
 }
 
 impl Core {
-    pub fn new() -> Result<Core, AcidError> {
+    pub fn new() -> Result<Core, HmstrError> {
         let db_path = match std::env::var("DATABASE_PATH") {
             Ok(p) => PathBuf::from(&p),
             Err(_) => PathBuf::from("./databases/.sqlite"),
@@ -81,7 +81,7 @@ impl Core {
         })
     }
 
-    pub async fn list_up(&self, statement: &str) -> Result<Json<Vec<ArticleData>>, AcidError> {
+    pub async fn list_up(&self, statement: &str) -> Result<Json<Vec<ArticleData>>, HmstrError> {
         let mut articles = vec![];
         self.db.iterate(statement, |pairs| {
             let mut article = ArticleData::new();
@@ -125,7 +125,7 @@ impl Core {
         Ok(Json(articles))
     }
 
-    pub async fn create(&self, payload: Payload) -> Result<(), AcidError> {
+    pub async fn create(&self, payload: Payload) -> Result<(), HmstrError> {
         let url = payload.url;
         info!("url: {}", url);
 
@@ -160,7 +160,7 @@ impl Core {
         Ok(())
     }
 
-    pub async fn delete(&self, id: &str) -> Result<(), AcidError> {
+    pub async fn delete(&self, id: &str) -> Result<(), HmstrError> {
         self.db.execute(state_delete(id))?;
         info!("DELETED: {}", id);
         self.delete_from_index(id)?;
@@ -168,7 +168,7 @@ impl Core {
         Ok(())
     }
 
-    pub async fn read(&self, id: &str) -> Result<Json<ArticleContent>, AcidError> {
+    pub async fn read(&self, id: &str) -> Result<Json<ArticleContent>, HmstrError> {
         let mut article = ArticleContent::new();
         self.db.iterate(state_read(id), |pairs| {
             for &(column, value) in pairs.iter() {
@@ -193,7 +193,7 @@ impl Core {
         Ok(Json(article))
     }
 
-    pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, AcidError> {
+    pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, HmstrError> {
         info!("query: {}", query);
         let title = self.schema.get_field("title").unwrap();
         let plain = self.schema.get_field("plain").unwrap();
@@ -275,29 +275,29 @@ impl Core {
         Ok(Json(articles))
     }
 
-    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), AcidError> {
+    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), HmstrError> {
         self.db.execute(state_upgrade_progress(pos, prog, id))?;
         Ok(())
     }
 
-    pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), AcidError> {
+    pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), HmstrError> {
         self.db.execute(state_toggle(toggle, id))?;
         Ok(())
     }
 
-    pub async fn add_tag(&self, id: &str, tag: &str) -> Result<(), AcidError> {
+    pub async fn add_tag(&self, id: &str, tag: &str) -> Result<(), HmstrError> {
         self.db.execute(state_add_tag(id, tag))?;
         info!("Add tag {} to ID {}", tag, id);
         Ok(())
     }
 
-    pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), AcidError> {
+    pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), HmstrError> {
         self.db.execute(state_delete_tag(id, tag))?;
         info!("Delete tag {} of ID {}", tag, id);
         Ok(())
     }
     //add to schema
-    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), AcidError> {
+    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), HmstrError> {
         let mut index_writer = self.index.writer(50_000_000)?;
         let schema_id = self.schema.get_field("id").unwrap();
         let schema_title = self.schema.get_field("title").unwrap();
@@ -312,7 +312,7 @@ impl Core {
         Ok(())
     }
 
-    fn delete_from_index(&self, id: &str) -> Result<(), AcidError> {
+    fn delete_from_index(&self, id: &str) -> Result<(), HmstrError> {
         let mut index_writer = self.index.writer(50_000_000)?;
         let schema_id = self.schema.get_field("id").unwrap();
         let term = Term::from_field_text(schema_id, id);
