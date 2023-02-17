@@ -8,12 +8,10 @@ export default function Login() {
     <>
       <Box className="login">
         <div className="element-title">hmstr</div>
-        <div className="element-beginning">
-          Where you stack every documents.
-        </div>
+        <div className="element-beginning">Hoard documents.</div>
         <Button
           className="login-button"
-          variant="contained"
+          variant="outlined"
           onClick={() => signIn()}
         >
           <LoginIcon />
