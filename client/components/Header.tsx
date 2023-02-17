@@ -23,13 +23,19 @@ import { signOut } from "next-auth/react";
 export const Header = () => {
   const router = useRouter();
 
+  const logo_width = 1.5;
+  const button_width = 0.8;
+  const blank_space = 12 - logo_width - button_width * 6;
+  const logo_size = 28;
+  const button_size = 18;
+
   const [url, setUrl] = useState<string>("");
   const { isLight, setIsLight } = useContext(ColorMode);
 
   const toggle_theme = () => {
     setIsLight(() => {
       globalThis.sessionStorage.setItem(
-        "acidpaperTheme",
+        "hmstrTheme",
         isLight ? "dark" : "light"
       );
       return !isLight;
@@ -85,19 +91,19 @@ export const Header = () => {
   return (
     <>
       <Grid container spacing={1} className="header">
-        <Grid item xs={2}>
+        <Grid item xs={logo_width}>
           <MuiLink
             className="site-title"
             component={Link}
             underline="none"
             href="/"
           >
-            acidpaper
+            <img src="logo.png" alt="hmstr" height={logo_size} />
           </MuiLink>
         </Grid>
-        <Grid item xs={0.6}>
+        <Grid item xs={button_width}>
           <MuiLink href="#" onClick={handleClickAddOpen}>
-            <Add sx={{ fontSize: 20 }} />
+            <Add sx={{ fontSize: button_size }} />
           </MuiLink>
           <Dialog open={addOpen} onClose={handleAddClose}>
             <DialogTitle>Add new article.</DialogTitle>
@@ -122,9 +128,9 @@ export const Header = () => {
             </DialogActions>
           </Dialog>
         </Grid>
-        <Grid item xs={0.6}>
+        <Grid item xs={button_width}>
           <MuiLink href="#" onClick={handleClickSearchOpen}>
-            <SearchIcon sx={{ fontSize: 20 }} />
+            <SearchIcon sx={{ fontSize: button_size }} />
           </MuiLink>
           <Dialog open={searchOpen} onClose={handleSearchClose}>
             <DialogTitle>Search.</DialogTitle>
@@ -149,29 +155,29 @@ export const Header = () => {
             </DialogActions>
           </Dialog>
         </Grid>
-        <Grid item xs={6.4} />
-        <Grid item xs={0.6}>
+        <Grid item xs={blank_space} />
+        <Grid item xs={button_width}>
           <MuiLink component={Link} href="/archived">
-            <ArchiveIcon sx={{ fontSize: 20 }} />
+            <ArchiveIcon sx={{ fontSize: button_size }} />
           </MuiLink>
         </Grid>
-        <Grid item xs={0.6}>
+        <Grid item xs={button_width}>
           <MuiLink component={Link} href="/liked">
-            <FavoriteIcon sx={{ fontSize: 20 }} />
+            <FavoriteIcon sx={{ fontSize: button_size }} />
           </MuiLink>
         </Grid>
-        <Grid item xs={0.6}>
+        <Grid item xs={button_width}>
           <MuiLink href="#" onClick={toggle_theme}>
             {isLight ? (
-              <DarkModeIcon sx={{ fontSize: 20 }} />
+              <DarkModeIcon sx={{ fontSize: button_size }} />
             ) : (
-              <LightModeIcon sx={{ fontSize: 20 }} />
+              <LightModeIcon sx={{ fontSize: button_size }} />
             )}
           </MuiLink>
         </Grid>
-        <Grid item xs={0.6}>
+        <Grid item xs={button_width}>
           <MuiLink href="#" onClick={() => signOut()}>
-            <LogoutIcon sx={{ fontSize: 20 }} />
+            <LogoutIcon sx={{ fontSize: button_size }} />
           </MuiLink>
         </Grid>
       </Grid>
