@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
@@ -64,6 +64,10 @@ export default function Home({
       setIsBottom(false);
     }
   });
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   if (!data) {
     return <h1>No article found.</h1>;

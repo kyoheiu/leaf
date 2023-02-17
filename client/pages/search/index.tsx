@@ -21,7 +21,11 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Searched({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <div>Loading...</div>;
+  }
 
   if (!data) {
     return <h1>No article found.</h1>;

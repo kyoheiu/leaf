@@ -4,7 +4,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import Typography from "@mui/material/Typography";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -12,6 +11,7 @@ import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
+import { Link } from "@mui/material";
 
 type Data = ArticleContent;
 
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Article({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const router = useRouter();
   const [articleContent, setArticleContent] = useState<ArticleContent>(data);
@@ -173,15 +173,14 @@ export default function Article({
   return session ? (
     <>
       <div className="article-title">{articleContent.title}</div>
-      <div className="article-url">{articleContent.url}</div>
+      <div className="article-url">
+        <Link href={articleContent.url}>{articleContent.url}</Link>
+      </div>
       <Buttons data={articleContent} />
       <Divider className="article-divider" />
       <div dangerouslySetInnerHTML={create_markup()} />
       <Divider className="article-divider" />
       <Buttons data={articleContent} />
-      <Typography className="ending" color="secondary">
-        End of this article.
-      </Typography>
     </>
   ) : (
     <Login />
