@@ -7,6 +7,7 @@ import { InferGetServerSidePropsType } from "next";
 import { useState, useEffect } from "react";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
+import Stack from "@mui/material/Stack";
 
 type Data = ArticleData[];
 
@@ -75,15 +76,17 @@ export default function Liked({
   return session ? (
     <>
       <Header />
-      {wrapped.map((e, index) => {
-        return (
-          <ArticleElement
-            key={`liked-element${{ index }}`}
-            element={e}
-            kind={ElementKind.Liked}
-          />
-        );
-      })}
+      <Stack className="articles-list" spacing={5}>
+        {wrapped.map((e, index) => {
+          return (
+            <ArticleElement
+              key={`liked-element${index}`}
+              element={e}
+              kind={ElementKind.Liked}
+            />
+          );
+        })}
+      </Stack>
       <Footer isLast={isLast} />
     </>
   ) : (

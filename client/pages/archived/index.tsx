@@ -7,6 +7,7 @@ import { InferGetServerSidePropsType } from "next";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Login from "../../components/Login";
+import Stack from "@mui/material/Stack";
 
 type Data = ArticleData[];
 
@@ -75,15 +76,17 @@ export default function Archived({
   return session ? (
     <>
       <Header />
-      {wrapped.map((e, index) => {
-        return (
-          <ArticleElement
-            key={`archived-element${{ index }}`}
-            element={e}
-            kind={ElementKind.Archived}
-          />
-        );
-      })}
+      <Stack className="articles-list" spacing={5}>
+        {wrapped.map((e, index) => {
+          return (
+            <ArticleElement
+              key={`archived-element${index}`}
+              element={e}
+              kind={ElementKind.Archived}
+            />
+          );
+        })}
+      </Stack>
       <Footer isLast={isLast} />
     </>
   ) : (
