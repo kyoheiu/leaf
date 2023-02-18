@@ -277,18 +277,24 @@ impl Core {
 
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), HmstrError> {
         self.db.execute(state_upgrade_progress(pos, prog, id))?;
+        info!("ID {} pos {} prog {}", id, pos, prog);
         Ok(())
     }
 
     pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), HmstrError> {
         self.db.execute(state_toggle(toggle, id))?;
+        info!("ID {} toggle {}", id, toggle);
         Ok(())
     }
 
     pub async fn add_tag(&self, id: &str, tag: &str) -> Result<(), HmstrError> {
-        self.db.execute(state_add_tag(id, tag))?;
-        info!("Add tag {} to ID {}", tag, id);
-        Ok(())
+        if tag.is_empty() {
+            Err(HmstrError::Tag("Tag is empty.".to_owned()))
+        } else {
+            self.db.execute(state_add_tag(id, tag))?;
+            info!("Add tag {} to ID {}", tag, id);
+            Ok(())
+        }
     }
 
     pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), HmstrError> {

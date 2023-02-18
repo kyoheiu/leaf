@@ -8,6 +8,7 @@ use super::types::*;
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
+use log::info;
 use std::collections::BTreeMap;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -24,6 +25,7 @@ pub async fn list_up(
 ) -> Result<Json<Vec<ArticleData>>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
+        info!("RELOAD: from id {}", id);
         core.list_up(&state_reload(&id)).await
     } else {
         core.list_up(&state_list_up()).await
@@ -37,6 +39,7 @@ pub async fn list_up_archived(
 ) -> Result<Json<Vec<ArticleData>>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
+        info!("RELOAD ARCHIVED: from id {}", id);
         core.list_up(&state_reload_archived(&id)).await
     } else {
         core.list_up(&state_list_up_archived()).await
@@ -50,6 +53,7 @@ pub async fn list_up_liked(
 ) -> Result<Json<Vec<ArticleData>>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
+        info!("RELOAD LIKED: from id {}", id);
         core.list_up(&state_reload_liked(&id)).await
     } else {
         core.list_up(&state_list_up_liked()).await
