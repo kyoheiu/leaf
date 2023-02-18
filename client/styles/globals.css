@@ -126,12 +126,24 @@ table td {
   padding: 10px;
 }
 
+a {
+    color: inherit;
+}
+
+.article-buttons {
+    text-align: right;
+}
+
+.article-button {
+    display: inline;
+}
+
 .ending {
     text-align: center;
 }
 
-a {
-    color: inherit;
+footer {
+    margin: 30px 0;
 }
 
 .login {
