@@ -51,8 +51,8 @@ export default async function handler(
     );
     if (!response.ok) {
       console.log("Cannot create new article.");
+    } else {
+      res.status(303).setHeader("Location", "/").end();
     }
-
-    res.status(303).setHeader("Location", "/").end();
   }
 }
