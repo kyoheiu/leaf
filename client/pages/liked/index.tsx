@@ -46,10 +46,7 @@ export default function Liked({
 
   useEffect(() => {
     if (isBottom) {
-      const target = `http://${
-        process.env.NEXT_PUBLIC_HOST
-      }:8000/articles/liked?reload=${list.slice(-1)[0].id}`;
-      fetch(target).then((res) =>
+      fetch(`/api/reload_liked/${list.slice(-1)[0].id}`).then((res) =>
         res.json().then((j) => {
           if (j.length === 0) {
             setIsLast(true);

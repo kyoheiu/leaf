@@ -46,9 +46,7 @@ export default function Home({
 
   useEffect(() => {
     if (isBottom) {
-      fetch("/api/reload", {
-        body: list.slice(-1)[0].id,
-      }).then((res) => {
+      fetch(`/api/reload/${list.slice(-1)[0].id}`).then((res) => {
         res.json().then((j) => {
           if (j.length === 0) {
             setIsLast(true);

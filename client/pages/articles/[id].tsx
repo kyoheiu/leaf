@@ -56,8 +56,17 @@ export default function Article({
     if (shouldSaveScroll) {
       const n = getScrollPosition();
       if (n.pos !== 0) {
-        const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}?pos=${n.pos}&prog=${n.prog}`;
-        fetch(target, { method: "POST" }).then((res) => {
+        fetch("/api/save_pos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: articleContent.id,
+            pos: n.pos,
+            prog: n.prog,
+          }),
+        }).then((res) => {
           if (!res.ok) {
             console.error("Cannot update progress.");
           }
@@ -99,34 +108,40 @@ export default function Article({
   }, []);
 
   const toggle_like = async () => {
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}?toggle=liked`;
-    const res = await fetch(target, { method: "POST" });
+    const res = await fetch("/api/toggle_liked", {
+      method: "POST",
+      body: articleContent.id,
+    });
     if (!res.ok) {
       console.log("Cannot toggle like.");
+    } else {
+      setArticleContent((x) => ({
+        ...x,
+        liked: !x.liked,
+      }));
     }
-
-    setArticleContent((x) => ({
-      ...x,
-      liked: !x.liked,
-    }));
   };
 
   const toggle_archive = async () => {
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}?toggle=archived`;
-    const res = await fetch(target, { method: "POST" });
+    const res = await fetch("/api/toggle_archived", {
+      method: "POST",
+      body: articleContent.id,
+    });
     if (!res.ok) {
       console.log("Cannot archive article.");
+    } else {
+      setArticleContent((x) => ({
+        ...x,
+        archived: !x.archived,
+      }));
     }
-
-    setArticleContent((x) => ({
-      ...x,
-      archived: !x.archived,
-    }));
   };
 
   const delete_article = async () => {
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${articleContent.id}`;
-    const res = await fetch(target, { method: "DELETE" });
+    const res = await fetch("/api/delete", {
+      method: "DELETE",
+      body: articleContent.id,
+    });
     if (!res.ok) {
       console.log("Cannot delete article.");
     } else {

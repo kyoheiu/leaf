@@ -34,90 +34,101 @@ export default function ArticleElement(props: ElementProps) {
     setOpen(false);
   };
 
-  const submitAndClose = async () => {
-    const element = document.getElementById(`${article.data.id}_add_tag`);
+  const submitAndClose = async (id: string) => {
+    const element = document.getElementById(`${id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
-    console.log(tag);
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${article.data.id}?kind=add`;
-    const res = await fetch(target, {
+    const res = await fetch("/api/add_tag", {
       method: "POST",
-      body: tag,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: id, tag: tag }),
     });
     if (!res.ok) {
       console.log("Cannot add tag.");
+      setOpen(false);
+    } else {
+      setArticle((x) => ({
+        ...x,
+        data: {
+          ...x.data,
+          tags: [...x.data.tags, tag.toLowerCase()],
+        },
+      }));
+      setOpen(false);
     }
-    setArticle((x) => ({
-      ...x,
-      data: {
-        ...x.data,
-        tags: [...x.data.tags, tag.toLowerCase()],
-      },
-    }));
-    setOpen(false);
   };
 
-  const toggle_like = async () => {
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${article.data.id}?toggle=liked`;
-    const res = await fetch(target, { method: "POST" });
+  const toggle_liked = async (id: string) => {
+    console.log(id);
+    const res = await fetch("/api/toggle_liked", {
+      method: "POST",
+      body: article.data.id,
+    });
     if (!res.ok) {
       console.log("Cannot toggle like.");
-    }
-
-    if (kind === ElementKind.Liked) {
-      setArticle((x) => ({
-        visible: false,
-        data: {
-          ...x.data,
-          liked: !x.data.liked,
-        },
-      }));
     } else {
-      setArticle((x) => ({
-        visible: x.visible,
-        data: {
-          ...x.data,
-          liked: !x.data.liked,
-        },
-      }));
+      if (kind === ElementKind.Liked) {
+        setArticle((x) => ({
+          visible: false,
+          data: {
+            ...x.data,
+            liked: !x.data.liked,
+          },
+        }));
+      } else {
+        setArticle((x) => ({
+          visible: x.visible,
+          data: {
+            ...x.data,
+            liked: !x.data.liked,
+          },
+        }));
+      }
     }
   };
 
-  const toggle_archive = async () => {
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${article.data.id}?toggle=archived`;
-    const res = await fetch(target, { method: "POST" });
+  const toggle_archived = async () => {
+    const res = await fetch("/api/toggle_archived", {
+      method: "POST",
+      body: article.data.id,
+    });
     if (!res.ok) {
       console.log("Cannot archive article.");
-    }
-
-    if (kind === ElementKind.Archived) {
-      setArticle((x) => ({
-        visible: false,
-        data: {
-          ...x.data,
-          archived: !x.data.archived,
-        },
-      }));
     } else {
-      setArticle((x) => ({
-        visible: x.visible,
-        data: {
-          ...x.data,
-          archived: !x.data.archived,
-        },
-      }));
+      if (kind === ElementKind.Archived) {
+        setArticle((x) => ({
+          visible: false,
+          data: {
+            ...x.data,
+            archived: !x.data.archived,
+          },
+        }));
+      } else {
+        setArticle((x) => ({
+          visible: x.visible,
+          data: {
+            ...x.data,
+            archived: !x.data.archived,
+          },
+        }));
+      }
     }
   };
 
   const delete_article = async () => {
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${article.data.id}`;
-    const res = await fetch(target, { method: "DELETE" });
+    const res = await fetch("/api/delete", {
+      method: "DELETE",
+      body: article.data.id,
+    });
     if (!res.ok) {
       console.log("Cannot delete article.");
+    } else {
+      setArticle((x) => ({
+        ...x,
+        visible: false,
+      }));
     }
-    setArticle((x) => ({
-      ...x,
-      visible: false,
-    }));
   };
 
   const delete_tag = async (
@@ -127,22 +138,25 @@ export default function ArticleElement(props: ElementProps) {
   ) => {
     e.preventDefault();
     console.log(tag);
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?kind=delete`;
-    const res = await fetch(target, {
+    const res = await fetch("/api/delete_tag", {
       method: "POST",
-      body: tag,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: article.data.id, tag: tag }),
     });
     if (!res.ok) {
       console.log("Cannot delete tag.");
+    } else {
+      const updated = article.data.tags.filter((x) => x !== tag);
+      setArticle((x) => ({
+        ...x,
+        data: {
+          ...x.data,
+          tags: updated,
+        },
+      }));
     }
-    const updated = article.data.tags.filter((x) => x !== tag);
-    setArticle((x) => ({
-      ...x,
-      data: {
-        ...x.data,
-        tags: updated,
-      },
-    }));
   };
 
   if ((kind === ElementKind.Top && article.data.archived) || !article.visible) {
@@ -231,7 +245,9 @@ export default function ArticleElement(props: ElementProps) {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
-              <Button onClick={submitAndClose}>Add</Button>
+              <Button onClick={() => submitAndClose(article.data.id)}>
+                Add
+              </Button>
             </DialogActions>
           </Dialog>
         </Grid>
@@ -242,14 +258,17 @@ export default function ArticleElement(props: ElementProps) {
         value={article.data.progress}
       />
       <div>
-        <Button id={article.data.id} onClick={toggle_like}>
+        <Button
+          id={article.data.id}
+          onClick={() => toggle_liked(article.data.id)}
+        >
           {article.data.liked ? (
             <FavoriteIcon sx={{ fontSize: 20 }} />
           ) : (
             <FavoriteBorderIcon sx={{ fontSize: 20 }} />
           )}
         </Button>
-        <Button id={article.data.id} onClick={toggle_archive}>
+        <Button id={article.data.id} onClick={toggle_archived}>
           {article.data.archived ? (
             <UnarchiveIcon sx={{ fontSize: 20 }} />
           ) : (
