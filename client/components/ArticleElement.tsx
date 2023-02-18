@@ -199,7 +199,7 @@ export default function ArticleElement(props: ElementProps) {
           {article.data.tags.map((x, index) => {
             {
               return (
-                <>
+                <span key={`tag-element${index.toString()}`}>
                   <Link href={`/tags/${x}`}>
                     <Chip label={x} id={`${article.data.id}_delete_tag`} />
                   </Link>
@@ -207,7 +207,7 @@ export default function ArticleElement(props: ElementProps) {
                     <RemoveCircleOutlineIcon sx={{ fontSize: 20 }} />
                   </Button>
                   &nbsp; &nbsp;
-                </>
+                </span>
               );
             }
           })}
