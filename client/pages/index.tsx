@@ -57,9 +57,10 @@ export default function Home({
       });
       setIsBottom(false);
     }
-  }, []);
+  });
 
   if (status === "loading") {
+    console.log("loading...");
     return <div>Loading...</div>;
   }
 
