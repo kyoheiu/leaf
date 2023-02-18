@@ -10,6 +10,7 @@ pub enum HmstrError {
     Readability(String),
     Ammonia(String),
     Tantivy(String),
+    Tag(String),
 }
 
 impl std::error::Error for HmstrError {}
@@ -22,6 +23,7 @@ impl std::fmt::Display for HmstrError {
             HmstrError::Readability(s) => s,
             HmstrError::Ammonia(s) => s,
             HmstrError::Tantivy(s) => s,
+            HmstrError::Tag(s) => s,
         };
         write!(f, "{}", printable)
     }
@@ -65,6 +67,7 @@ impl IntoResponse for HmstrError {
             HmstrError::Readability(s) => s,
             HmstrError::Ammonia(s) => s,
             HmstrError::Tantivy(s) => s,
+            HmstrError::Tag(s) => s,
         };
         (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
     }
