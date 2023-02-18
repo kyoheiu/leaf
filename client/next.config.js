@@ -4,11 +4,11 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  compiler: {
-    removeConsole: {
-      exclude: ["error"],
-    },
-  },
+  // compiler: {
+  //   removeConsole: {
+  //     exclude: ["error"],
+  //   },
+  // },
 };
 
 module.exports = nextConfig;
