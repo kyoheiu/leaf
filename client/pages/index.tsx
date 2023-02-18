@@ -46,13 +46,9 @@ export default function Home({
 
   useEffect(() => {
     if (isBottom) {
-      const target = `http://${
-        process.env.NEXT_PUBLIC_HOST
-      }:8000/articles?reload=${list.slice(-1)[0].id}`;
-      fetch(target).then((res) => {
-        if (res.ok) {
-          console.error(res.body);
-        }
+      fetch("/api/reload", {
+        body: list.slice(-1)[0].id,
+      }).then((res) => {
         res.json().then((j) => {
           if (j.length === 0) {
             setIsLast(true);
@@ -63,7 +59,7 @@ export default function Home({
       });
       setIsBottom(false);
     }
-  });
+  }, []);
 
   if (status === "loading") {
     return <div>Loading...</div>;

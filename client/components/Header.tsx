@@ -99,7 +99,12 @@ export const Header = () => {
             underline="none"
             href="/"
           >
-            <Image src="logo.png" alt="hmstr" height={logo_size} />
+            <Image
+              src="/logo.png"
+              alt="hmstr"
+              height={logo_size}
+              width={logo_size}
+            />
           </MuiLink>
         </Grid>
         <Grid item xs={button_width}>
