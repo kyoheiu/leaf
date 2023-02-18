@@ -163,25 +163,33 @@ export default function Article({
 
   const Buttons = ({ data }: { data: ArticleContent }) => {
     return (
-      <div className="buttons">
-        <Button onClick={toggle_like}>
-          {data.liked ? (
-            <FavoriteIcon sx={{ fontSize: 20 }} />
-          ) : (
-            <FavoriteBorderIcon sx={{ fontSize: 20 }} />
-          )}
-        </Button>
-        <Button onClick={toggle_archive}>
-          {data.archived ? (
-            <UnarchiveIcon sx={{ fontSize: 20 }} />
-          ) : (
-            <ArchiveIcon sx={{ fontSize: 20 }} />
-          )}
-        </Button>
-        <Button onClick={delete_article}>
-          <DeleteForeverIcon sx={{ fontSize: 20 }} />
-        </Button>
-      </div>
+      <nav>
+        <ul className="article-buttons">
+          <li className="article-button">
+            <Button onClick={toggle_like}>
+              {data.liked ? (
+                <FavoriteIcon sx={{ fontSize: 20 }} />
+              ) : (
+                <FavoriteBorderIcon sx={{ fontSize: 20 }} />
+              )}
+            </Button>
+          </li>
+          <li className="article-button">
+            <Button onClick={toggle_archive}>
+              {data.archived ? (
+                <UnarchiveIcon sx={{ fontSize: 20 }} />
+              ) : (
+                <ArchiveIcon sx={{ fontSize: 20 }} />
+              )}
+            </Button>
+          </li>
+          <li className="article-button">
+            <Button onClick={delete_article}>
+              <DeleteForeverIcon sx={{ fontSize: 20 }} />
+            </Button>
+          </li>
+        </ul>
+      </nav>
     );
   };
 
