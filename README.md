@@ -1,6 +1,8 @@
 Self-hostable Instapaper-ish document managing app.
 Heavily WIP, do not touch!
 
+![screenshot.png](screenshots/screenshot.png)
+
 ## Prerequisite
 - openssl
 - docker
