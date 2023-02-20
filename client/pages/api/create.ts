@@ -25,32 +25,31 @@ export default async function handler(
   if (!session || req.method !== "POST") {
     res.status(404).end();
   } else {
-    console.log(req.body);
     let url: string = req.body;
+    console.log(req.body);
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-      ],
-    });
-    const html = await crawl(url, browser);
-    const body = JSON.stringify({ url: url, html: html });
+    // const browser = await puppeteer.launch({
+    //   headless: true,
+    //   args: [
+    //     "--disable-gpu",
+    //     "--disable-dev-shm-usage",
+    //     "--disable-setuid-sandbox",
+    //     "--no-sandbox",
+    //   ],
+    // });
+    // const html = await crawl(url, browser);
+    // const body = JSON.stringify({ url: url, html: html });
     const response = await fetch(
       `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: body,
+        body: url,
       }
     );
     if (!response.ok) {
       console.log("Cannot create new article.");
+      console.log(response.body);
+      res.status(500).end();
     } else {
       res.status(303).setHeader("Location", "/").end();
     }

@@ -11,6 +11,7 @@ pub enum HmstrError {
     Ammonia(String),
     Tantivy(String),
     Tag(String),
+    HeadlessChrome(String),
 }
 
 impl std::error::Error for HmstrError {}
@@ -24,6 +25,7 @@ impl std::fmt::Display for HmstrError {
             HmstrError::Ammonia(s) => s,
             HmstrError::Tantivy(s) => s,
             HmstrError::Tag(s) => s,
+            HmstrError::HeadlessChrome(s) => s,
         };
         write!(f, "{}", printable)
     }
@@ -59,6 +61,12 @@ impl From<tantivy::TantivyError> for HmstrError {
     }
 }
 
+impl From<anyhow::Error> for HmstrError {
+    fn from(err: anyhow::Error) -> Self {
+        HmstrError::HeadlessChrome(err.to_string())
+    }
+}
+
 impl IntoResponse for HmstrError {
     fn into_response(self) -> Response {
         let body = match self {
@@ -68,6 +76,7 @@ impl IntoResponse for HmstrError {
             HmstrError::Ammonia(s) => s,
             HmstrError::Tantivy(s) => s,
             HmstrError::Tag(s) => s,
+            HmstrError::HeadlessChrome(s) => s,
         };
         (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()
     }
