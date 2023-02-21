@@ -1,12 +1,20 @@
-FROM rust:latest as builder
+FROM ekidd/rust-musl-builder:stable as builder
 WORKDIR /home/server
 COPY . .
 RUN cargo build --release
 
-FROM archlinux:latest
+FROM alpine:latest
 WORKDIR /hmstr-server
-RUN pacman -Syu --noconfirm
-RUN pacman -S openssl-1.1 --noconfirm
+# Installs latest Chromium package.
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont \
+      nodejs \
+      yarn
 COPY --from=builder /home/server/target/release/hmstr-server . 
 ENV RUST_LOG info
 ENV DATABASE_PATH "/var/hmstr/databases/.sqlite"
