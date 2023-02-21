@@ -67,6 +67,12 @@ impl From<anyhow::Error> for HmstrError {
     }
 }
 
+// impl From<headless_chrome::browser::process::LaunchOptionsBuilderError> for HmstrError {
+//     fn from(err: headless_chrome::browser::process::LaunchOptionsBuilderError) -> Self {
+//         HmstrError::HeadlessChrome(err.to_string())
+//     }
+// }
+
 impl IntoResponse for HmstrError {
     fn into_response(self) -> Response {
         let body = match self {
