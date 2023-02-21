@@ -1,13 +1,40 @@
-FROM alpine
-WORKDIR /home/client
+# Base Layer
+FROM node:slim AS base
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn --frozen-lockfile
 COPY . .
 
-# Installs latest Chromium (100) package.
-RUN apk add --no-cache \
-      nodejs \
-      yarn
+#==================================================
+# Build Layer
+FROM base AS build
+ENV NODE_ENV=production
+WORKDIR /build
 
-RUN yarn install
+COPY --from=base /app ./
 RUN yarn run build
+
+# ==================================================
+# Package install Layer
+FROM node:slim AS node_modules
+
+WORKDIR /modules
+
+COPY package.json yarn.lock ./
+RUN yarn install --non-interactive --frozen-lockfile --production
+
+# ==================================================
+# Production Run Layer
+FROM node:slim
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY package.json yarn.lock next.config.js .env.production ./
+COPY --from=build /build/public ./public
+COPY --from=build /build/.next ./.next
+COPY --from=node_modules /modules/node_modules ./node_modules
+
 EXPOSE 3000
-ENTRYPOINT ["yarn", "run", "start"]
+
+CMD ["yarn", "run", "start"]
