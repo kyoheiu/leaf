@@ -61,16 +61,8 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create_rust_headless(
-    State(core): State<Arc<Core>>,
-    body: String,
-) -> Result<(), HmstrError> {
-    core.create_rust_headless(body.trim()).await
-}
-
-#[debug_handler]
 pub async fn create(State(core): State<Arc<Core>>, body: String) -> Result<(), HmstrError> {
-    core.create_rust_headless(body.trim()).await
+    core.create(body.trim()).await
 }
 
 #[debug_handler]
