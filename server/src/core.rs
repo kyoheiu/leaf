@@ -178,7 +178,13 @@ impl Core {
 
         let mut input_u8 = content.as_bytes();
         let url_reqwest = reqwest::Url::parse(&url)?;
-        let og = scrape_og(&content);
+        let og = match scrape_og(&content) {
+            Some(og) => match url::Url::parse(&og) {
+                Ok(_) => Some(og),
+                Err(_) => None,
+            },
+            None => None,
+        };
         let product = readability_fork::extractor::extract(&mut input_u8, &url_reqwest)?;
 
         let ulid = ulid::Ulid::new().to_string();
