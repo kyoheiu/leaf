@@ -1,5 +1,4 @@
 use crate::scrape::scrape_og;
-use crate::types::Payload;
 
 use super::error::HmstrError;
 use super::handler::*;
@@ -7,10 +6,9 @@ use super::schema::initialize_schema;
 use super::statements::*;
 use super::types::{ArticleContent, ArticleData};
 
-use axum::routing::post;
 use axum::Json;
 use axum::{routing::get, Router};
-use headless_chrome::Browser;
+use headless_chrome::{Browser, LaunchOptionsBuilder};
 use log::info;
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
@@ -55,7 +53,6 @@ pub fn router(core: Core) -> axum::Router {
         )
         .route("/search", get(search))
         .route("/tags/:name", get(list_up_tag))
-        .route("/test/headless", post(create_rust_headless))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -134,50 +131,25 @@ impl Core {
         Ok(Json(articles))
     }
 
-    pub async fn create(&self, payload: Payload) -> Result<(), HmstrError> {
-        let url = payload.url;
-        info!("url: {}", url);
-
-        let mut input_u8 = payload.html.as_bytes();
-        let url_reqwest = reqwest::Url::parse(&url)?;
-        let og = scrape_og(&payload.html);
-        let product = readability_fork::extractor::extract(&mut input_u8, &url_reqwest)?;
-
-        let ulid = ulid::Ulid::new().to_string();
-
-        let title = product.title.replace('\'', "''");
-
-        let mut cleaner = ammonia::Builder::default();
-        let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
-        let sanitized = cleaner.clean(&product.content).to_string();
-        let html = sanitized.replace('\'', "''");
-
-        let og = match og {
-            Some(og) => og,
-            None => "".to_owned(),
-        };
-
-        let plain = product.text.replace('\'', "''");
-        let beginning = create_beginning(&plain);
-        info!("{}: {} ({})", ulid, title, url);
-        self.db.execute(state_add(
-            &ulid, &url, &title, &html, &og, &plain, &beginning,
-        ))?;
-
-        //add to schema
-        self.add_to_index(&ulid, &title, &plain)?;
-        Ok(())
-    }
-
-    pub async fn create_rust_headless(&self, url: &str) -> Result<(), HmstrError> {
-        let browser = Browser::default()?;
+    pub async fn create(&self, url: &str) -> Result<(), HmstrError> {
+        let option = LaunchOptionsBuilder::default()
+            .sandbox(false)
+            .args(
+                CHROME_ARGS
+                    .iter()
+                    .map(|x| std::ffi::OsStr::new(x))
+                    .collect(),
+            )
+            .build()
+            .unwrap();
+        let browser = Browser::new(option)?;
         let tab = browser.new_tab()?;
         tab.navigate_to(url)?;
+        tab.wait_until_navigated()?;
         let content = tab.get_content()?;
-        info!("{}", content);
 
         let mut input_u8 = content.as_bytes();
-        let url_reqwest = reqwest::Url::parse(&url)?;
+        let url_reqwest = url::Url::parse(&url)?;
         let og = match scrape_og(&content) {
             Some(og) => match url::Url::parse(&og) {
                 Ok(_) => Some(og),
