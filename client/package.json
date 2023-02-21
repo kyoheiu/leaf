@@ -1,6 +1,6 @@
 {
   "name": "hmstr-client",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -23,9 +23,10 @@
     "next-auth": "^4.19.2",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
-    "react-feather": "^2.0.10",
-    "rome": "^11.0.0",
     "styled-components": "^5.3.6",
     "typescript": "4.9.4"
+  },
+  "devDependencies": {
+    "rome": "^11.0.0"
   }
 }
