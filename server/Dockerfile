@@ -1,20 +1,12 @@
-FROM ekidd/rust-musl-builder:stable as builder
+FROM rust:latest as builder
 WORKDIR /home/server
 COPY . .
 RUN cargo build --release
 
-FROM alpine:latest
+FROM debian:stable-slim
 WORKDIR /hmstr-server
 # Installs latest Chromium package.
-RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      harfbuzz \
-      ca-certificates \
-      ttf-freefont \
-      nodejs \
-      yarn
+RUN apt update && apt install -y chromium
 COPY --from=builder /home/server/target/release/hmstr-server . 
 ENV RUST_LOG info
 ENV DATABASE_PATH "/var/hmstr/databases/.sqlite"
