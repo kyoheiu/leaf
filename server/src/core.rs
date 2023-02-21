@@ -21,6 +21,12 @@ use tantivy::Term;
 use tower_http::cors::{Any, CorsLayer};
 
 const SEARCH_LIMIT: usize = 100;
+const CHROME_ARGS: [&str; 4] = [
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--disable-setuid-sandbox",
+    "--no-sandbox",
+];
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
