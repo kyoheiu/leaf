@@ -1,16 +1,11 @@
 [package]
 name = "hmstr-server"
-version = "0.1.1"
+version = "0.2.1"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 axum = {version = "0.6", features = ["macros", "json"]}
-env_logger = "0.10.0"
 hyper = "0.14.23"
-log = "0.4.17"
-readability-fork = {version = "0.2.3-alpha.0", git = "https://github.com/kyoheiu/readability" }
 serde = {version = "1.0.144", features = ["derive"]}
 serde_json = "1.0.85"
 tokio = { version = "1.24.2", features = ["full"] }
@@ -20,8 +15,6 @@ ulid = "1.0.0"
 tower-http = { version = "0.3.5", features = ["fs", "cors"]}
 tantivy = "0.19.0"
 ammonia = "3.3.0"
-scraper = "0.14.0"
-headless_chrome = "1.0.5"
-anyhow = "1.0.69"
-url = "2.3.1"
+tracing-subscriber = "0.3.16"
+tracing = "0.1.37"
 
