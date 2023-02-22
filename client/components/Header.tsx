@@ -163,13 +163,13 @@ export const Header = () => {
         </Grid>
         <Grid item xs={blank_space} />
         <Grid item xs={button_width}>
-          <MuiLink component={Link} href="/archived">
-            <ArchiveIcon sx={{ fontSize: button_size }} />
+          <MuiLink component={Link} href="/liked">
+            <FavoriteIcon sx={{ fontSize: button_size }} />
           </MuiLink>
         </Grid>
         <Grid item xs={button_width}>
-          <MuiLink component={Link} href="/liked">
-            <FavoriteIcon sx={{ fontSize: button_size }} />
+          <MuiLink component={Link} href="/archived">
+            <ArchiveIcon sx={{ fontSize: button_size }} />
           </MuiLink>
         </Grid>
         <Grid item xs={button_width}>
