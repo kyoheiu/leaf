@@ -60,6 +60,8 @@ pub fn router(core: Core) -> axum::Router {
 pub async fn run(listener: TcpListener, core: Core) {
     let router = router(core);
 
+    tracing_subscriber::fmt().init();
+
     axum::Server::from_tcp(listener)
         .expect("Failed to listen.")
         .serve(router.into_make_service())
