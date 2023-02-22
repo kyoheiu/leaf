@@ -1,5 +1,5 @@
 # Base Layer
-FROM node:slim AS base
+FROM node:alpine AS base
 WORKDIR /app
 
 COPY package.json yarn.lock ./
@@ -17,7 +17,7 @@ RUN yarn run build
 
 # ==================================================
 # Package install Layer
-FROM node:slim AS node_modules
+FROM node:alpine AS node_modules
 
 WORKDIR /modules
 
@@ -26,7 +26,7 @@ RUN yarn install --non-interactive --frozen-lockfile --production
 
 # ==================================================
 # Production Run Layer
-FROM node:slim
+FROM node:alpine
 ENV NODE_ENV=production
 WORKDIR /app
 
@@ -34,6 +34,18 @@ COPY package.json yarn.lock next.config.js .env.production ./
 COPY --from=build /build/public ./public
 COPY --from=build /build/.next ./.next
 COPY --from=node_modules /modules/node_modules ./node_modules
+
+RUN apk add --no-cache \
+      chromium \
+      nss \
+      freetype \
+      harfbuzz \
+      ca-certificates \
+      ttf-freefont \
+      nodejs \
+      yarn
+
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 EXPOSE 3000
 
