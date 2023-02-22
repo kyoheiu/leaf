@@ -6,7 +6,6 @@ RUN cargo build --release
 FROM debian:stable-slim
 WORKDIR /hmstr-server
 # Installs latest Chromium package.
-RUN apt update && apt install -y chromium
 COPY --from=builder /home/server/target/release/hmstr-server . 
 ENV RUST_LOG info
 ENV DATABASE_PATH "/var/hmstr/databases/.sqlite"
