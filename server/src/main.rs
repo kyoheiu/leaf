@@ -2,19 +2,17 @@ mod core;
 mod error;
 mod handler;
 mod schema;
-mod scrape;
 mod statements;
 mod types;
 
 use crate::core::{run, Core};
 
 use error::HmstrError;
-use log::{error, info, warn};
 use std::{net::TcpListener, path::PathBuf};
+use tracing::{error, info, warn};
 
 #[tokio::main]
 async fn main() -> Result<(), HmstrError> {
-    env_logger::init();
     let mut args = std::env::args();
 
     if args.len() > 1 {
