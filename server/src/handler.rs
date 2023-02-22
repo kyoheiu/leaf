@@ -8,10 +8,10 @@ use super::types::*;
 
 use axum::debug_handler;
 use axum::extract::{Json, Path, Query, State};
-use log::info;
 use std::collections::BTreeMap;
 use std::str::FromStr;
 use std::sync::Arc;
+use tracing::info;
 
 #[debug_handler]
 pub async fn health(State(core): State<Arc<Core>>) -> String {
@@ -61,8 +61,11 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create(State(core): State<Arc<Core>>, body: String) -> Result<(), HmstrError> {
-    core.create(body.trim()).await
+pub async fn create(
+    State(core): State<Arc<Core>>,
+    Json(payload): Json<Payload>,
+) -> Result<(), HmstrError> {
+    core.create(&payload).await
 }
 
 #[debug_handler]

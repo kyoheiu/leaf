@@ -6,6 +6,9 @@ use serde::{Deserialize, Serialize};
 pub struct Payload {
     pub url: String,
     pub html: String,
+    pub title: String,
+    pub plain: String,
+    pub og: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
