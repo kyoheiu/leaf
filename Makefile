@@ -22,4 +22,6 @@ down:
 	sudo docker compose down --remove-orphans
 
 remove:
-	sudo docker rmi $(sudo docker images -q) -f
+	sudo docker compose down --remove-orphans
+	sudo docker rm $(sudo docker ps -a -q) -f
+	sudo docker rmi $(sudo docker images -a -q) -f
