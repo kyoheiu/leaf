@@ -4,16 +4,15 @@ Heavily WIP, do not touch!
 ![screenshot.png](screenshots/screenshot.png)
 
 ## Prerequisite
-- openssl
 - docker
-- GitHub Account and auth secret
+- GitHub Account and its auth secret
 
 ## Dev
 In the root directory:
 ```
-make init
 make dev 
 ```
+Then you can see the page on `localhost:3000`.
 
 ## Prod
 1. After `git clone` this repo, add `.env.production` to the `client` directory, which contains the following:
