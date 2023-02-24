@@ -131,6 +131,7 @@ impl Core {
         let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
         let sanitized = cleaner.clean(&payload.html).to_string();
         let html = sanitized.replace('\'', "''");
+        let title = payload.title.replace("'", "''");
         let plain = payload.plain.replace("'", "''");
 
         let og = match &payload.og {
@@ -145,7 +146,7 @@ impl Core {
         self.db.execute(state_add(
             &ulid,
             &payload.url,
-            &payload.title,
+            &title,
             &html,
             &og,
             &plain,
@@ -274,7 +275,6 @@ impl Core {
 
     pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), HmstrError> {
         self.db.execute(state_upgrade_progress(pos, prog, id))?;
-        info!("ID {} pos {} prog {}", id, pos, prog);
         Ok(())
     }
 
