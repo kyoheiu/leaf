@@ -13,6 +13,7 @@ body {
 
 img, video {
     max-width: 90%;
+    height: auto;
     display: table;
     margin: auto;
 }
