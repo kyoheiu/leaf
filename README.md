@@ -8,7 +8,16 @@ Heavily WIP, do not touch!
 - GitHub Account and its auth secret
 
 ## Dev
-In the root directory:
+Add `.env.development.local` to the `client` directory with the following:
+```
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_HOST=127.0.0.1
+NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
+GITHUB_CLIENT_ID=GITHUB_AUTH_CLIENT_ID
+GITHUB_CLIENT_SECRET=GITHUB_AUTH_CLIENT_SECRET
+```
+
+And in the root directory:
 ```
 make dev 
 ```
