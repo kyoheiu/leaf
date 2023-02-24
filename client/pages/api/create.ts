@@ -23,7 +23,7 @@ const crawl = async (url: string, browser: Browser): Promise<string> => {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const session = await getSession({ req });
 
@@ -44,6 +44,7 @@ export default async function handler(
       ],
     });
     const crawled = await crawl(url, browser);
+    await browser.close();
 
     const dom = new JSDOM(crawled, { url: url });
     const document = dom.window.document;
@@ -69,10 +70,10 @@ export default async function handler(
           "Content-Type": "application/json",
         },
         body: body,
-      }
+      },
     );
     if (!response.ok) {
-      console.log("Cannot create new article.");
+      console.log("Cannot create new article: Error " + response.body);
       res.status(500).end();
     } else {
       res.status(303).setHeader("Location", "/").end();
