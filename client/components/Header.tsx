@@ -1,13 +1,14 @@
 import Link from "next/link";
 import { useContext, useState } from "react";
 import TextField from "@mui/material/TextField";
-import { Link as MuiLink } from "@mui/material";
+import { Button, Link as MuiLink, Menu, MenuItem } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -16,9 +17,18 @@ import { signOut } from "next-auth/react";
 export const Header = () => {
   const router = useRouter();
 
-  const logo_width = 1.5;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const logo_width = 1;
   const button_width = 0.8;
-  const input_width = (12 - logo_width - button_width * 4) / 2;
+  const input_width = 3.5;
+  const blank_space = 12 - logo_width - button_width - input_width * 2;
   const logo_size = 28;
   const button_size = 18;
 
@@ -103,29 +113,52 @@ export const Header = () => {
             />
           </form>
         </Grid>
+        <Grid item xs={blank_space} />
         <Grid item xs={button_width}>
-          <MuiLink component={Link} href="/liked">
-            <FavoriteIcon sx={{ fontSize: button_size }} />
-          </MuiLink>
-        </Grid>
-        <Grid item xs={button_width}>
-          <MuiLink component={Link} href="/archived">
-            <ArchiveIcon sx={{ fontSize: button_size }} />
-          </MuiLink>
-        </Grid>
-        <Grid item xs={button_width}>
-          <MuiLink href="#" onClick={toggle_theme}>
-            {isLight ? (
-              <DarkModeIcon sx={{ fontSize: button_size }} />
-            ) : (
-              <LightModeIcon sx={{ fontSize: button_size }} />
-            )}
-          </MuiLink>
-        </Grid>
-        <Grid item xs={button_width}>
-          <MuiLink href="#" onClick={() => signOut()}>
-            <LogoutIcon sx={{ fontSize: button_size }} />
-          </MuiLink>
+          <Button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+          >
+            <MenuIcon sx={{ fontSize: button_size }} />
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem>
+              <MuiLink underline="none" component={Link} href="/liked">
+                <FavoriteIcon sx={{ fontSize: button_size }} /> Liked
+              </MuiLink>
+            </MenuItem>
+            <MenuItem>
+              <MuiLink underline="none" component={Link} href="/archived">
+                <ArchiveIcon sx={{ fontSize: button_size }} /> Archived
+              </MuiLink>
+            </MenuItem>
+            <MenuItem>
+              <MuiLink underline="none" href="#" onClick={toggle_theme}>
+                {isLight ? (
+                  <DarkModeIcon sx={{ fontSize: button_size }} />
+                ) : (
+                  <LightModeIcon sx={{ fontSize: button_size }} />
+                )}{" "}
+                Change theme
+              </MuiLink>
+            </MenuItem>
+            <MenuItem>
+              <MuiLink underline="none" href="#" onClick={() => signOut()}>
+                <LogoutIcon sx={{ fontSize: button_size }} /> Log out
+              </MuiLink>
+            </MenuItem>
+          </Menu>
         </Grid>
       </Grid>
     </>
