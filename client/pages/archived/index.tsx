@@ -8,16 +8,14 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Login from "../../components/Login";
 import Stack from "@mui/material/Stack";
+import { getArchivedArticles } from "../api/articles/archived";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async () => {
-  const res = await fetch(
-    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/archived`
-  );
-  const data = await res.json();
+  const data = await getArchivedArticles();
   return { props: { data } };
 };
 

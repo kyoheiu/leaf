@@ -8,16 +8,14 @@ import { useState, useEffect } from "react";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
+import { getLikedArticles } from "../api/articles/liked";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async () => {
-  const res = await fetch(
-    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/liked`
-  );
-  const data = await res.json();
+  const data = await getLikedArticles();
   return { props: { data } };
 };
 
