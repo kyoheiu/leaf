@@ -198,7 +198,7 @@ export default function ArticleElement(props: ElementProps) {
           {article.data.og !== "" && (
             <Avatar
               className="og"
-              sx={{ width: 100, height: 100 }}
+              sx={{ width: 1, height: 100 }}
               variant="rounded"
               src={article.data.og}
             />
