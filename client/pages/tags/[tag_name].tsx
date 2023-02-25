@@ -5,6 +5,7 @@ import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
+import { getTagList } from "../api/tags/[tag_name]";
 
 type Data = ArticleData[];
 
@@ -12,10 +13,7 @@ export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
   if (context.params) {
-    const tag_name = context.params.name;
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/tags/${tag_name}`;
-    const res = await fetch(target);
-    const data = await res.json();
+    const data = await getTagList(context.params.tag_name as string);
     return { props: { data } };
   } else {
     return { props: { data: [] } };
