@@ -5,16 +5,14 @@ import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
+import { searchArticles } from "../api/search";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const query = context.query.q;
-  const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/search?q=${query}`;
-  const res = await fetch(target);
-  const data = await res.json();
+  const data = await searchArticles(context.query.q!);
   return { props: { data } };
 };
 
