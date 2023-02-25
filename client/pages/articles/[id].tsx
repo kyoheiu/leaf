@@ -12,6 +12,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import { Link } from "@mui/material";
+import { getArticleContent } from "../api/articles/[id]";
 
 type Data = ArticleContent;
 
@@ -20,9 +21,7 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async (context) => {
   if (context.params) {
     const id = context.params.id;
-    const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}`;
-    const res = await fetch(target);
-    const data = await res.json();
+    const data = await getArticleContent(id as string);
     return { props: { data } };
   } else {
     return { props: { data: [] } };
@@ -56,7 +55,7 @@ export default function Article({
     if (shouldSaveScroll) {
       const n = getScrollPosition();
       if (n.pos !== 0) {
-        fetch("/api/save_pos", {
+        fetch(`/api/articles/${articleContent.id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -138,7 +137,7 @@ export default function Article({
   };
 
   const delete_article = async () => {
-    const res = await fetch("/api/delete", {
+    const res = await fetch(`/api/articles/${articleContent.id}`, {
       method: "DELETE",
       body: articleContent.id,
     });

@@ -117,7 +117,7 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const delete_article = async () => {
-    const res = await fetch("/api/delete", {
+    const res = await fetch(`/api/articles/${article.data.id}`, {
       method: "DELETE",
       body: article.data.id,
     });
