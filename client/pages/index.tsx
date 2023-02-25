@@ -7,16 +7,14 @@ import { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import { useSession } from "next-auth/react";
 import Login from "../components/Login";
+import { getArticles } from "./api/articles";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async () => {
-  const res = await fetch(
-    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles`
-  );
-  const data = await res.json();
+  const data = await getArticles();
   return { props: { data } };
 };
 
