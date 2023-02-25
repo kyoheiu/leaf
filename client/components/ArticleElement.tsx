@@ -37,12 +37,9 @@ export default function ArticleElement(props: ElementProps) {
   const submitAndClose = async (id: string) => {
     const element = document.getElementById(`${id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
-    const res = await fetch("/api/add_tag", {
+    const res = await fetch(`/api/articles/${article.data.id}?kind=add`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id, tag: tag }),
+      body: tag,
     });
     if (!res.ok) {
       console.log("Cannot add tag.");
@@ -61,7 +58,7 @@ export default function ArticleElement(props: ElementProps) {
 
   const toggle_liked = async (id: string) => {
     console.log(id);
-    const res = await fetch("/api/toggle_liked", {
+    const res = await fetch(`/api/articles/${article.data.id}?toggle=liked`, {
       method: "POST",
       body: article.data.id,
     });
@@ -89,10 +86,13 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggle_archived = async () => {
-    const res = await fetch("/api/toggle_archived", {
-      method: "POST",
-      body: article.data.id,
-    });
+    const res = await fetch(
+      `/api/articles/${article.data.id}?toggle=archived`,
+      {
+        method: "POST",
+        body: article.data.id,
+      }
+    );
     if (!res.ok) {
       console.log("Cannot archive article.");
     } else {
@@ -138,12 +138,9 @@ export default function ArticleElement(props: ElementProps) {
   ) => {
     e.preventDefault();
     console.log(tag);
-    const res = await fetch("/api/delete_tag", {
+    const res = await fetch(`/api/articles/${article.data.id}?kind=delete`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: article.data.id, tag: tag }),
+      body: tag,
     });
     if (!res.ok) {
       console.log("Cannot delete tag.");

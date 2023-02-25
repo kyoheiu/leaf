@@ -55,17 +55,12 @@ export default function Article({
     if (shouldSaveScroll) {
       const n = getScrollPosition();
       if (n.pos !== 0) {
-        fetch(`/api/articles/${articleContent.id}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: articleContent.id,
-            pos: n.pos,
-            prog: n.prog,
-          }),
-        }).then((res) => {
+        fetch(
+          `/api/articles/${articleContent.id}?pos=${n.pos}&prog=${n.prog}`,
+          {
+            method: "POST",
+          }
+        ).then((res) => {
           if (!res.ok) {
             console.error("Cannot update progress.");
           }
