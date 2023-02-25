@@ -45,14 +45,15 @@ export default function Archived({
 
   useEffect(() => {
     if (isBottom) {
-      fetch(`/api/reload_archived/${list.slice(-1)[0].id}`).then((res) =>
-        res.json().then((j) => {
-          if (j.length === 0) {
-            setIsLast(true);
-          } else {
-            setList((arr) => arr.concat(j));
-          }
-        })
+      fetch(`/api/articles/archived?reload=${list.slice(-1)[0].id}`).then(
+        (res) =>
+          res.json().then((j) => {
+            if (j.length === 0) {
+              setIsLast(true);
+            } else {
+              setList((arr) => arr.concat(j));
+            }
+          })
       );
       setIsBottom(false);
     }

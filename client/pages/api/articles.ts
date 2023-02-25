@@ -29,6 +29,14 @@ export const getArticles = async () => {
   return data;
 };
 
+export const reloadArticles = async (id: string) => {
+  const response = await fetch(
+    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles?reload=${id}`
+  );
+  const data = await response.json();
+  return data;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -39,8 +47,14 @@ export default async function handler(
     res.status(404).end();
   } else {
     if (req.method === "GET") {
-      const data = await getArticles();
-      return res.json(data);
+      const query = req.query;
+      if (!query.reload) {
+        const data = await getArticles();
+        return res.json(data);
+      } else {
+        const data = await reloadArticles(query.reload as string);
+        return res.json(data);
+      }
     } else if (req.method === "POST") {
       const { JSDOM } = jsdom;
       console.log(req.body);
