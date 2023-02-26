@@ -3,6 +3,8 @@ import { useContext, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { Link as MuiLink } from "@mui/material";
 import Button from "@mui/material/Button";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
@@ -16,6 +18,8 @@ import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
+import Head from "next/head";
+import toast from "react-simple-toasts";
 
 export const Header = () => {
   const router = useRouter();
@@ -37,6 +41,7 @@ export const Header = () => {
 
   const [url, setUrl] = useState<string>("");
   const [query, setQuery] = useState<string>("");
+  const [progress, setProgress] = useState(false);
   const { isLight, setIsLight } = useContext(ColorMode);
 
   const toggle_theme = () => {
@@ -49,22 +54,24 @@ export const Header = () => {
     });
   };
 
-  const createNew = async (e) => {
+  const createNew = async (e: React.FormEvent) => {
     e.preventDefault();
+    setProgress(true);
     console.log(url);
     const res = await fetch("/api/articles", {
       method: "POST",
       body: url,
     });
+    setProgress(false);
     if (!res.ok) {
-      console.log("Cannot create new article.");
+      toast(res.statusText);
     } else {
       router.push("/");
       router.reload();
     }
   };
 
-  const search = async (e) => {
+  const search = async (e: React.FormEvent) => {
     const split = query
       .split(/(\s+)/)
       .filter((x) => x.trim().length > 0)
@@ -74,6 +81,12 @@ export const Header = () => {
 
   return (
     <>
+      <Head>
+        <title>{process.env.NEXT_PUBLIC_TITLE}</title>
+      </Head>
+      <Backdrop open={progress}>
+        <CircularProgress />
+      </Backdrop>
       <Grid container spacing={1} className="header">
         <Grid item xs={logo_width}>
           <MuiLink
