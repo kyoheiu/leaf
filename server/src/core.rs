@@ -16,6 +16,7 @@ use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
 const SEARCH_LIMIT: usize = 100;
+const BEGINNING_LENGTH: usize = 100;
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
@@ -132,7 +133,7 @@ impl Core {
         let sanitized = cleaner.clean(&payload.html).to_string();
         let html = sanitized.replace('\'', "''");
         let title = payload.title.replace("'", "''");
-        let plain = payload.plain.replace("'", "''");
+        let plain = payload.plain.trim().replace("'", "''");
 
         let og = match &payload.og {
             Some(og) => og.to_owned(),
@@ -331,11 +332,28 @@ impl Core {
 }
 
 fn create_beginning(s: &str) -> String {
-    let mut result: String = s
-        .chars()
-        .filter(|x| !x.is_ascii_control())
-        .take(97)
-        .collect();
+    let mut result = String::new();
+    let mut len = 0;
+    let mut whitespace_flag = false;
+    for c in s.chars() {
+        if c.is_whitespace() && whitespace_flag {
+            continue;
+        }
+        if c.is_whitespace() {
+            whitespace_flag = true;
+        } else {
+            whitespace_flag = false;
+        }
+        result.push(c);
+        if let Some(w) = unicode_width::UnicodeWidthChar::width(c) {
+            len += w;
+        }
+        if len >= BEGINNING_LENGTH {
+            break;
+        } else {
+            continue;
+        }
+    }
     result.push_str("...");
     result
 }
