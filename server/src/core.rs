@@ -241,6 +241,7 @@ impl Core {
                         "url" => article.url = value.unwrap().to_owned(),
                         "title" => article.title = value.unwrap().to_owned(),
                         "beginning" => article.beginning = value.unwrap().to_owned(),
+                        "og" => article.og = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
                         "archived" => {
                             article.archived = if value.unwrap() == "0" { false } else { true }
