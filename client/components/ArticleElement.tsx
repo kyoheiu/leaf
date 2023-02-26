@@ -187,7 +187,7 @@ export default function ArticleElement(props: ElementProps) {
       </Grid>
       <div className="element-url">
         <MuiLink color="primary" underline="hover" href={article.data.url}>
-          {`${article.data.url.slice(0, 30)}..`}
+          {`${article.data.url.slice(0, 27)}...`}
         </MuiLink>
       </div>
       <Grid container spacing={2}>
