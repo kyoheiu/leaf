@@ -51,7 +51,7 @@ export default async function handler(
         );
 
         if (!response.ok) {
-          res.status(500).send(response.body);
+          res.status(500).send(response.status);
         } else {
           res.status(200).end();
         }

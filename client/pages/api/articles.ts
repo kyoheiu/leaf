@@ -99,7 +99,6 @@ export default async function handler(
         }
       );
       if (!response.ok) {
-        console.log(`Cannot create new article: Error ${response.body}`);
         res.status(500).end();
       } else {
         res.status(303).setHeader("Location", "/").end();
