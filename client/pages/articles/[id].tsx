@@ -13,6 +13,7 @@ import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import { Link } from "@mui/material";
 import { getArticleContent } from "../api/articles/[id]";
+import Head from "next/head";
 
 type Data = ArticleContent;
 
@@ -189,6 +190,11 @@ export default function Article({
 
   return session ? (
     <>
+      <Head>
+        <title>
+          {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
+        </title>
+      </Head>
       <div className="article-title">{articleContent.title}</div>
       <div className="article-url">
         <Link href={articleContent.url}>{articleContent.url}</Link>
