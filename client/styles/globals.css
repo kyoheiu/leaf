@@ -86,9 +86,9 @@ h6 {
 :not(pre) > code {
     font-size: 0.9em;
     font-family: 'IBM Plex Mono', monospace;
-    color: #86d2ff;
-    background-color: #282828;
-    border-color: #fff 1px;
+    font-weight: bold;
+    color: #111;
+    background-color: #ddd;
     padding: 3px;
     border-radius: 8px;
 }
