@@ -10,5 +10,7 @@ services:
   client:
     build: docker.io/kyoheiudev/hmstr-client:0.2.4
     container_name: client
+    volumes:
+      - ./client/.env.production:/app
     ports:
       - 3000:3000
