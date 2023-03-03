@@ -11,9 +11,11 @@ stop:
 
 build:
 	sudo docker build --tag=kyoheiudev/hmstr-server:$(VER) server 
+	sudo docker build --tag=kyoheiudev/hmstr-client:$(VER) client 
 
 push:
 	sudo docker push kyoheiudev/hmstr-server:$(VER)
+	sudo docker push kyoheiudev/hmstr-client:$(VER)
 
 run:
 	sudo docker compose up -d
