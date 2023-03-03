@@ -115,7 +115,7 @@ export default function Article({
   }, []);
 
   const toggle_like = async () => {
-    const res = await fetch("/api/toggle_liked", {
+    const res = await fetch(`/api/articles/${articleContent.id}?toggle=liked`, {
       method: "POST",
       body: articleContent.id,
     });
@@ -130,10 +130,13 @@ export default function Article({
   };
 
   const toggle_archive = async () => {
-    const res = await fetch("/api/toggle_archived", {
-      method: "POST",
-      body: articleContent.id,
-    });
+    const res = await fetch(
+      `/api/articles/${articleContent.id}?toggle=archived`,
+      {
+        method: "POST",
+        body: articleContent.id,
+      }
+    );
     if (!res.ok) {
       console.log("Cannot archive article.");
     } else {
