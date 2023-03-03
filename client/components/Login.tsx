@@ -8,13 +8,12 @@ export default function Login() {
     <>
       <Box className="login">
         <div className="element-title">hmstr</div>
-        <div className="element-beginning">Hoard documents.</div>
         <Button
           className="login-button"
           variant="outlined"
           onClick={() => signIn()}
         >
-          <LoginIcon />
+          Log in
         </Button>
       </Box>
     </>
