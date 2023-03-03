@@ -6,17 +6,26 @@ import { InferGetServerSidePropsType } from "next";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import { getTagList } from "../api/tags/[tag_name]";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  if (context.params) {
-    const data = await getTagList(context.params.tag_name as string);
-    return { props: { data } };
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return {
+      notFound: true,
+    };
   } else {
-    return { props: { data: [] } };
+    if (context.params) {
+      const data = await getTagList(context.params.tag_name as string);
+      return { props: { data } };
+    } else {
+      return { props: { data: [] } };
+    }
   }
 };
 
