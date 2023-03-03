@@ -62,6 +62,7 @@ export default async function handler(
       let url: string = req.body;
 
       const browser = await puppeteer.launch({
+        executablePath: "google-chrome-stable",
         headless: true,
         args: [
           "--disable-gpu",
