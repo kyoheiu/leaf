@@ -1,8 +1,9 @@
 import { Readability } from "@mozilla/readability";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
 import puppeteer, { Browser } from "puppeteer";
 import jsdom from "jsdom";
+import { authOptions } from "./auth/[...nextauth]";
 
 interface Content {
   url: string;
@@ -41,7 +42,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const session = await getSession({ req });
+  const session = await getServerSession(req, res, authOptions);
 
   if (!session) {
     res.status(404).end();
