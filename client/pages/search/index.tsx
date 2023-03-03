@@ -6,14 +6,23 @@ import { InferGetServerSidePropsType } from "next";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import { searchArticles } from "../api/search";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const data = await searchArticles(context.query.q!);
-  return { props: { data } };
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return {
+      notFound: true,
+    };
+  } else {
+    const data = await searchArticles(context.query.q!);
+    return { props: { data } };
+  }
 };
 
 export default function Searched({

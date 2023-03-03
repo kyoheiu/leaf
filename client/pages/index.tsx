@@ -8,20 +8,27 @@ import Stack from "@mui/material/Stack";
 import { useSession } from "next-auth/react";
 import Login from "../components/Login";
 import { getArticles } from "./api/articles";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
-}> = async () => {
-  const data = await getArticles();
-  return { props: { data } };
+}> = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return { props: { data: [] } };
+  } else {
+    const data = await getArticles();
+    return { props: { data } };
+  }
 };
 
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession({ required: true });
 
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);

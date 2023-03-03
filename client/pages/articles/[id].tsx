@@ -14,18 +14,30 @@ import { useSession } from "next-auth/react";
 import { Link } from "@mui/material";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type Data = ArticleContent;
 
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  if (context.params) {
-    const id = context.params.id;
-    const data = await getArticleContent(id as string);
-    return { props: { data } };
+  const session = await getServerSession(context.req, context.res, authOptions);
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
   } else {
-    return { props: { data: [] } };
+    if (context.params) {
+      const id = context.params.id;
+      const data = await getArticleContent(id as string);
+      return { props: { data } };
+    } else {
+      return { props: { data: [] } };
+    }
   }
 };
 
