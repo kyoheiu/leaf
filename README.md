@@ -10,6 +10,7 @@ Heavily WIP, do not touch!
 - Next.js as the frontend
   - MUI
   - puppeteer
+  - Auth.js (using GitHub account)
   - Typescript
 - Rust as the backend
   - axum
