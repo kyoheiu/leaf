@@ -19,7 +19,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -212,12 +211,13 @@ export default function ArticleElement(props: ElementProps) {
               return (
                 <span key={`tag-element${index.toString()}`}>
                   <Link href={`/tags/${x}`}>
-                    <Chip label={x} id={`${article.data.id}_delete_tag`} />
+                    <Chip
+                      label={x}
+                      id={`${article.data.id}_delete_tag`}
+                      onDelete={(e) => delete_tag(e, article.data.id, x)}
+                    />
                   </Link>
-                  <Button onClick={(e) => delete_tag(e, article.data.id, x)}>
-                    <RemoveCircleOutlineIcon sx={{ fontSize: 20 }} />
-                  </Button>
-                  &nbsp; &nbsp;
+                  &nbsp;
                 </span>
               );
             }
