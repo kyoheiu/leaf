@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { searchArticles } from "../api/search";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
+import Stack from "@mui/material/Stack";
 
 type Data = ArticleData[];
 
@@ -17,7 +18,10 @@ export const getServerSideProps: GetServerSideProps<{
   const session = await getServerSession(context.req, context.res, authOptions);
   if (!session) {
     return {
-      notFound: true,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   } else {
     const data = await searchArticles(context.query.q!);
@@ -46,16 +50,18 @@ export default function Searched({
   return session ? (
     <>
       <Header />
-      <div className="count">RESULTS: {data.length}</div>
-      {wrapped.map((e, index) => {
-        return (
-          <ArticleElement
-            key={`searched-element${{ index }}`}
-            element={e}
-            kind={ElementKind.Searched}
-          />
-        );
-      })}
+      <Stack className="articles-list" spacing={5}>
+        <div className="count">RESULTS: {data.length}</div>
+        {wrapped.map((e, index) => {
+          return (
+            <ArticleElement
+              key={`searched-element${{ index }}`}
+              element={e}
+              kind={ElementKind.Searched}
+            />
+          );
+        })}
+      </Stack>
     </>
   ) : (
     <Login />
