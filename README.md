@@ -2,9 +2,21 @@ Self-hostable Instapaper-ish document managing app.
 Heavily WIP, do not touch!
 
 ![screenshot.png](screenshots/screenshot.png)
+
+## diagram
 ![diagram.png](screenshots/diagram.png)
 
-## Prerequisite
+### tech stack
+- Next.js as the frontend
+  - MUI
+  - puppeteer
+  - Typescript
+- Rust as the backend
+  - axum
+  - tantivy as the full-text search engine
+- SQLite as the database
+
+## prerequisites
 - docker
 - GitHub Account and its auth secret
 
@@ -25,7 +37,7 @@ make dev
 ```
 Then you can see the page on `localhost:3000`.
 
-## Prod
+## deploy
 1. After `git clone` this repo, add `.env.production` to the `client` directory, which contains the following:
 ```
 NEXTAUTH_URL=https://example.com
