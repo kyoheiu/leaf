@@ -27,6 +27,12 @@ ENV NODE_ENV=production
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 WORKDIR /app
 
+COPY --from=node_modules /usr/local/include/ /usr/local/include/
+COPY --from=node_modules /usr/local/lib/ /usr/local/lib/
+COPY --from=node_modules /usr/local/bin/ /usr/local/bin/
+# reset symlinks
+RUN corepack disable && corepack enable
+
 COPY package.json yarn.lock next.config.js ./
 COPY --from=build /build/public ./public
 COPY --from=build /build/.next ./.next
