@@ -17,7 +17,10 @@ export const getServerSideProps: GetServerSideProps<{
   const session = await getServerSession(context.req, context.res, authOptions);
   if (!session) {
     return {
-      notFound: true,
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
     };
   } else {
     if (context.params) {
