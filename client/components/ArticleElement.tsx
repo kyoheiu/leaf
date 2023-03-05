@@ -19,6 +19,11 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import {
+  deleteArticle,
+  manageTag,
+  toggleStatus,
+} from "../pages/api/articles/[id]";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -36,10 +41,7 @@ export default function ArticleElement(props: ElementProps) {
   const submitAndClose = async (id: string) => {
     const element = document.getElementById(`${id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
-    const res = await fetch(`/api/articles/${article.data.id}?kind=add`, {
-      method: "POST",
-      body: tag,
-    });
+    const res = await manageTag(id, "add", tag);
     if (!res.ok) {
       console.log("Cannot add tag.");
       setOpen(false);
@@ -55,12 +57,9 @@ export default function ArticleElement(props: ElementProps) {
     }
   };
 
-  const toggle_liked = async (id: string) => {
+  const toggleLiked = async (id: string) => {
     console.log(id);
-    const res = await fetch(`/api/articles/${article.data.id}?toggle=liked`, {
-      method: "POST",
-      body: article.data.id,
-    });
+    const res = await toggleStatus(id, "liked");
     if (!res.ok) {
       console.log("Cannot toggle like.");
     } else {
@@ -84,14 +83,8 @@ export default function ArticleElement(props: ElementProps) {
     }
   };
 
-  const toggle_archived = async () => {
-    const res = await fetch(
-      `/api/articles/${article.data.id}?toggle=archived`,
-      {
-        method: "POST",
-        body: article.data.id,
-      }
-    );
+  const toggleArchived = async (id: string) => {
+    const res = await toggleStatus(id, "archived");
     if (!res.ok) {
       console.log("Cannot archive article.");
     } else {
@@ -115,11 +108,8 @@ export default function ArticleElement(props: ElementProps) {
     }
   };
 
-  const delete_article = async () => {
-    const res = await fetch(`/api/articles/${article.data.id}`, {
-      method: "DELETE",
-      body: article.data.id,
-    });
+  const deleteArticleContent = async (id: string) => {
+    const res = await deleteArticle(id);
     if (!res.ok) {
       console.log("Cannot delete article.");
     } else {
@@ -130,17 +120,9 @@ export default function ArticleElement(props: ElementProps) {
     }
   };
 
-  const delete_tag = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    id: string,
-    tag: string
-  ) => {
-    e.preventDefault();
+  const deleteTag = async (id: string, tag: string) => {
     console.log(tag);
-    const res = await fetch(`/api/articles/${article.data.id}?kind=delete`, {
-      method: "POST",
-      body: tag,
-    });
+    const res = await manageTag(id, "delete", tag);
     if (!res.ok) {
       console.log("Cannot delete tag.");
     } else {
@@ -214,7 +196,7 @@ export default function ArticleElement(props: ElementProps) {
                     <Chip
                       label={x}
                       id={`${article.data.id}_delete_tag`}
-                      onDelete={(e) => delete_tag(e, article.data.id, x)}
+                      onDelete={() => deleteTag(article.data.id, x)}
                     />
                   </Link>
                   &nbsp;
@@ -255,24 +237,21 @@ export default function ArticleElement(props: ElementProps) {
         value={article.data.progress}
       />
       <div>
-        <Button
-          id={article.data.id}
-          onClick={() => toggle_liked(article.data.id)}
-        >
+        <Button onClick={() => toggleLiked(article.data.id)}>
           {article.data.liked ? (
             <FavoriteIcon sx={{ fontSize: 20 }} />
           ) : (
             <FavoriteBorderIcon sx={{ fontSize: 20 }} />
           )}
         </Button>
-        <Button id={article.data.id} onClick={toggle_archived}>
+        <Button onClick={() => toggleArchived(article.data.id)}>
           {article.data.archived ? (
             <UnarchiveIcon sx={{ fontSize: 20 }} />
           ) : (
             <ArchiveIcon sx={{ fontSize: 20 }} />
           )}
         </Button>
-        <Button id={article.data.id} onClick={delete_article}>
+        <Button onClick={() => deleteArticleContent(article.data.id)}>
           <DeleteForeverIcon sx={{ fontSize: 20 }} />
         </Button>
         <Tags tags={article.data.tags} />
