@@ -44,7 +44,7 @@ export const Header = () => {
   const [progress, setProgress] = useState(false);
   const { isLight, setIsLight } = useContext(ColorMode);
 
-  const toggle_theme = () => {
+  const toggleTheme = () => {
     setIsLight(() => {
       globalThis.sessionStorage.setItem(
         "hmstrTheme",
@@ -160,7 +160,7 @@ export const Header = () => {
               </MuiLink>
             </MenuItem>
             <MenuItem>
-              <MuiLink underline="none" href="#" onClick={toggle_theme}>
+              <MuiLink underline="none" href="#" onClick={toggleTheme}>
                 {isLight ? (
                   <DarkModeIcon sx={{ fontSize: button_size }} />
                 ) : (
