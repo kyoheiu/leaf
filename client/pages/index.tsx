@@ -18,7 +18,12 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
   if (!session) {
-    return { props: { data: [] } };
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
   } else {
     const data = await getArticles();
     return { props: { data } };
@@ -78,7 +83,7 @@ export default function Home({
     data: x,
   }))!;
 
-  return session ? (
+  return (
     <>
       <Header />
       <Stack className="articles-list" spacing={5}>
@@ -93,10 +98,6 @@ export default function Home({
         })}
       </Stack>
       <Footer isLast={isLast} />
-    </>
-  ) : (
-    <>
-      <Login />
     </>
   );
 }

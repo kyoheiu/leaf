@@ -21,7 +21,7 @@ export const getServerSideProps: GetServerSideProps<{
   if (!session) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/login",
         permanent: false,
       },
     };
