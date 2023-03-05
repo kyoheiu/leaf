@@ -101,7 +101,7 @@ export default async function handler(
         }
       );
       if (!response.ok) {
-        res.status(500).end();
+        res.send(response.body);
       } else {
         res.status(303).setHeader("Location", "/").end();
       }
