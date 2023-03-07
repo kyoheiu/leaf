@@ -1,4 +1,5 @@
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Login from "../components/Login";
 
@@ -9,8 +10,13 @@ export default function LoginPage() {
   if (status === "loading") {
     return <>Loading...</>;
   } else if (session) {
-    router.push("/");
-    router.reload();
+    return (
+      <>
+        <Link href="/">
+          If not automatically redireced, go to the index page from here.
+        </Link>
+      </>
+    );
   } else {
     return (
       <>
