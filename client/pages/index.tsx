@@ -10,6 +10,7 @@ import { getArticles } from "./api/articles";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import useBottomEffect from "../hooks/useBottomEffect";
+import Login from "../components/Login";
 
 type Data = ArticleData[];
 
@@ -33,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: _session, status } = useSession({ required: true });
+  const { data: session, status } = useSession({ required: true });
 
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
@@ -70,7 +71,7 @@ export default function Home({
     data: x,
   }))!;
 
-  return (
+  return session ? (
     <>
       <Header />
       <Stack className="articles-list" spacing={5}>
@@ -86,5 +87,7 @@ export default function Home({
       </Stack>
       <Footer isLast={isLast} />
     </>
+  ) : (
+    <Login />
   );
 }

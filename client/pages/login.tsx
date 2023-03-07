@@ -8,9 +8,7 @@ export default function LoginPage() {
 
   if (status === "loading") {
     return <>Loading...</>;
-  }
-
-  if (session) {
+  } else if (session) {
     router.push("/");
     router.reload();
   } else {
