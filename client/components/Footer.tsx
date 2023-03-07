@@ -19,7 +19,10 @@ export default function Footer({ isLast }: FooterProps) {
             width={logo_size}
           />
         ) : (
-          <div id="reload">&nbsp;</div>
+          <>
+            <div id="reload">&nbsp;</div>
+            <div className="extra">&nbsp;</div>
+          </>
         )}
       </footer>
     </>
