@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
-import { getLikedArticles } from "../api/articles/liked";
+import { getLikedArticles, reloadLikedArticles } from "../api/articles/liked";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 
@@ -57,8 +57,8 @@ export default function Liked({
 
   useEffect(() => {
     if (isBottom) {
-      fetch(`/api/articles/liked?reload=${list.slice(-1)[0].id}`).then((res) =>
-        res.json().then((j) => {
+      reloadLikedArticles(list.slice(-1)[0].id).then((res) =>
+        res.json().then((j: ArticleData[]) => {
           if (j.length === 0) {
             setIsLast(true);
           } else {
