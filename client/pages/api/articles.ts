@@ -14,7 +14,6 @@ interface Content {
 }
 
 const crawl = async (url: string, browser: Browser): Promise<string> => {
-  console.log(url);
   const page = await browser.newPage();
   await page.goto(url);
   const text = await page.content();
@@ -58,11 +57,10 @@ export default async function handler(
       }
     } else if (req.method === "POST") {
       const { JSDOM } = jsdom;
-      console.log(req.body);
       let url: string = req.body;
 
       const browser = await puppeteer.launch({
-        executablePath: "google-chrome-stable",
+        executablePath: "chromium",
         headless: true,
         args: [
           "--disable-gpu",
