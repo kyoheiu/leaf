@@ -152,7 +152,9 @@ export default function ArticleElement(props: ElementProps) {
 
   return (
     <div key={article.data.id} id={article.data.id}>
-      <div className="element-timestamp">{article.data.timestamp}</div>
+      <div className="element-timestamp">
+        {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
+      </div>
       <Grid container>
         <Grid item xs={9} className="element-title">
           <MuiLink
