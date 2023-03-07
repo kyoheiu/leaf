@@ -7,13 +7,14 @@ Heavily WIP, do not touch!
 ![diagram.png](screenshots/diagram.png)
 
 ### tech stack
-- Next.js as the frontend
-  - MUI
-  - puppeteer
+- TypeScript as the frontend
+  - Next.js
   - Auth.js (using GitHub account)
-  - Typescript
+  - puppeteer (chromium)
+  - MUI
 - Rust as the backend
   - axum
+  - ammonia as the sanitizer
   - tantivy as the full-text search engine
 - SQLite as the database
 
@@ -41,7 +42,7 @@ Then you can see the page on `localhost:3000`.
 ## deploy
 1. After `git clone` this repo, add `.env.production` to the `client` directory, which contains the following:
 ```
-NEXTAUTH_URL=https://example.com
+NEXTAUTH_URL=https://your-site.url
 NEXT_PUBLIC_TITLE=hmstr
 NEXT_PUBLIC_HOST=server
 NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS

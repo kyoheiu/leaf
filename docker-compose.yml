@@ -1,14 +1,14 @@
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/hmstr-server:0.2.4
+    image: docker.io/kyoheiudev/hmstr-server:0.2.5
     container_name: server
     volumes:
       - ./server/databases:/var/hmstr/databases
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/hmstr-client:0.2.4
+    image: docker.io/kyoheiudev/hmstr-client:0.2.5
     container_name: client
     volumes:
       - ./client/.env.production:/app/.env.production
