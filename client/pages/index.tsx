@@ -6,7 +6,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
 import Stack from "@mui/material/Stack";
 import { useSession } from "next-auth/react";
-import Login from "../components/Login";
 import { getArticles } from "./api/articles";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
@@ -33,7 +32,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session, status } = useSession({ required: true });
+  const { data: _session, status } = useSession({ required: true });
 
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
