@@ -40,13 +40,9 @@ export default function Home({
 
   useEffect(() => {
     globalThis.addEventListener("scroll", () => {
-      if (
-        Math.abs(
-          document.documentElement.scrollHeight -
-            document.documentElement.clientHeight -
-            document.documentElement.scrollTop
-        ) < 1
-      ) {
+      const footer = document.getElementById("reload");
+      const rect = footer?.getBoundingClientRect();
+      if (rect && rect!.top <= document.documentElement.clientHeight) {
         setIsBottom(true);
         console.log("bottom");
       }

@@ -11,13 +11,15 @@ export default function Footer({ isLast }: FooterProps) {
   return (
     <>
       <footer>
-        {isLast && (
+        {isLast ? (
           <Image
             src="/logo.png"
             alt="hmstr"
             height={logo_size}
             width={logo_size}
           />
+        ) : (
+          <div id="reload">&nbsp;</div>
         )}
       </footer>
     </>
