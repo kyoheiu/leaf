@@ -8,7 +8,10 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Login from "../../components/Login";
 import Stack from "@mui/material/Stack";
-import { getArchivedArticles } from "../api/articles/archived";
+import {
+  getArchivedArticles,
+  reloadArchivedArticles,
+} from "../api/articles/archived";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 
@@ -57,15 +60,14 @@ export default function Archived({
 
   useEffect(() => {
     if (isBottom) {
-      fetch(`/api/articles/archived?reload=${list.slice(-1)[0].id}`).then(
-        (res) =>
-          res.json().then((j) => {
-            if (j.length === 0) {
-              setIsLast(true);
-            } else {
-              setList((arr) => arr.concat(j));
-            }
-          })
+      reloadArchivedArticles(list.slice(-1)[0].id).then((res) =>
+        res.json().then((j: ArticleData[]) => {
+          if (j.length === 0) {
+            setIsLast(true);
+          } else {
+            setList((arr) => arr.concat(j));
+          }
+        })
       );
       setIsBottom(false);
     }
