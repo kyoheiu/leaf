@@ -11,7 +11,7 @@ import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
-import { Link } from "@mui/material";
+import Link from "@mui/material/Link";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
 import { getServerSession } from "next-auth";
@@ -114,7 +114,7 @@ export default function Article({
     };
   }, []);
 
-  const toggle_like = async () => {
+  const toggleLiked = async () => {
     const res = await fetch(`/api/articles/${articleContent.id}?toggle=liked`, {
       method: "POST",
       body: articleContent.id,
@@ -129,7 +129,7 @@ export default function Article({
     }
   };
 
-  const toggle_archive = async () => {
+  const toggleArchived = async () => {
     const res = await fetch(
       `/api/articles/${articleContent.id}?toggle=archived`,
       {
@@ -147,7 +147,7 @@ export default function Article({
     }
   };
 
-  const delete_article = async () => {
+  const deleteArticleItself = async () => {
     const res = await fetch(`/api/articles/${articleContent.id}`, {
       method: "DELETE",
       body: articleContent.id,
@@ -167,6 +167,7 @@ export default function Article({
     return <h1>No article found.</h1>;
   }
 
+  // Already sanitized on server side
   const create_markup = () => {
     return { __html: articleContent.html };
   };
@@ -176,7 +177,7 @@ export default function Article({
       <nav>
         <ul className="article-buttons">
           <li className="article-button">
-            <Button onClick={toggle_like}>
+            <Button onClick={toggleLiked}>
               {data.liked ? (
                 <FavoriteIcon sx={{ fontSize: 20 }} />
               ) : (
@@ -185,7 +186,7 @@ export default function Article({
             </Button>
           </li>
           <li className="article-button">
-            <Button onClick={toggle_archive}>
+            <Button onClick={toggleArchived}>
               {data.archived ? (
                 <UnarchiveIcon sx={{ fontSize: 20 }} />
               ) : (
@@ -194,7 +195,7 @@ export default function Article({
             </Button>
           </li>
           <li className="article-button">
-            <Button onClick={delete_article}>
+            <Button onClick={deleteArticleItself}>
               <DeleteForeverIcon sx={{ fontSize: 20 }} />
             </Button>
           </li>

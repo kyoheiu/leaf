@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { getArticles } from "./api/articles";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
+import useBottomEffect from "../hooks/useBottomEffect";
 
 type Data = ArticleData[];
 
@@ -38,16 +39,7 @@ export default function Home({
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
 
-  useEffect(() => {
-    globalThis.addEventListener("scroll", () => {
-      const footer = document.getElementById("reload");
-      const rect = footer?.getBoundingClientRect();
-      if (rect && rect!.top <= document.documentElement.clientHeight) {
-        setIsBottom(true);
-        console.log("bottom");
-      }
-    });
-  }, []);
+  useBottomEffect(setIsBottom);
 
   useEffect(() => {
     if (isBottom) {

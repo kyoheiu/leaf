@@ -14,6 +14,7 @@ import {
 } from "../api/articles/archived";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
+import useBottomEffect from "../../hooks/useBottomEffect";
 
 type Data = ArticleData[];
 
@@ -43,32 +44,17 @@ export default function Archived({
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
 
-  useEffect(() => {
-    globalThis.addEventListener("scroll", () => {
-      if (
-        Math.abs(
-          document.documentElement.scrollHeight -
-            document.documentElement.clientHeight -
-            document.documentElement.scrollTop
-        ) < 1
-      ) {
-        setIsBottom(true);
-        console.log("bottom");
-      }
-    });
-  }, []);
+  useBottomEffect(setIsBottom);
 
   useEffect(() => {
     if (isBottom) {
-      reloadArchivedArticles(list.slice(-1)[0].id).then((res) =>
-        res.json().then((j: ArticleData[]) => {
-          if (j.length === 0) {
-            setIsLast(true);
-          } else {
-            setList((arr) => arr.concat(j));
-          }
-        })
-      );
+      reloadArchivedArticles(list.slice(-1)[0].id).then((j: ArticleData[]) => {
+        if (j.length === 0) {
+          setIsLast(true);
+        } else {
+          setList((arr) => arr.concat(j));
+        }
+      });
       setIsBottom(false);
     }
   });
