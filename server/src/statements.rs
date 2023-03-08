@@ -125,6 +125,20 @@ pub fn state_reload_liked(id: &str) -> String {
     )
 }
 
+pub fn state_reload_list_tag(id: &str, name: &str) -> String {
+    format!(
+        "
+         SELECT *
+         FROM articles
+         INNER JOIN tags ON articles.id = tags.ulid
+         WHERE id < '{}' AND tags.tag = '{}'
+         ORDER BY id DESC
+         LIMIT 10
+        ",
+        id, name
+    )
+}
+
 pub fn state_add(
     ulid: &str,
     url: &str,

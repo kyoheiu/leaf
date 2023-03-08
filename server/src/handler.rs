@@ -1,3 +1,5 @@
+use crate::statements::state_reload_list_tag;
+
 use super::core::Core;
 use super::error::HmstrError;
 use super::statements::{
@@ -132,6 +134,14 @@ pub async fn search(
 pub async fn list_up_tag(
     State(core): State<Arc<Core>>,
     Path(name): Path<String>,
+    Query(param): Query<BTreeMap<String, String>>,
 ) -> Result<Json<Vec<ArticleData>>, HmstrError> {
-    core.list_up(&state_list_tag(&name.to_lowercase())).await
+    if param.contains_key("reload") {
+        let id = param.get("reload").unwrap();
+        info!("RELOAD TAGGED: from id {}", id);
+        core.list_up(&state_reload_list_tag(&id, &name.to_lowercase()))
+            .await
+    } else {
+        core.list_up(&state_list_tag(&name.to_lowercase())).await
+    }
 }
