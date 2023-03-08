@@ -9,14 +9,6 @@ export default function LoginPage() {
 
   if (status === "loading") {
     return <>Loading...</>;
-  } else if (session) {
-    return (
-      <>
-        <Link href="/">
-          If not automatically redireced, go to the index page from here.
-        </Link>
-      </>
-    );
   } else {
     return (
       <>
