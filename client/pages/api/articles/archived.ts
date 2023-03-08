@@ -10,7 +10,7 @@ export const getArchivedArticles = async () => {
   return data;
 };
 
-export const reloadArchivedArticles = async (id: string) => {
+const reloadArchivedArticles = async (id: string) => {
   const response = await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/archived?reload=${id}`
   );

@@ -9,14 +9,14 @@ export const getArticleContent = async (id: string) => {
   return data;
 };
 
-export const toggleStatus = async (id: string, toggle: string) => {
+const toggleStatus = async (id: string, toggle: string) => {
   return await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?toggle=${toggle}`,
     { method: "POST" }
   );
 };
 
-export const manageTag = async (id: string, kind: string, tag: string) => {
+const manageTag = async (id: string, kind: string, tag: string) => {
   return await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?kind=${kind}`,
     {
@@ -26,7 +26,7 @@ export const manageTag = async (id: string, kind: string, tag: string) => {
   );
 };
 
-export const deleteArticle = async (id: string) => {
+const deleteArticle = async (id: string) => {
   return await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}`,
     {
@@ -35,7 +35,7 @@ export const deleteArticle = async (id: string) => {
   );
 };
 
-export const updateProgress = async (id: string, pos: string, prog: string) => {
+const updateProgress = async (id: string, pos: string, prog: string) => {
   const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?pos=${pos}&prog=${prog}`;
   return await fetch(target, { method: "POST" });
 };

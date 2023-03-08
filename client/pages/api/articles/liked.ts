@@ -10,7 +10,7 @@ export const getLikedArticles = async () => {
   return data;
 };
 
-export const reloadLikedArticles = async (id: string) => {
+const reloadLikedArticles = async (id: string) => {
   const response = await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/liked?reload=${id}`
   );

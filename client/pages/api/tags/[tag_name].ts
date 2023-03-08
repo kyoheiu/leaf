@@ -9,7 +9,7 @@ export const getTagList = async (tag_name: string) => {
   return data;
 };
 
-export const reloadTagList = async (id: string, tag_name: string) => {
+const reloadTagList = async (id: string, tag_name: string) => {
   const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/tags/${tag_name}?reload=${id}`;
   const res = await fetch(target);
   const data = await res.json();

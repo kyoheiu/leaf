@@ -29,7 +29,7 @@ export const getArticles = async () => {
   return data;
 };
 
-export const reloadArticles = async (id: string) => {
+const reloadArticles = async (id: string) => {
   const response = await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles?reload=${id}`
   );
