@@ -4,17 +4,15 @@ import { Header } from "../../components/Header";
 import Footer from "../../components/Footer";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Login from "../../components/Login";
 import Stack from "@mui/material/Stack";
-import {
-  getArchivedArticles,
-  reloadArchivedArticles,
-} from "../api/articles/archived";
+import { getArchivedArticles } from "../api/articles/archived";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import useBottomEffect from "../../hooks/useBottomEffect";
+import useReloadEffect from "../../hooks/useReloadEffect";
 
 type Data = ArticleData[];
 
@@ -45,19 +43,16 @@ export default function Archived({
   const [isLast, setIsLast] = useState(false);
 
   useBottomEffect(setIsBottom);
-
-  useEffect(() => {
-    if (isBottom) {
-      reloadArchivedArticles(list.slice(-1)[0].id).then((j: ArticleData[]) => {
-        if (j.length === 0) {
-          setIsLast(true);
-        } else {
-          setList((arr) => arr.concat(j));
-        }
-      });
-      setIsBottom(false);
-    }
-  });
+  if (list.length !== 0) {
+    useReloadEffect(
+      `/api/articles/archived?reload=${list.slice(-1)[0].id}`,
+      isBottom,
+      setIsBottom,
+      list,
+      setList,
+      setIsLast
+    );
+  }
 
   if (status === "loading") {
     return <div>Loading...</div>;

@@ -12,6 +12,7 @@ import { getLikedArticles, reloadLikedArticles } from "../api/articles/liked";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import useBottomEffect from "../../hooks/useBottomEffect";
+import useReloadEffect from "../../hooks/useReloadEffect";
 
 type Data = ArticleData[];
 
@@ -43,18 +44,16 @@ export default function Liked({
 
   useBottomEffect(setIsBottom);
 
-  useEffect(() => {
-    if (isBottom) {
-      reloadLikedArticles(list.slice(-1)[0].id).then((j: ArticleData[]) => {
-        if (j.length === 0) {
-          setIsLast(true);
-        } else {
-          setList((arr) => arr.concat(j));
-        }
-      });
-      setIsBottom(false);
-    }
-  });
+  if (list.length !== 0) {
+    useReloadEffect(
+      `/api/articles/liked?reload=${list.slice(-1)[0].id}`,
+      isBottom,
+      setIsBottom,
+      list,
+      setList,
+      setIsLast
+    );
+  }
 
   if (status === "loading") {
     return <div>Loading...</div>;

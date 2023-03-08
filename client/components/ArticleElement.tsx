@@ -19,11 +19,6 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import {
-  deleteArticle,
-  manageTag,
-  toggleStatus,
-} from "../pages/api/articles/[id]";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -41,7 +36,10 @@ export default function ArticleElement(props: ElementProps) {
   const submitAndClose = async (id: string) => {
     const element = document.getElementById(`${id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
-    const res = await manageTag(id, "add", tag);
+    const res = await fetch(`/api/articles/${id}?kind=add`, {
+      method: "POST",
+      body: tag,
+    });
     if (!res.ok) {
       console.log("Cannot add tag.");
       setOpen(false);
@@ -58,8 +56,9 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggleLiked = async (id: string) => {
-    console.log(id);
-    const res = await toggleStatus(id, "liked");
+    const res = await fetch(`/api/articles/${id}?toggle=liked`, {
+      method: "POST",
+    });
     if (!res.ok) {
       console.log("Cannot toggle like.");
     } else {
@@ -84,7 +83,9 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const toggleArchived = async (id: string) => {
-    const res = await toggleStatus(id, "archived");
+    const res = await fetch(`/api/articles/${id}?toggle=archived`, {
+      method: "POST",
+    });
     if (!res.ok) {
       console.log("Cannot archive article.");
     } else {
@@ -109,7 +110,9 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const deleteArticleContent = async (id: string) => {
-    const res = await deleteArticle(id);
+    const res = await fetch(`/api/articles/${id}`, {
+      method: "DELETE",
+    });
     if (!res.ok) {
       console.log("Cannot delete article.");
     } else {
@@ -121,8 +124,10 @@ export default function ArticleElement(props: ElementProps) {
   };
 
   const deleteTag = async (id: string, tag: string) => {
-    console.log(tag);
-    const res = await manageTag(id, "delete", tag);
+    const res = await fetch(`/api/articles/${id}?kind=delete`, {
+      method: "POST",
+      body: tag,
+    });
     if (!res.ok) {
       console.log("Cannot delete tag.");
     } else {
