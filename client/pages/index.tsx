@@ -3,7 +3,7 @@ import ArticleElement from "../components/ArticleElement";
 import { Header } from "../components/Header";
 import Footer from "../components/Footer";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import { useSession } from "next-auth/react";
 import { getArticles } from "./api/articles";
@@ -11,6 +11,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]";
 import useBottomEffect from "../hooks/useBottomEffect";
 import Login from "../components/Login";
+import useReloadEffect from "../hooks/useReloadEffect";
 
 type Data = ArticleData[];
 
@@ -41,21 +42,16 @@ export default function Home({
   const [isLast, setIsLast] = useState(false);
 
   useBottomEffect(setIsBottom);
-
-  useEffect(() => {
-    if (isBottom) {
-      fetch(`/api/articles?reload=${list.slice(-1)[0].id}`).then((res) => {
-        res.json().then((j) => {
-          if (j.length === 0) {
-            setIsLast(true);
-          } else {
-            setList((arr) => arr.concat(j));
-          }
-        });
-      });
-      setIsBottom(false);
-    }
-  });
+  if (list.length !== 0) {
+    useReloadEffect(
+      `/api/articles?reload=${list.slice(-1)[0].id}`,
+      isBottom,
+      setIsBottom,
+      list,
+      setList,
+      setIsLast
+    );
+  }
 
   if (status === "loading") {
     console.log("loading...");
