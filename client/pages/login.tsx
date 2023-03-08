@@ -10,10 +10,18 @@ export default function LoginPage() {
   if (status === "loading") {
     return <>Loading...</>;
   } else {
-    return (
-      <>
-        <Login />
-      </>
-    );
+    if (!session) {
+      return (
+        <>
+          <Login />
+        </>
+      );
+    } else {
+      return (
+        <>
+          <Link href="/">Go to the index page from here.</Link>
+        </>
+      );
+    }
   }
 }
