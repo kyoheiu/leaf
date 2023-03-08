@@ -8,6 +8,12 @@ import { useSession } from "next-auth/react";
 import { getTagList } from "../api/tags/[tag_name]";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
+import Stack from "@mui/material/Stack";
+import Footer from "../../components/Footer";
+import { useState } from "react";
+import { useRouter } from "next/router";
+import useBottomEffect from "../../hooks/useBottomEffect";
+import useReloadEffect from "../../hooks/useReloadEffect";
 
 type Data = ArticleData[];
 
@@ -32,10 +38,29 @@ export const getServerSideProps: GetServerSideProps<{
   }
 };
 
-export default function Searched({
+export default function Tagged({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { data: session, status } = useSession();
+
+  const router = useRouter();
+  const { tag_name } = router.query;
+  const [list, setList] = useState<ArticleData[]>(data);
+  const [isBottom, setIsBottom] = useState(false);
+  const [isLast, setIsLast] = useState(false);
+
+  useBottomEffect(setIsBottom);
+
+  if (list.length !== 0) {
+    useReloadEffect(
+      `/api/tags/${tag_name}?reload=${list.slice(-1)[0].id}`,
+      isBottom,
+      setIsBottom,
+      list,
+      setList,
+      setIsLast
+    );
+  }
 
   if (status === "loading") {
     return <div>Loading...</div>;
@@ -45,7 +70,7 @@ export default function Searched({
     return <h1>No article found.</h1>;
   }
 
-  const wrapped: WrappedData[] = data!.map((x) => ({
+  const wrapped: WrappedData[] = list.map((x) => ({
     visible: true,
     data: x,
   }))!;
@@ -53,16 +78,19 @@ export default function Searched({
   return session ? (
     <>
       <Header />
-      <div className="count">RESULTS: {data.length}</div>
-      {wrapped.map((e, index) => {
-        return (
-          <ArticleElement
-            key={`tag-element${{ index }}`}
-            element={e}
-            kind={ElementKind.Searched}
-          />
-        );
-      })}
+      <Stack className="articles-list" spacing={5}>
+        <div className="tag-name">TAG: {tag_name}</div>
+        {wrapped.map((e, index) => {
+          return (
+            <ArticleElement
+              key={`tagged-element${index}`}
+              element={e}
+              kind={ElementKind.Searched}
+            />
+          );
+        })}
+      </Stack>
+      <Footer isLast={isLast} />
     </>
   ) : (
     <Login />
