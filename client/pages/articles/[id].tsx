@@ -150,7 +150,6 @@ export default function Article({
   const deleteArticleItself = async () => {
     const res = await fetch(`/api/articles/${articleContent.id}`, {
       method: "DELETE",
-      body: articleContent.id,
     });
     if (!res.ok) {
       console.log("Cannot delete article.");
