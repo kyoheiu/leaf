@@ -20,6 +20,7 @@ Heavily WIP, do not touch!
 
 ## prerequisites
 - docker
+- cargo
 - GitHub Account and its auth secret
 
 ## dev
