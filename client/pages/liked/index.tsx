@@ -9,8 +9,6 @@ import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
 import { getLikedArticles } from "../api/articles/liked";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
 import useBottomEffect from "../../hooks/useBottomEffect";
 import useReloadEffect from "../../hooks/useReloadEffect";
 
@@ -19,18 +17,8 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  } else {
-    const data = await getLikedArticles();
-    return { props: { data } };
-  }
+  const data = await getLikedArticles();
+  return { props: { data } };
 };
 
 export default function Liked({

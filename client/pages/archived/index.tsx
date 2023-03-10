@@ -9,8 +9,6 @@ import { useSession } from "next-auth/react";
 import Login from "../../components/Login";
 import Stack from "@mui/material/Stack";
 import { getArchivedArticles } from "../api/articles/archived";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
 import useBottomEffect from "../../hooks/useBottomEffect";
 import useReloadEffect from "../../hooks/useReloadEffect";
 
@@ -19,18 +17,8 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  } else {
-    const data = await getArchivedArticles();
-    return { props: { data } };
-  }
+  const data = await getArchivedArticles();
+  return { props: { data } };
 };
 
 export default function Archived({

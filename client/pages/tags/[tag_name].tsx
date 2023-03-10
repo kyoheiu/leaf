@@ -6,8 +6,6 @@ import { InferGetServerSidePropsType } from "next";
 import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import { getTagList } from "../api/tags/[tag_name]";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
 import Stack from "@mui/material/Stack";
 import Footer from "../../components/Footer";
 import { useState } from "react";
@@ -20,21 +18,11 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
+  if (context.params) {
+    const data = await getTagList(context.params.tag_name as string);
+    return { props: { data } };
   } else {
-    if (context.params) {
-      const data = await getTagList(context.params.tag_name as string);
-      return { props: { data } };
-    } else {
-      return { props: { data: [] } };
-    }
+    return { props: { data: [] } };
   }
 };
 

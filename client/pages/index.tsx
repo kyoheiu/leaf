@@ -5,12 +5,8 @@ import Footer from "../components/Footer";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
-import { useSession } from "next-auth/react";
 import { getArticles } from "./api/articles";
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]";
 import useBottomEffect from "../hooks/useBottomEffect";
-import Login from "../components/Login";
 import useReloadEffect from "../hooks/useReloadEffect";
 
 type Data = ArticleData[];
