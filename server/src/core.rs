@@ -67,6 +67,10 @@ impl Core {
             Ok(p) => PathBuf::from(&p),
             Err(_) => PathBuf::from("./databases/.sqlite"),
         };
+        let parent = db_path.parent().unwrap();
+        if !parent.exists() {
+            std::fs::create_dir_all(parent)?;
+        }
         let connection = sqlite::Connection::open_with_full_mutex(&db_path)?;
         connection.execute(state_create_articles_table())?;
         connection.execute(state_create_tags_table())?;
