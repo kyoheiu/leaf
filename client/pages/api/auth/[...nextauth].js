@@ -4,10 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    }),
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -27,6 +23,10 @@ export const authOptions = {
           return null;
         }
       },
+    }),
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
   ],
   session: { strategy: "jwt" },
