@@ -21,7 +21,6 @@ export default function Footer({ isLast }: FooterProps) {
         ) : (
           <>
             <div id="reload">&nbsp;</div>
-            <div className="extra">&nbsp;</div>
           </>
         )}
       </footer>
