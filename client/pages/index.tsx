@@ -18,25 +18,13 @@ type Data = ArticleData[];
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  } else {
-    const data = await getArticles();
-    return { props: { data } };
-  }
+  const data = await getArticles();
+  return { props: { data } };
 };
 
 export default function Home({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session, status } = useSession({ required: true });
-
   const [list, setList] = useState<ArticleData[]>(data);
   const [isBottom, setIsBottom] = useState(false);
   const [isLast, setIsLast] = useState(false);
@@ -53,11 +41,6 @@ export default function Home({
     );
   }
 
-  if (status === "loading") {
-    console.log("loading...");
-    return <div>Loading...</div>;
-  }
-
   if (!data) {
     return <h1>No article found.</h1>;
   }
@@ -67,7 +50,7 @@ export default function Home({
     data: x,
   }))!;
 
-  return session ? (
+  return (
     <>
       <Header />
       <Stack className="articles-list" spacing={5}>
@@ -83,7 +66,5 @@ export default function Home({
       </Stack>
       <Footer isLast={isLast} />
     </>
-  ) : (
-    <Login />
   );
 }
