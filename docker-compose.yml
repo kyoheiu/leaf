@@ -5,6 +5,8 @@ services:
     container_name: server
     volumes:
       - ./server/databases:/var/hmstr/databases
+    environment:
+      TZ: Azia/Tokyo
     ports:
       - 8000:8000
   client:
