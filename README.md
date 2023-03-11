@@ -1,12 +1,13 @@
-Self-hostable Instapaper-ish document managing app.
-Heavily WIP, do not touch!
+Self-hostable Instapaper-ish document managing app. Heavily WIP, do not touch!
 
-![screenshot.png](screenshots/screenshot.png)
+![screenshot.png](screenshots/architecture.png)
 
-## diagram
+## architecture
+
 ![diagram.png](screenshots/diagram.png)
 
 ### tech stack
+
 - TypeScript as the frontend
   - Next.js
   - Auth.js (using GitHub account)
@@ -19,11 +20,13 @@ Heavily WIP, do not touch!
 - SQLite as the database
 
 ## prerequisites
+
 - docker
-- (dev) cargo
+- (dev) nodejs, cargo
 - (optional) GitHub Account and its auth secret
 
 ## dev
+
 Add `.env.development.local` to the `client` directory with the following:
 
 ```
@@ -37,16 +40,21 @@ GITHUB_CLIENT_ID=GITHUB_AUTH_CLIENT_ID
 GITHUB_CLIENT_SECRET=GITHUB_AUTH_CLIENT_SECRET
 ```
 
-*Basically you don't need GitHub Auth if you're satisfied by simple id & password pair. When you need more robust 2FA auth, go to GitHub Auth.*
+_Basically you don't need GitHub Auth if you're satisfied by simple id &
+password pair. When you need more robust 2FA auth, go to GitHub Auth._
 
 And in the root directory:
+
 ```
-make -i dev 
+make -i dev
 ```
+
 Then you can see the page on `localhost:3000`.
 
 ## deploy
-1. After `git clone` this repo, add `.env.production` to the `client` directory, which contains the following:
+
+1. After `git clone` this repo, add `.env.production` to the `client` directory,
+   which contains the following:
 
 ```
 NEXTAUTH_URL=https://your-site.url
