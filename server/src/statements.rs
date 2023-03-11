@@ -102,7 +102,7 @@ pub fn state_reload(id: &str) -> String {
         "
          SELECT *
          FROM articles
-         WHERE id < '{}' 
+         WHERE id < '{}' AND archived = 0
          ORDER BY id DESC
          LIMIT {}
         ",
