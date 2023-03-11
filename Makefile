@@ -3,6 +3,9 @@ dev:
 	cd server && sudo chown -R ${USER}:${GROUP} databases
 	cd client && yarn run dev & cd server && RUST_LOG=info cargo run -r && fg
 
+test:
+	hurl --test test.hurl
+
 stop:
 	killall node && killall hmstr-server
 
