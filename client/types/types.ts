@@ -1,3 +1,8 @@
+export interface Articles {
+  data: ArticleData[];
+  is_last: boolean
+}
+
 export interface ArticleData {
   id: string;
   url: string;

@@ -1,86 +1,79 @@
-import { WrappedData, ElementKind, ArticleData } from "../../types/types";
+import {
+	WrappedData,
+	ElementKind,
+	ArticleData,
+	Articles,
+} from "../../types/types";
 import { Header } from "../../components/Header";
 import ArticleElement from "../../components/ArticleElement";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import Login from "../../components/Login";
-import { useSession } from "next-auth/react";
 import { getTagList } from "../api/tags/[tag_name]";
 import Stack from "@mui/material/Stack";
-import Footer from "../../components/Footer";
+import { Footer } from "../../components/Footer";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import useBottomEffect from "../../hooks/useBottomEffect";
-import useReloadEffect from "../../hooks/useReloadEffect";
+import { Button } from "@mui/material";
 
-type Data = ArticleData[];
+type Data = Articles;
 
 export const getServerSideProps: GetServerSideProps<{
-  data: Data;
+	data: Data;
 }> = async (context) => {
-  if (context.params) {
-    const data = await getTagList(context.params.tag_name as string);
-    return { props: { data } };
-  } else {
-    return { props: { data: [] } };
-  }
+	if (context.params) {
+		const data = await getTagList(context.params.tag_name as string);
+		return { props: { data } };
+	} else {
+		return { props: { data: [] } };
+	}
 };
 
 export default function Tagged({
-  data,
+	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session, status } = useSession();
+	const router = useRouter();
+	const { tag_name } = router.query;
+	const [list, setList] = useState<ArticleData[]>(data.data);
+	const [isLast, setIsLast] = useState(data.is_last);
 
-  const router = useRouter();
-  const { tag_name } = router.query;
-  const [list, setList] = useState<ArticleData[]>(data);
-  const [isBottom, setIsBottom] = useState(false);
-  const [isLast, setIsLast] = useState(false);
+	const reload = async () => {
+		if (list.length !== 0) {
+			const res = await fetch(
+				`/api/tags/${tag_name}?reload=${list.slice(-1)[0].id}`,
+			);
+			const j = await res.json();
+			if (j.is_last) {
+				setIsLast(true);
+			}
+			setList((arr) => arr.concat(j.data));
+		}
+	};
 
-  useBottomEffect(setIsBottom);
+	if (!data) {
+		return <h1>No article found.</h1>;
+	}
 
-  if (list.length !== 0) {
-    useReloadEffect(
-      `/api/tags/${tag_name}?reload=${list.slice(-1)[0].id}`,
-      isBottom,
-      setIsBottom,
-      list,
-      setList,
-      setIsLast
-    );
-  }
+	const wrapped: WrappedData[] = list.map((x) => ({
+		visible: true,
+		data: x,
+	}))!;
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (!data) {
-    return <h1>No article found.</h1>;
-  }
-
-  const wrapped: WrappedData[] = list.map((x) => ({
-    visible: true,
-    data: x,
-  }))!;
-
-  return session ? (
-    <>
-      <Header />
-      <Stack className="articles-list" spacing={5}>
-        <div className="tag-name">TAG: {tag_name}</div>
-        {wrapped.map((e, index) => {
-          return (
-            <ArticleElement
-              key={`tagged-element${index}`}
-              element={e}
-              kind={ElementKind.Searched}
-            />
-          );
-        })}
-      </Stack>
-      <Footer isLast={isLast} />
-    </>
-  ) : (
-    <Login />
-  );
+	return (
+		<>
+			<Header />
+			<Stack className="articles-list" spacing={5}>
+				<div className="tag-name">TAG: {tag_name}</div>
+				{wrapped.map((e, index) => {
+					return (
+						<ArticleElement
+							key={`tagged-element${index}`}
+							element={e}
+							kind={ElementKind.Searched}
+						/>
+					);
+				})}
+				{Footer(isLast, reload)}
+			</Stack>
+		</>
+	);
 }

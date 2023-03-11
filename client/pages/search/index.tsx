@@ -3,55 +3,43 @@ import { Header } from "../../components/Header";
 import ArticleElement from "../../components/ArticleElement";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import Login from "../../components/Login";
-import { useSession } from "next-auth/react";
 import { searchArticles } from "../api/search";
 import Stack from "@mui/material/Stack";
+import { footerImage } from "../../components/Footer";
 
 type Data = ArticleData[];
 
 export const getServerSideProps: GetServerSideProps<{
-  data: Data;
+	data: Data;
 }> = async (context) => {
-  const data = await searchArticles(context.query.q!);
-  return { props: { data } };
+	const data = await searchArticles(context.query.q!);
+	return { props: { data } };
 };
 
 export default function Searched({
-  data,
+	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { data: session, status } = useSession();
+	const wrapped: WrappedData[] = data!.map((x) => ({
+		visible: true,
+		data: x,
+	}))!;
 
-  if (status === "loading") {
-    return <div>Loading...</div>;
-  }
-
-  if (!data) {
-    return <h1>No article found.</h1>;
-  }
-
-  const wrapped: WrappedData[] = data!.map((x) => ({
-    visible: true,
-    data: x,
-  }))!;
-
-  return session ? (
-    <>
-      <Header />
-      <Stack className="articles-list" spacing={5}>
-        <div className="count">RESULTS: {data.length}</div>
-        {wrapped.map((e, index) => {
-          return (
-            <ArticleElement
-              key={`searched-element${{ index }}`}
-              element={e}
-              kind={ElementKind.Searched}
-            />
-          );
-        })}
-      </Stack>
-    </>
-  ) : (
-    <Login />
-  );
+	return (
+		<>
+			<Header />
+			<Stack className="articles-list" spacing={5}>
+				<div className="count">RESULTS: {data.length}</div>
+				{wrapped.map((e, index) => {
+					return (
+						<ArticleElement
+							key={`searched-element${{ index }}`}
+							element={e}
+							kind={ElementKind.Searched}
+						/>
+					);
+				})}
+				<footer>{footerImage()}</footer>
+			</Stack>
+		</>
+	);
 }

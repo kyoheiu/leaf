@@ -1,29 +1,22 @@
-import Divider from "@mui/material/Divider";
 import Image from "next/image";
+import SyncIcon from "@mui/icons-material/Sync";
+import Button from "@mui/material/Button";
 
-interface FooterProps {
-  isLast: boolean;
-}
+export const LOGO_SIZE = 28;
+export const footerImage = () => {
+	return (
+		<Image src="/logo.png" alt="hmstr" height={LOGO_SIZE} width={LOGO_SIZE} />
+	);
+};
 
-export default function Footer({ isLast }: FooterProps) {
-  const logo_size = 28;
+const syncButton = (reload: () => Promise<void>) => {
+	return (
+		<Button variant="outlined" fullWidth={true} onClick={reload}>
+			<SyncIcon />
+		</Button>
+	);
+};
 
-  return (
-    <>
-      <footer>
-        {isLast ? (
-          <Image
-            src="/logo.png"
-            alt="hmstr"
-            height={logo_size}
-            width={logo_size}
-          />
-        ) : (
-          <>
-            <div id="reload">&nbsp;</div>
-          </>
-        )}
-      </footer>
-    </>
-  );
-}
+export const Footer = (isLast: boolean, reload: () => Promise<void>) => {
+	return <footer>{isLast ? footerImage() : syncButton(reload)}</footer>;
+};
