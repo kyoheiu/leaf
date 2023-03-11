@@ -24,7 +24,7 @@ pub async fn health(State(core): State<Arc<Core>>) -> String {
 pub async fn list_up(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+) -> Result<Json<Articles>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD: from id {}", id);
@@ -38,7 +38,7 @@ pub async fn list_up(
 pub async fn list_up_archived(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+) -> Result<Json<Articles>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD ARCHIVED: from id {}", id);
@@ -52,7 +52,7 @@ pub async fn list_up_archived(
 pub async fn list_up_liked(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+) -> Result<Json<Articles>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD LIKED: from id {}", id);
@@ -135,7 +135,7 @@ pub async fn list_up_tag(
     State(core): State<Arc<Core>>,
     Path(name): Path<String>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+) -> Result<Json<Articles>, HmstrError> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD TAGGED: from id {}", id);

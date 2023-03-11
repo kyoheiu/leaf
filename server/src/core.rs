@@ -2,7 +2,7 @@ use super::error::HmstrError;
 use super::handler::*;
 use super::schema::initialize_schema;
 use super::statements::*;
-use super::types::{ArticleContent, ArticleData, Payload};
+use super::types::{ArticleContent, ArticleData, Articles, Payload};
 
 use axum::Json;
 use axum::{routing::get, Router};
@@ -17,6 +17,7 @@ use tracing::info;
 
 const SEARCH_LIMIT: usize = 100;
 const BEGINNING_LENGTH: usize = 100;
+const CHUNK_LENGTH: usize = 11;
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
@@ -85,7 +86,7 @@ impl Core {
         })
     }
 
-    pub async fn list_up(&self, statement: &str) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+    pub async fn list_up(&self, statement: &str) -> Result<Json<Articles>, HmstrError> {
         let mut articles = vec![];
         self.db.iterate(statement, |pairs| {
             let mut article = ArticleData::new();
@@ -126,7 +127,18 @@ impl Core {
             article.tags = tags;
         }
 
-        Ok(Json(articles))
+        if articles.len() == CHUNK_LENGTH {
+            articles.pop();
+            Ok(Json(Articles {
+                data: articles,
+                is_last: false,
+            }))
+        } else {
+            Ok(Json(Articles {
+                data: articles,
+                is_last: true,
+            }))
+        }
     }
 
     pub async fn create(&self, payload: &Payload) -> Result<(), HmstrError> {

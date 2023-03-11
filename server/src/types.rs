@@ -12,6 +12,12 @@ pub struct Payload {
 }
 
 #[derive(Debug, Serialize)]
+pub struct Articles {
+    pub data: Vec<ArticleData>,
+    pub is_last: bool,
+}
+
+#[derive(Debug, Serialize)]
 pub struct ArticleData {
     pub id: String,
     pub url: String,
@@ -71,11 +77,6 @@ impl ArticleContent {
             timestamp: "".to_owned(),
         }
     }
-}
-
-#[derive(Debug, Serialize)]
-pub struct Articles {
-    pub articles: Vec<ArticleData>,
 }
 
 #[derive(Debug, Serialize)]

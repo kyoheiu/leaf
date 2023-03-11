@@ -1,3 +1,5 @@
+const CHUNK: &str = "11";
+
 pub fn state_create_articles_table() -> String {
     "
      CREATE TABLE IF NOT EXISTS articles (
@@ -29,35 +31,44 @@ pub fn state_create_tags_table() -> String {
 }
 
 pub fn state_list_up() -> String {
-    "
+    format!(
+        "
      SELECT *
      FROM articles
      WHERE archived = 0
      ORDER BY id DESC
-     LIMIT 10
-     "
+     LIMIT {}
+     ",
+        CHUNK
+    )
     .to_owned()
 }
 
 pub fn state_list_up_archived() -> String {
-    "
+    format!(
+        "
      SELECT *
      FROM articles
      WHERE archived = 1
      ORDER BY id DESC
-     LIMIT 10
-     "
+     LIMIT {}
+     ",
+        CHUNK
+    )
     .to_owned()
 }
 
 pub fn state_list_up_liked() -> String {
-    "
+    format!(
+        "
      SELECT *
      FROM articles
      WHERE liked = 1
      ORDER BY id DESC
-     LIMIT 10
-     "
+     LIMIT {}
+     ",
+        CHUNK
+    )
     .to_owned()
 }
 
@@ -80,9 +91,9 @@ pub fn state_list_tag(name: &str) -> String {
          INNER JOIN tags ON articles.id = tags.ulid
          WHERE tags.tag = '{}'
          ORDER BY id DESC
-         LIMIT 10
+         LIMIT {}
         ",
-        name
+        name, CHUNK
     )
 }
 
@@ -93,9 +104,9 @@ pub fn state_reload(id: &str) -> String {
          FROM articles
          WHERE id < '{}' 
          ORDER BY id DESC
-         LIMIT 10
+         LIMIT {}
         ",
-        id
+        id, CHUNK
     )
 }
 
@@ -106,9 +117,9 @@ pub fn state_reload_archived(id: &str) -> String {
          FROM articles
          WHERE id < '{}' AND archived = 1
          ORDER BY id DESC
-         LIMIT 10
+         LIMIT {}
         ",
-        id
+        id, CHUNK
     )
 }
 
@@ -119,9 +130,9 @@ pub fn state_reload_liked(id: &str) -> String {
          FROM articles
          WHERE id < '{}' AND liked = 1
          ORDER BY id DESC
-         LIMIT 10
+         LIMIT {}
         ",
-        id
+        id, CHUNK
     )
 }
 
@@ -133,9 +144,9 @@ pub fn state_reload_list_tag(id: &str, name: &str) -> String {
          INNER JOIN tags ON articles.id = tags.ulid
          WHERE id < '{}' AND tags.tag = '{}'
          ORDER BY id DESC
-         LIMIT 10
+         LIMIT {}
         ",
-        id, name
+        id, name, CHUNK
     )
 }
 
