@@ -15,7 +15,7 @@ use tantivy::Term;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
-const SEARCH_LIMIT: usize = 100;
+const SEARCH_LIMIT: usize = 50;
 const BEGINNING_LENGTH: usize = 100;
 const CHUNK_LENGTH: usize = 11;
 
