@@ -29,5 +29,7 @@ export default async function handler(
       const data = await reloadArchivedArticles(query.reload as string);
       return res.json(data);
     }
+  } else {
+    res.status(404).end();
   }
 }
