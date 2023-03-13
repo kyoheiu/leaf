@@ -6,11 +6,14 @@ export default async function handler(
 	res: NextApiResponse,
 ) {
 	if (req.method === "POST") {
-		const response = await createArticle(req.body.url);
-		if (!response.ok) {
-			res.send(response.body);
-		} else {
-			res.status(200).end();
+		const query = req.query;
+		if (query.url) {
+			const response = await createArticle(query.url as string);
+			if (!response.ok) {
+				res.send(response.body);
+			} else {
+				res.status(200).end();
+			}
 		}
 	} else {
 		res.status(404).end();
