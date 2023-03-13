@@ -1,10 +1,10 @@
 Self-hostable Instapaper-ish document managing app. Heavily WIP, do not touch!
 
-![screenshot.png](screenshots/architecture.png)
+![screenshot.png](screenshots/screenshot.png)
 
 ## architecture
 
-![diagram.png](screenshots/diagram.png)
+![diagram.png](screenshots/architecture.png)
 
 ### tech stack
 
