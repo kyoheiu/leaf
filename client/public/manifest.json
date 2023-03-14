@@ -1,5 +1,5 @@
 {
-    "name": "hmstr - hoard and read",
+    "name": "hmstr",
     "short_name": "hmstr",
     "description": "document managing app",
     "icons": [
@@ -18,6 +18,7 @@
     "background_color": "#ffffff",
     "display": "standalone",
     "orientation": "any",
+    "scope": "/",
     "start_url": "/",
     "share_target": {
         "action": "/api/create",
