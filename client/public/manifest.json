@@ -21,7 +21,7 @@
     "scope": "/",
     "start_url": "/",
     "share_target": {
-        "action": "/api/create",
+        "action": "api/create",
         "method": "POST",
         "enctype": "multipart/form-data",
         "params": {
