@@ -34,3 +34,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 >>>>>>> client/main
+
+# next-pwa
+/public/sw.js*
+/public/workbox-*.js*

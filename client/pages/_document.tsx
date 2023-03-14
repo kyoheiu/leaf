@@ -5,7 +5,16 @@ export default function Document() {
 		<Html>
 			<Head>
 				<link rel="manifest" href="/manifest.json" />
-				<link rel="apple-touch-icon" href="/icon.png" />
+				<link
+					rel="apple-touch-icon"
+					type="image/png"
+					href="/icons/apple-touch-icon.png"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					href="/icons/android-chrome-192x192.png"
+				/>
 			</Head>
 			<body>
 				<Main />
