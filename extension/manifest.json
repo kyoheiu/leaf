@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "hmstr-ex",
+  "version": "0.1",
+
+  "description": "Add new article to your hmstr app.",
+
+  "icons": {
+    "48": "icons/48.png"
+  },
+
+  "permissions": ["tabs", "storage"],
+
+  "host_permissions": ["<all_urls>"],
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  },
+  "action": {
+    "default_icon": {
+      "19": "icons/48.png",
+      "38": "icons/48.png"
+    }
+  }
+  
+}
