@@ -28,4 +28,4 @@ const addNewOne = (tab) => {
 	});
 };
 
-browser.action.onClicked.addListener((tab) => addNewOne(tab));
+browser.browserAction.onClicked.addListener((tab) => addNewOne(tab));

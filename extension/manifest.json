@@ -1,5 +1,6 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
+  "author": "Kyohei Uto",
   "name": "hmstr",
   "version": "0.1.0",
   "description": "Add new article to your hmstr app.",
@@ -20,7 +21,7 @@
     "page": "options.html",
     "browser_style": true
   },
-  "action": {
+  "browser_action": {
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"
