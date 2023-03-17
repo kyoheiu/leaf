@@ -8,11 +8,22 @@ const addNewOne = (tab) => {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: res.token,
+				Authorization: res.hmstrToken,
 			},
 			body: JSON.stringify({ url: tab.url }),
 		}).then((res) => {
 			console.log(res.statusText);
+			browser.notifications
+				.create("hmstrResult", {
+					type: "basic",
+					title: "hmstr",
+					message: `Result: ${res.statusText}`,
+				})
+				.then((r) => {
+					setTimeout(() => {
+						browser.notifications.clear("hmstrResult");
+					}, 3000);
+				});
 		});
 	});
 };
