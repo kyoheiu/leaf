@@ -13,8 +13,7 @@ import Login from "../../components/Login";
 import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
 import { getLikedArticles } from "../api/articles/liked";
-import Button from "@mui/material/Button";
-import { Footer, footerImage } from "../../components/Footer";
+import { Footer } from "../../components/Footer";
 
 type Data = Articles;
 
@@ -64,6 +63,7 @@ export default function Liked({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
+				<h3>/liked</h3>
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

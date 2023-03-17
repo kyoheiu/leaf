@@ -6,7 +6,7 @@ import {
 } from "../../types/types";
 import ArticleElement from "../../components/ArticleElement";
 import { Header } from "../../components/Header";
-import { Footer, footerImage } from "../../components/Footer";
+import { Footer } from "../../components/Footer";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { useState } from "react";
@@ -14,7 +14,6 @@ import { useSession } from "next-auth/react";
 import Login from "../../components/Login";
 import Stack from "@mui/material/Stack";
 import { getArchivedArticles } from "../api/articles/archived";
-import Button from "@mui/material/Button";
 
 type Data = Articles;
 
@@ -63,6 +62,7 @@ export default function Archived({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
+				<h3>/archived</h3>
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

@@ -13,7 +13,7 @@ import Stack from "@mui/material/Stack";
 import { Footer } from "../../components/Footer";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { Button } from "@mui/material";
+import Alert from "@mui/material/Alert";
 
 type Data = Articles;
 
@@ -62,7 +62,9 @@ export default function Tagged({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
-				<div className="tag-name">TAG: {tag_name}</div>
+				<Alert severity="info" variant="outlined" className="tag-name">
+					TAG: {tag_name}
+				</Alert>
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

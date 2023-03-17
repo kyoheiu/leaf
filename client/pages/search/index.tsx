@@ -2,24 +2,24 @@ import { WrappedData, ElementKind, ArticleData } from "../../types/types";
 import { Header } from "../../components/Header";
 import ArticleElement from "../../components/ArticleElement";
 import { GetServerSideProps } from "next";
-import { InferGetServerSidePropsType } from "next";
 import { searchArticles } from "../api/search";
 import Stack from "@mui/material/Stack";
 import { footerImage } from "../../components/Footer";
+import Alert from "@mui/material/Alert";
 
-type Data = ArticleData[];
-
-export const getServerSideProps: GetServerSideProps<{
-	data: Data;
-}> = async (context) => {
-	const data = await searchArticles(context.query.q!);
-	return { props: { data } };
+type Data = {
+	query: string | string[];
+	data: ArticleData[];
 };
 
-export default function Searched({
-	data,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const wrapped: WrappedData[] = data!.map((x) => ({
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const q = context.query.q!;
+	const result = await searchArticles(q);
+	return { props: { query: q, data: result } };
+};
+
+export default function Searched(props: Data) {
+	const wrapped: WrappedData[] = props.data.map((x) => ({
 		visible: true,
 		data: x,
 	}))!;
@@ -28,7 +28,9 @@ export default function Searched({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
-				<div className="count">RESULTS: {data.length}</div>
+				<Alert severity="info" variant="outlined" className="count">
+					QUERY: {props.query} | RESULTS: {props.data.length}
+				</Alert>
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

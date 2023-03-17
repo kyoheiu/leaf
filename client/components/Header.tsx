@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { useContext, useState } from "react";
 import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import { Link as MuiLink } from "@mui/material";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
@@ -8,6 +12,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import LightModeIcon from "@mui/icons-material/LightMode";
@@ -24,6 +30,13 @@ import toast from "react-simple-toasts";
 export const Header = () => {
 	const router = useRouter();
 
+	const logo_width = 1;
+	const button_width = 0.8;
+	const input_width = 5;
+	const blank_space = 12 - logo_width - button_width * 2 - input_width;
+	const logo_size = 28;
+	const button_size = 18;
+
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -32,15 +45,25 @@ export const Header = () => {
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
-	const logo_width = 1;
-	const button_width = 0.8;
-	const input_width = 3.5;
-	const blank_space = 12 - logo_width - button_width - input_width * 2;
-	const logo_size = 28;
-	const button_size = 18;
+
+	const [searchOpen, setSearchOpen] = useState(false);
+	const handleClickSearchOpen = () => {
+		setSearchOpen(true);
+	};
+	const handleSearchClose = () => {
+		setSearchOpen(false);
+	};
+	const searchAndClose = async () => {
+		const queries = (document.getElementById("search") as HTMLInputElement)
+			.value;
+		const split = queries
+			.split(/(\s+)/)
+			.filter((x) => x.trim().length > 0)
+			.join("+");
+		router.push(`/search?q=${split}`);
+	};
 
 	const [url, setUrl] = useState<string>("");
-	const [query, setQuery] = useState<string>("");
 	const [progress, setProgress] = useState(false);
 	const { isLight, setIsLight } = useContext(ColorMode);
 
@@ -70,12 +93,10 @@ export const Header = () => {
 		}
 	};
 
-	const search = async (e: React.FormEvent) => {
-		const split = query
-			.split(/(\s+)/)
-			.filter((x) => x.trim().length > 0)
-			.join("+");
-		router.push(`/search?q=${split}`);
+	const classes = {
+		label: {
+			textAlign: "center",
+		},
 	};
 
 	return (
@@ -115,20 +136,34 @@ export const Header = () => {
 						/>
 					</form>
 				</Grid>
-				<Grid item xs={input_width}>
-					<form onSubmit={search}>
-						<TextField
-							id={"search"}
-							type="text"
-							value={query}
-							onChange={(e) => setQuery(() => e.target.value)}
-							placeholder="search"
-							size="small"
-							variant="standard"
-						/>
-					</form>
-				</Grid>
 				<Grid item xs={blank_space} />
+				<Grid item xs={button_width}>
+					<MuiLink href="#" onClick={handleClickSearchOpen}>
+						<SearchIcon sx={{ fontSize: button_size }} />
+					</MuiLink>
+					<Dialog open={searchOpen} onClose={handleSearchClose}>
+						<DialogTitle>Search.</DialogTitle>
+						<DialogContent>
+							<TextField
+								autoFocus
+								margin="dense"
+								id={"search"}
+								label=""
+								type="text"
+								fullWidth
+								variant="standard"
+							/>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={handleSearchClose}>
+								<CloseIcon />
+							</Button>
+							<Button onClick={searchAndClose}>
+								<SearchIcon />
+							</Button>
+						</DialogActions>
+					</Dialog>
+				</Grid>
 				<Grid item xs={button_width}>
 					<Button
 						id="basic-button"
