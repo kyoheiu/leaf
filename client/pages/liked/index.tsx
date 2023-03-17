@@ -9,8 +9,6 @@ import { Header } from "../../components/Header";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { useState } from "react";
-import Login from "../../components/Login";
-import { useSession } from "next-auth/react";
 import Stack from "@mui/material/Stack";
 import { getLikedArticles } from "../api/articles/liked";
 import { Footer } from "../../components/Footer";
@@ -27,10 +25,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Liked({
 	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { data: session, status } = useSession();
-
 	const [list, setList] = useState<ArticleData[]>(data.data);
-	const [isBottom, setIsBottom] = useState(false);
 	const [isLast, setIsLast] = useState(data.is_last);
 
 	const reload = async () => {
@@ -46,11 +41,7 @@ export default function Liked({
 		}
 	};
 
-	if (status === "loading") {
-		return <div>Loading...</div>;
-	}
-
-	if (!data) {
+	if (list.length === 0) {
 		return <h1>No article found.</h1>;
 	}
 
@@ -59,7 +50,7 @@ export default function Liked({
 		data: x,
 	}))!;
 
-	return session ? (
+	return (
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
@@ -76,7 +67,5 @@ export default function Liked({
 				{Footer(isLast, reload)}
 			</Stack>
 		</>
-	) : (
-		<Login />
 	);
 }

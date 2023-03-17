@@ -145,7 +145,6 @@ export const Header = () => {
 						<DialogTitle>Search.</DialogTitle>
 						<DialogContent>
 							<TextField
-								autoFocus
 								margin="dense"
 								id={"search"}
 								label=""

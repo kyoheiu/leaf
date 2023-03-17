@@ -10,7 +10,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import { getArticles } from "./api/articles";
-import Button from "@mui/material/Button";
 import { Footer } from "../components/Footer";
 
 type Data = Articles;
@@ -39,7 +38,7 @@ export default function Home({
 		}
 	};
 
-	if (!data) {
+	if (list.length === 0) {
 		return <h1>No article found.</h1>;
 	}
 
