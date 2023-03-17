@@ -173,3 +173,9 @@ footer {
     margin-top: 10px;
     margin-bottom: 24px;
 }
+
+.page-info {
+    font-size: 1.2em;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+}

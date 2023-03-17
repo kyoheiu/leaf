@@ -12,6 +12,7 @@ import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import { getLikedArticles } from "../api/articles/liked";
 import { Footer } from "../../components/Footer";
+import { PageInfo } from "../../components/PageInfo";
 
 type Data = Articles;
 
@@ -41,10 +42,6 @@ export default function Liked({
 		}
 	};
 
-	if (list.length === 0) {
-		return <h1>No article found.</h1>;
-	}
-
 	const wrapped: WrappedData[] = list.map((x) => ({
 		visible: true,
 		data: x,
@@ -54,7 +51,7 @@ export default function Liked({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
-				<h3>/liked</h3>
+				{PageInfo("/liked")}
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

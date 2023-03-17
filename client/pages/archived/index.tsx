@@ -12,6 +12,7 @@ import { InferGetServerSidePropsType } from "next";
 import { useState } from "react";
 import Stack from "@mui/material/Stack";
 import { getArchivedArticles } from "../api/articles/archived";
+import { PageInfo } from "../../components/PageInfo";
 
 type Data = Articles;
 
@@ -41,10 +42,6 @@ export default function Archived({
 		}
 	};
 
-	if (list.length === 0) {
-		return <h1>No article found.</h1>;
-	}
-
 	const wrapped: WrappedData[] = list.map((x) => ({
 		visible: true,
 		data: x,
@@ -54,7 +51,7 @@ export default function Archived({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
-				<h3>/archived</h3>
+				{PageInfo("/archived")}
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

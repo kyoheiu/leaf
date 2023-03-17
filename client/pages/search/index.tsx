@@ -5,7 +5,7 @@ import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";
 import Stack from "@mui/material/Stack";
 import { footerImage } from "../../components/Footer";
-import Alert from "@mui/material/Alert";
+import { PageInfo } from "../../components/PageInfo";
 
 type Data = {
 	query: string | string[];
@@ -28,9 +28,7 @@ export default function Searched(props: Data) {
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
-				<Alert severity="info" variant="outlined" className="count">
-					QUERY: {props.query} | RESULTS: {props.data.length}
-				</Alert>
+				{PageInfo(`QUERY: ${props.query} | RESULTS: ${props.data.length}`)}
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

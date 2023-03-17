@@ -13,7 +13,7 @@ import Stack from "@mui/material/Stack";
 import { Footer } from "../../components/Footer";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Alert from "@mui/material/Alert";
+import { PageInfo } from "../../components/PageInfo";
 
 type Data = Articles;
 
@@ -49,10 +49,6 @@ export default function Tagged({
 		}
 	};
 
-	if (!data) {
-		return <h1>No article found.</h1>;
-	}
-
 	const wrapped: WrappedData[] = list.map((x) => ({
 		visible: true,
 		data: x,
@@ -62,9 +58,7 @@ export default function Tagged({
 		<>
 			<Header />
 			<Stack className="articles-list" spacing={5}>
-				<Alert severity="info" variant="outlined" className="tag-name">
-					TAG: {tag_name}
-				</Alert>
+				{PageInfo(`TAG: ${tag_name}`)}
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement
