@@ -195,22 +195,23 @@ export default function ArticleElement(props: ElementProps) {
 			</Grid>
 			<Grid container>
 				<Grid item xs={9}>
-					{article.data.tags.map((x, index) => {
-						{
-							return (
-								<span key={`tag-element${index.toString()}`}>
-									<Link href={`/tags/${x}`}>
-										<Chip
-											label={x}
-											id={`${article.data.id}_delete_tag`}
-											onDelete={() => deleteTag(article.data.id, x)}
-										/>
-									</Link>
-									&nbsp;
-								</span>
-							);
-						}
-					})}
+					{article.data.tags.length !== 0 &&
+						article.data.tags.map((x, index) => {
+							{
+								return (
+									<span key={`tag-element${index.toString()}`}>
+										<Link href={`/tags/${x}`}>
+											<Chip
+												label={x}
+												id={`${article.data.id}_delete_tag`}
+												onDelete={() => deleteTag(article.data.id, x)}
+											/>
+										</Link>
+										&nbsp;
+									</span>
+								);
+							}
+						})}
 					&nbsp;
 					<Chip
 						label={article.data.tags.length ? "+" : "Add new tag"}
