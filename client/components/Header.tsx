@@ -107,7 +107,7 @@ export const Header = () => {
 			<Backdrop open={progress}>
 				<CircularProgress />
 			</Backdrop>
-			<Grid container spacing={1} className="header">
+			<Grid container textAlign="center" spacing={1} className="header">
 				<Grid item xs={logo_width}>
 					<MuiLink
 						className="site-title"
@@ -130,7 +130,7 @@ export const Header = () => {
 							type="url"
 							value={url}
 							onChange={(e) => setUrl(() => e.target.value)}
-							placeholder="+"
+							placeholder="Add URL"
 							size="small"
 							fullWidth
 							variant="standard"
