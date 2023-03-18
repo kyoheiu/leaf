@@ -41,3 +41,6 @@ HTTP 307
 
 GET http://localhost:3000/api/tags/rust
 HTTP 307
+
+GET http://localhost:3000/api/create
+HTTP 404
