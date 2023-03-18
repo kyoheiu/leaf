@@ -206,6 +206,9 @@ export default function Article({
 			<Divider className="article-divider" />
 			<div dangerouslySetInnerHTML={create_markup()} />
 			<Divider className="article-divider" />
+			<div className="article-url-bottom">
+				<Link href={articleContent.url}>{articleContent.url}</Link>
+			</div>
 			<Buttons data={articleContent} />
 		</>
 	) : (
