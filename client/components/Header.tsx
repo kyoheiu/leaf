@@ -27,14 +27,14 @@ import { signOut } from "next-auth/react";
 import Head from "next/head";
 import toast from "react-simple-toasts";
 
+export const LOGO_SIZE = 42;
+
 export const Header = () => {
 	const router = useRouter();
 
 	const logo_width = 1;
 	const button_width = 0.8;
-	const input_width = 5;
-	const blank_space = 12 - logo_width - button_width * 2 - input_width;
-	const logo_size = 28;
+	const input_width = 12 - logo_width - button_width * 2;
 	const button_size = 18;
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -118,8 +118,8 @@ export const Header = () => {
 						<Image
 							src="/logo.png"
 							alt="hmstr"
-							height={logo_size}
-							width={logo_size}
+							height={LOGO_SIZE}
+							width={LOGO_SIZE}
 						/>
 					</MuiLink>
 				</Grid>
@@ -132,11 +132,11 @@ export const Header = () => {
 							onChange={(e) => setUrl(() => e.target.value)}
 							placeholder="+"
 							size="small"
+							fullWidth
 							variant="standard"
 						/>
 					</form>
 				</Grid>
-				<Grid item xs={blank_space} />
 				<Grid item xs={button_width}>
 					<MuiLink href="#" onClick={handleClickSearchOpen}>
 						<SearchIcon sx={{ fontSize: button_size }} />

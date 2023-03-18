@@ -1,8 +1,8 @@
 import Image from "next/image";
 import SyncIcon from "@mui/icons-material/Sync";
 import Button from "@mui/material/Button";
+import { LOGO_SIZE } from "./Header";
 
-export const LOGO_SIZE = 28;
 export const footerImage = () => {
 	return (
 		<Image src="/logo.png" alt="hmstr" height={LOGO_SIZE} width={LOGO_SIZE} />
