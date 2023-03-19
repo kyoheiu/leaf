@@ -5,8 +5,15 @@ Instapaper is great, but you can self-host your own "read-later" Web app!
 ![https://img.shields.io/docker/image-size/kyoheiudev/hmstr-client/0.2.10?label=hmstr-client](https://img.shields.io/docker/image-size/kyoheiudev/hmstr-client/0.2.10?label=hmstr-client)
 ![https://img.shields.io/docker/image-size/kyoheiudev/hmstr-server/0.2.10?label=hmstr-server](https://img.shields.io/docker/image-size/kyoheiudev/hmstr-server/0.2.10?label=hmstr-server)
 
+<hr />
+
 ![screenshot.png](images/screenshot.png)
+
+<hr />
+
 ![screenshot2.png](images/screenshot2.png)
+
+<hr />
 
 ## What is this exactly
 
