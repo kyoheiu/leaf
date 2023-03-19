@@ -1,10 +1,57 @@
-Self-hostable Instapaper-ish document managing app. Heavily WIP, do not touch!
+![top.png](images/top.png)
 
-![screenshot.png](screenshots/screenshot.png)
+Instapaper is great, but you can self-host your own "read-later" Web app!
+
+![https://img.shields.io/docker/image-size/kyoheiudev/hmstr-client/0.2.10?label=hmstr-client](https://img.shields.io/docker/image-size/kyoheiudev/hmstr-client/0.2.10?label=hmstr-client)
+![https://img.shields.io/docker/image-size/kyoheiudev/hmstr-server/0.2.10?label=hmstr-server](https://img.shields.io/docker/image-size/kyoheiudev/hmstr-server/0.2.10?label=hmstr-server)
+
+![screenshot.png](images/screenshot.png)
+![screenshot2.png](images/screenshot2.png)
+
+## What is this exactly
+
+- Save a web page by URL and read only its content later.
+- Specialized to "read": Use hmstr to read text-based articles.
+- Save your progress automatically.
+- Features:
+  - like
+  - archive
+  - tagging
+  - full-text search (works only with languages based on the Latin script for
+    now)
+  - light/dark theme
+  - built-in auth
+- With the
+  [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/hmstr-extension/),
+  you can easily add new article.
+
+## Install to your server
+
+1. After `git clone` this repo, add `.env.production` in the `client` directory
+   with the following contents:
+
+```
+NEXTAUTH_URL=https://your-site.url
+NEXT_PUBLIC_TITLE=hmstr
+NEXT_PUBLIC_HOST=server
+NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
+CREDENTIALS_ID=YOUR_ID
+CREDENTIALS_PASSWORD=SO_STRONG_PASSWORD
+WEB_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
+```
+
+You should edit `NEXTAUTH_SECRET` (should be ), `CREDENTIALS_ID`,
+`CREDENTIALS_PASSWORD` and `WEB_API_TOKEN`.
+
+_You can add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to this file to make
+it more secured with 2FA._
+
+2. `make run` in the root directory,and the Next.js client will begin listening
+   on port 3000.
 
 ## architecture
 
-![diagram.png](screenshots/architecture.png)
+![diagram.png](images/architecture.png)
 
 ### tech stack
 
@@ -19,13 +66,13 @@ Self-hostable Instapaper-ish document managing app. Heavily WIP, do not touch!
   - tantivy as the full-text search engine
 - SQLite as the database
 
-## prerequisites
+## dev
+
+### prerequisites
 
 - docker
 - (dev) nodejs, cargo
 - (optional) GitHub Account and its auth secret
-
-## dev
 
 Add `.env.development.local` to the `client` directory with the following:
 
@@ -41,9 +88,6 @@ GITHUB_CLIENT_SECRET=GITHUB_AUTH_CLIENT_SECRET
 WEB_API_TOKEN=test
 ```
 
-_Basically you don't need GitHub Auth if you're satisfied by simple id &
-password pair. When you need more robust 2FA auth, go to GitHub Auth._
-
 And in the root directory:
 
 ```
@@ -51,22 +95,3 @@ make -i dev
 ```
 
 Then you can see the page on `localhost:3000`.
-
-## deploy
-
-1. After `git clone` this repo, add `.env.production` to the `client` directory,
-   which contains the following:
-
-```
-NEXTAUTH_URL=https://your-site.url
-NEXT_PUBLIC_TITLE=hmstr
-NEXT_PUBLIC_HOST=server
-NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
-CREDENTIALS_ID=YOUR_ID
-CREDENTIALS_PASSWORD=SO_STRONG_PASSWORD
-GITHUB_CLIENT_ID=GITHUB_AUTH_CLIENT_ID
-GITHUB_CLIENT_SECRET=GITHUB_AUTH_SECRET
-WEB_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_I_E_CURL
-```
-
-2. `make run` and the Next.js client will begin listening on port 3000.

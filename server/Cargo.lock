@@ -421,7 +421,7 @@ dependencies = [
 
 [[package]]
 name = "hmstr-server"
-version = "0.2.10"
+version = "0.2.11"
 dependencies = [
  "ammonia",
  "axum",
