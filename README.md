@@ -47,8 +47,8 @@ CREDENTIALS_PASSWORD=SO_STRONG_PASSWORD
 WEB_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
 ```
 
-You should edit `NEXTAUTH_SECRET` (should be ), `CREDENTIALS_ID`,
-`CREDENTIALS_PASSWORD` and `WEB_API_TOKEN`.
+You should edit `NEXTAUTH_SECRET`, `CREDENTIALS_ID`, `CREDENTIALS_PASSWORD` and
+`WEB_API_TOKEN`.
 
 _You can add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to this file to make
 it more secured with 2FA._
@@ -86,7 +86,7 @@ make run
 ### dev-prerequisites
 
 - docker
-- (dev) nodejs, cargo
+- nodejs, cargo, make
 - (optional) GitHub Account and its auth secret
 
 Add `.env.development.local` to the `client` directory with the following:
