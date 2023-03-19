@@ -1,4 +1,6 @@
-![top.png](images/top.png)
+**hmstr**
+
+![logo.png](images/logo.png)
 
 Instapaper is great, but you can self-host your own "read-later" Web app!
 
