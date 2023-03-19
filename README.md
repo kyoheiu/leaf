@@ -49,11 +49,19 @@ it more secured with 2FA._
 2. `make run` in the root directory,and the Next.js client will begin listening
    on port 3000.
 
-## architecture
+## Update
+
+```
+make down
+git pull
+make run
+```
+
+## Architecture
 
 ![diagram.png](images/architecture.png)
 
-### tech stack
+### Tech stack
 
 - TypeScript as the frontend
   - Next.js
@@ -66,9 +74,9 @@ it more secured with 2FA._
   - tantivy as the full-text search engine
 - SQLite as the database
 
-## dev
+## Dev
 
-### prerequisites
+### dev-prerequisites
 
 - docker
 - (dev) nodejs, cargo
