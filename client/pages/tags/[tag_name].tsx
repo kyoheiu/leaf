@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps<{
 		const data = await getTagList(context.params.tag_name as string);
 		return { props: { data } };
 	} else {
-		return { props: { data: [] } };
+		return { props: { data: null } };
 	}
 };
 
@@ -33,7 +33,7 @@ export default function Tagged({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const router = useRouter();
 	const { tag_name } = router.query;
-	const [list, setList] = useState<ArticleData[]>(data.data);
+	const [list, setList] = useState<ArticleData[]>(data.data ?? []);
 	const [isLast, setIsLast] = useState(data.is_last);
 
 	const reload = async () => {
@@ -49,10 +49,12 @@ export default function Tagged({
 		}
 	};
 
-	const wrapped: WrappedData[] = list.map((x) => ({
-		visible: true,
-		data: x,
-	}))!;
+	const wrapped: WrappedData[] =
+		list.map((x) => ({
+			visible: true,
+			data: x,
+		}))
+		;
 
 	return (
 		<>

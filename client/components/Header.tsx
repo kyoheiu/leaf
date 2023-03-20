@@ -93,12 +93,6 @@ export const Header = () => {
 		}
 	};
 
-	const classes = {
-		label: {
-			textAlign: "center",
-		},
-	};
-
 	return (
 		<>
 			<Head>

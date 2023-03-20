@@ -91,7 +91,7 @@ export default function Article({
 		const setSaveOff = () => {
 			setShouldSaveScroll((_v) => false);
 		};
-		router.beforePopState(({}) => {
+		router.beforePopState(() => {
 			setShouldSaveScroll(() => false);
 			console.log(shouldSaveScroll);
 			return true;

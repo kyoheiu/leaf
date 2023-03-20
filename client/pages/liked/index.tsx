@@ -18,7 +18,7 @@ type Data = Articles;
 
 export const getServerSideProps: GetServerSideProps<{
 	data: Data;
-}> = async (context) => {
+}> = async () => {
 	const data = await getLikedArticles();
 	return { props: { data } };
 };
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Liked({
 	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const [list, setList] = useState<ArticleData[]>(data.data);
+	const [list, setList] = useState<ArticleData[]>(data.data ?? []);
 	const [isLast, setIsLast] = useState(data.is_last);
 
 	const reload = async () => {
@@ -45,7 +45,7 @@ export default function Liked({
 	const wrapped: WrappedData[] = list.map((x) => ({
 		visible: true,
 		data: x,
-	}))!;
+	}));
 
 	return (
 		<>

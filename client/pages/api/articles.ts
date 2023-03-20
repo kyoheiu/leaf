@@ -45,7 +45,10 @@ export const createArticle = async (url: string) => {
 
 	const dom = new JSDOM(crawled, { url: url });
 	const document = dom.window.document;
-	const parsed = new Readability(document).parse()!;
+	const parsed = new Readability(document).parse();
+	if (!parsed) {
+		throw Error("Cannot parse document.");
+	}
 
 	const og = document
 		.querySelector("[property='og:image']")
@@ -53,9 +56,9 @@ export const createArticle = async (url: string) => {
 
 	const content: Content = {
 		url: url,
-		title: parsed.title,
-		html: parsed.content,
-		plain: parsed.textContent,
+		title: parsed.title ?? "",
+		html: parsed.content ?? "",
+		plain: parsed.textContent ?? "",
 		og: og,
 	};
 	const body = JSON.stringify(content);
@@ -90,7 +93,7 @@ export default async function handler(
 			return res.json(data);
 		}
 	} else if (req.method === "POST") {
-		let url: string = req.body;
+		const url: string = req.body;
 		const response = await createArticle(url);
 		if (!response.ok) {
 			res.send(response.body);

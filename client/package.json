@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "lint": "next lint",
     "build": "rm -rf .next && next build",
     "start": "next start"
   },
@@ -32,6 +33,9 @@
     "typescript": "4.9.4"
   },
   "devDependencies": {
-    "rome": "^11.0.0"
+    "@next/eslint-plugin-next": "^13.2.4",
+    "@typescript-eslint/eslint-plugin": "^5.56.0",
+    "@typescript-eslint/parser": "^5.56.0",
+    "eslint": "^8.36.0"
   }
 }

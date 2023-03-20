@@ -13,7 +13,7 @@ type Data = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-	const q = context.query.q!;
+	const q = context.query.q ?? [];
 	const result = await searchArticles(q);
 	return { props: { query: q, data: result } };
 };
@@ -22,7 +22,7 @@ export default function Searched(props: Data) {
 	const wrapped: WrappedData[] = props.data.map((x) => ({
 		visible: true,
 		data: x,
-	}))!;
+	}));
 
 	return (
 		<>
