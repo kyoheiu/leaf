@@ -1,7 +1,7 @@
 use crate::statements::state_reload_list_tag;
 
 use super::core::Core;
-use super::error::HmstrError;
+use super::error::Error;
 use super::statements::{
     state_list_tag, state_list_up, state_list_up_archived, state_list_up_liked, state_reload,
     state_reload_archived, state_reload_liked,
@@ -24,7 +24,7 @@ pub async fn health(State(core): State<Arc<Core>>) -> String {
 pub async fn list_up(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Articles>, HmstrError> {
+) -> Result<Json<Articles>, Error> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD: from id {}", id);
@@ -38,7 +38,7 @@ pub async fn list_up(
 pub async fn list_up_archived(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Articles>, HmstrError> {
+) -> Result<Json<Articles>, Error> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD ARCHIVED: from id {}", id);
@@ -52,7 +52,7 @@ pub async fn list_up_archived(
 pub async fn list_up_liked(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Articles>, HmstrError> {
+) -> Result<Json<Articles>, Error> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD LIKED: from id {}", id);
@@ -66,15 +66,20 @@ pub async fn list_up_liked(
 pub async fn create(
     State(core): State<Arc<Core>>,
     Json(payload): Json<Payload>,
-) -> Result<(), HmstrError> {
+) -> Result<(), Error> {
     core.create(&payload).await
+}
+
+#[debug_handler]
+pub async fn create_headless(State(core): State<Arc<Core>>, body: String) -> Result<(), Error> {
+    core.create_headless(body.trim()).await
 }
 
 #[debug_handler]
 pub async fn read(
     State(core): State<Arc<Core>>,
     Path(id): Path<String>,
-) -> Result<Json<ArticleContent>, HmstrError> {
+) -> Result<Json<ArticleContent>, Error> {
     core.read(&id).await
 }
 
@@ -82,7 +87,7 @@ pub async fn read(
 pub async fn delete_article(
     State(core): State<Arc<Core>>,
     Path(id): Path<String>,
-) -> Result<(), HmstrError> {
+) -> Result<(), Error> {
     core.delete(&id).await
 }
 
@@ -92,7 +97,7 @@ pub async fn update_article(
     Path(id): Path<String>,
     Query(param): Query<BTreeMap<String, String>>,
     body: String,
-) -> Result<(), HmstrError> {
+) -> Result<(), Error> {
     if param.contains_key("toggle") {
         let to_toggle = param.get("toggle").unwrap();
         core.toggle_state(&id, &to_toggle).await
@@ -118,7 +123,7 @@ pub async fn update_article(
 pub async fn search(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+) -> Result<Json<Vec<ArticleData>>, Error> {
     let mut query = String::new();
     for (k, v) in param {
         if k == "q" {
@@ -135,7 +140,7 @@ pub async fn list_up_tag(
     State(core): State<Arc<Core>>,
     Path(name): Path<String>,
     Query(param): Query<BTreeMap<String, String>>,
-) -> Result<Json<Articles>, HmstrError> {
+) -> Result<Json<Articles>, Error> {
     if param.contains_key("reload") {
         let id = param.get("reload").unwrap();
         info!("RELOAD TAGGED: from id {}", id);
