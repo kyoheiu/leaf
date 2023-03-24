@@ -1,13 +1,19 @@
 // Blatantly imported from https://github.com/importcjj/nipper/blob/master/examples/readability.rs
+// Modified according to https://github.com/mozilla/readability v.0.4.3
 
 use html5ever::tendril;
+use html5ever::tendril::StrTendril;
 use lazy_static::lazy_static;
 use nipper::Document;
+use nipper::NodeId;
 use nipper::Selection;
 use regex::Regex;
 use std::cmp::min;
+use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::ops::Deref;
+use tracing::debug;
+use tracing::info;
 
 use crate::error::Error;
 lazy_static! {
@@ -15,18 +21,19 @@ lazy_static! {
     static ref RE_TITLE_SEPARATOR: Regex = Regex::new(r#"(?is) [\|\-\\/>»] "#).unwrap();
     static ref RE_TITLE_HIERARCHY_SEP: Regex = Regex::new(r#"(?is)[\\/>»]"#).unwrap();
     static ref RE_BY_LINE: Regex = Regex::new(r#"(?is)byline|author|dateline|writtenby|p-author"#).unwrap();
-    static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?is)banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|foot|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote|subscribe"#).unwrap();
-    static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"`(?is)and|article|body|column|main|shadow"#).unwrap();
+    static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?is)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap();
+    static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?is)and|article|body|column|content|main|shadow"#).unwrap();
     static ref RE_UNLIKELY_ELEMENTS: Regex = Regex::new(r#"(?is)(input|time|button|svg)"#).unwrap();
     static ref RE_LIKELY_ELEMENTS: Regex = Regex::new(r#"(?is)(no-svg)"#).unwrap();
-    static ref RE_POSITIVE: Regex = Regex::new(r#"(?is)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story|paragraph"#).unwrap();
-    static ref RE_NEGATIVE: Regex = Regex::new(r#"(?is)hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap();
+    static ref RE_POSITIVE: Regex = Regex::new(r#"(?is)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap();
+    static ref RE_NEGATIVE: Regex = Regex::new(r#"(?is)-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap();
     static ref RE_DIV_TO_P_ELEMENTS: Regex = Regex::new(r#"(?is)<(a|blockquote|dl|div|img|ol|p|pre|table|ul|select)"#).unwrap();
     static ref RE_VIDEOS: Regex = Regex::new(r#"(?is)//(www\.)?(dailymotion|youtube|youtube-nocookie|player\.vimeo)\.com"#).unwrap();
     static ref RE_P_IS_SENTENCE: Regex = Regex::new(r#"(?is)\.( |$)"#).unwrap();
     static ref RE_COMMENTS: Regex = Regex::new(r#"(?is)<!--[^>]+-->"#).unwrap();
     static ref RE_KILL_BREAKS: Regex = Regex::new(r#"(?is)(<br\s*/?>(\s|&nbsp;?)*)+"#).unwrap();
     static ref RE_SPACES: Regex = Regex::new(r#"(?is)\s{2,}|\n+"#).unwrap();
+    static ref RE_HASHURL: Regex = Regex::new(r#"^#.+"#).unwrap();
 }
 
 const DATA_TABLE_ATTR: &'static str = "XXX-DATA-TABLE";
@@ -87,27 +94,27 @@ macro_rules! set_node_tag {
 macro_rules! get_class_or_id_weight {
     ($sel: expr) => {{
         let mut weight = 0.0;
-        let score = 45.0;
+        let unit = 25.0;
 
         if let Some(class) = $sel.attr("class") {
             let class = &class.to_lowercase();
             if RE_NEGATIVE.is_match(class) {
-                weight -= score;
+                weight -= unit;
             }
 
             if RE_POSITIVE.is_match(class) {
-                weight += score;
+                weight += unit;
             }
         }
 
         if let Some(id) = $sel.attr("id") {
             let id = &id.to_lowercase();
             if RE_NEGATIVE.is_match(id) {
-                weight -= score;
+                weight -= unit;
             }
 
             if RE_POSITIVE.is_match(id) {
-                weight += score;
+                weight += unit;
             }
         }
 
@@ -136,9 +143,9 @@ pub struct ParseResult {
     pub html: String,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 struct CandidateItem<'a> {
-    score: f64,
+    score: f32,
     sel: Selection<'a>,
 }
 
@@ -279,18 +286,29 @@ fn remove_conditionally(s: &Selection, tag: &str) {
     })
 }
 
-fn get_link_density(sel: &Selection) -> f64 {
+fn get_link_density(sel: &Selection) -> f32 {
     let text_length = sel.text().len();
     if text_length == 0 {
         return 0.0;
     }
 
-    let mut link_length = 0;
+    let mut link_length: f32 = 0.0;
     sel.select("a").iter().for_each(|a| {
-        link_length += a.text().len();
+        let href = a.attr("href");
+        let co_efficient: f32 = match href {
+            Some(h) => {
+                if RE_HASHURL.is_match(&h.to_string()) {
+                    0.3
+                } else {
+                    1.0
+                }
+            }
+            None => 1.0,
+        };
+        link_length += a.text().len() as f32 * co_efficient;
     });
 
-    link_length as f64 / text_length as f64
+    link_length / text_length as f32
 }
 
 fn get_ancestor_tag<'a>(s: &'a Selection, tag: &str, depth: usize) -> Option<Selection<'a>> {
@@ -314,7 +332,7 @@ fn replace_brs(doc: &Document) {
     let mut body = doc.select("body");
 
     let mut html: &str = &body.html();
-    let r = RE_REPLACE_BRS.replace_all(&html, "</p><p>");
+    let r = RE_REPLACE_BRS.replace_all(&html, "<p></p>");
     html = &r;
     body.set_html(html);
 
@@ -377,10 +395,10 @@ fn get_article_title(doc: &Document) -> String {
 
 fn initialize_candidate_item(sel: Selection) -> CandidateItem {
     let mut content_score = 0.0;
-    let tag_name = sel.get(0).unwrap().node_name().unwrap();
+    let tag_name = sel.get(0).unwrap().node_name().unwrap_or(StrTendril::new());
     match tag_name.to_lowercase().as_str() {
-        "article" => content_score += 20.0,
-        "section" => content_score += 8.0,
+        // "article" => content_score += 20.0,
+        // "section" => content_score += 8.0,
         "div" => content_score += 5.0,
         "pre" | "blockquote" | "td" => content_score += 3.0,
         "form" | "ol" | "ul" | "dl" | "dd" | "dt" | "li" | "adress" => content_score -= 3.0,
@@ -393,6 +411,21 @@ fn initialize_candidate_item(sel: Selection) -> CandidateItem {
         score: content_score,
         sel,
     }
+}
+
+fn has_ancestor_tag(sel: &Selection, tag_name: &str) -> bool {
+    let mut now = sel.clone();
+    let max_depth = 3;
+    let mut depth: usize = 0;
+    while now.exists() && depth <= max_depth {
+        if now.is(tag_name) {
+            return true;
+        } else {
+            depth += 1;
+            now = now.parent();
+        }
+    }
+    false
 }
 
 fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
@@ -421,7 +454,8 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         if RE_UNLIKELY_CANDIDATES.is_match(&match_str)
             && !RE_OK_MAYBE_CANDIDATE.is_match(&match_str)
             && !sel.is("html")
-            && !sel.is("article")
+            && !has_ancestor_tag(&sel, "table")
+            && !has_ancestor_tag(&sel, "code")
             && !sel.is("body")
             && !sel.is("a")
             && get_class_or_id_weight!(&sel) <= 0.0
@@ -439,10 +473,11 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             sel.remove();
             continue;
         }
-        if RE_LIKELY_ELEMENTS.is_match(&tag_name) {
-            sel.remove();
-            continue;
-        }
+
+        // if RE_LIKELY_ELEMENTS.is_match(&tag_name) {
+        //     sel.remove();
+        //     continue;
+        // }
 
         if sel.is("div,section,header,h1,h2,h3,h4,h5,h6") && is_element_without_content!(&sel) {
             sel.remove();
@@ -451,7 +486,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
     }
 
     for mut sel in doc.select("*").iter().into_iter() {
-        if sel.is("section,h2,h3,h4,h5,h6,p,td,pre,article") {
+        if sel.is("section,h2,h3,h4,h5,h6,p,td,pre") {
             elements_to_score.push(sel);
         } else if sel.is("div") {
             if has_single_p_inside_element!(&sel) {
@@ -467,21 +502,22 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
     let mut candidates = HashMap::new();
     for e in elements_to_score {
+        // If this paragraph is less than 25 characters, don't even count it.
         let text = e.text();
         if text.len() < 25 {
             continue;
         }
 
-        let ancestors = get_node_ancestors!(e, 3);
+        // Exclude nodes with no ancestor.
+        let ancestors = get_node_ancestors!(e, 5);
         if ancestors.len() == 0 {
             continue;
         }
 
-        let mut content_score = 1.0;
-        content_score += text.matches(",").count() as f64;
-        content_score += text.matches("，").count() as f64;
+        let mut content_score: f32 = 0.0;
+        content_score += text.matches(",").count() as f32;
 
-        content_score += min(text.len() / 100, 3) as f64;
+        content_score += min(text.len() / 100, 3) as f32;
 
         for (level, ancestor) in ancestors.into_iter().enumerate() {
             let score_driver = if level == 0 {
@@ -494,11 +530,11 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
             let id = ancestor.get(0).unwrap().id;
             let rate = 1.0 - get_link_density(&ancestor);
-            let score = content_score / (score_driver as f64);
+            let score = content_score / (score_driver as f32);
             let mut candidate = initialize_candidate_item(ancestor);
             candidate.score += score;
             candidate.score *= rate;
-            candidates.entry(id).or_insert(candidate);
+            candidates.insert(id, candidate);
         }
     }
 
@@ -508,16 +544,11 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             top_candidate = Some(candidate.clone());
         }
     }
-
-    if top_candidate.is_none() {
-        let body = doc.select("body");
-        top_candidate = Some(initialize_candidate_item(body));
-    }
+    let top_candidate = top_candidate.unwrap();
 
     let new_doc = Document::from(r#""#);
     let mut content = new_doc.select("body");
 
-    let top_candidate = top_candidate.unwrap();
     let top_selection = &top_candidate.sel;
     // let top_candidate_class = top_selection.attr_or("class", "");
     let sibling_score_threshold = (top_candidate.score * 0.2).max(10.0);
