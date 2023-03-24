@@ -23,8 +23,7 @@ lazy_static! {
     static ref RE_BY_LINE: Regex = Regex::new(r#"(?is)byline|author|dateline|writtenby|p-author"#).unwrap();
     static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?is)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap();
     static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?is)and|article|body|column|content|main|shadow"#).unwrap();
-    static ref RE_UNLIKELY_ELEMENTS: Regex = Regex::new(r#"(?is)(input|time|button|svg)"#).unwrap();
-    static ref RE_LIKELY_ELEMENTS: Regex = Regex::new(r#"(?is)(no-svg)"#).unwrap();
+    static ref RE_UNLIKELY_ROLES: Regex = Regex::new(r#"(?is)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap();
     static ref RE_POSITIVE: Regex = Regex::new(r#"(?is)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap();
     static ref RE_NEGATIVE: Regex = Regex::new(r#"(?is)-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap();
     static ref RE_DIV_TO_P_ELEMENTS: Regex = Regex::new(r#"(?is)<(a|blockquote|dl|div|img|ol|p|pre|table|ul|select)"#).unwrap();
@@ -469,7 +468,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             continue;
         }
 
-        if RE_UNLIKELY_ELEMENTS.is_match(&match_str) && !RE_LIKELY_ELEMENTS.is_match(&match_str) {
+        if RE_UNLIKELY_ROLES.is_match(&sel.attr_or("role", "").to_string()) {
             sel.remove();
             continue;
         }
@@ -499,6 +498,8 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             }
         }
     }
+
+    // So far, candidates are all ok.
 
     let mut candidates = HashMap::new();
     for e in elements_to_score {
