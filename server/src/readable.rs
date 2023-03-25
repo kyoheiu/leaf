@@ -5,15 +5,10 @@ use html5ever::tendril;
 use html5ever::tendril::StrTendril;
 use lazy_static::lazy_static;
 use nipper::Document;
-use nipper::NodeId;
 use nipper::Selection;
 use regex::Regex;
-use std::cmp::min;
-use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::ops::Deref;
-use tracing::debug;
-use tracing::info;
 
 use crate::error::Error;
 lazy_static! {
@@ -140,6 +135,7 @@ impl Default for MetaData {
 pub struct ParseResult {
     pub metadata: MetaData,
     pub html: String,
+    pub plain: String,
 }
 
 #[derive(Debug, Clone)]
@@ -200,7 +196,7 @@ fn remove_attrs(s: &Selection) {
 fn remove_tag(sel: &Selection, tag: &str) {
     let is_embed = (tag == "object") || (tag == "embed") || (tag == "iframe");
 
-    sel.select("tag").iter().for_each(|mut target| {
+    sel.select(tag).iter().for_each(|mut target| {
         let attrs = target.get(0).unwrap().attrs();
         let attr_values: Vec<&str> = attrs.iter().map(|attr| attr.value.deref()).collect();
         let attr_str = attr_values.join(" ");
@@ -392,6 +388,8 @@ fn get_article_title(doc: &Document) -> String {
     }
 }
 
+// Initialize a node with the readability object. Also checks the
+// className/id for special names to add to its score.
 fn initialize_candidate_item(sel: Selection) -> CandidateItem {
     let mut content_score = 0.0;
     let tag_name = sel.get(0).unwrap().node_name().unwrap_or(StrTendril::new());
@@ -429,6 +427,8 @@ fn has_ancestor_tag(sel: &Selection, tag_name: &str) -> bool {
 
 fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
     let mut elements_to_score = vec![];
+
+    // Remove unrelated-ish nodes
     for node in doc.select("*").nodes() {
         let tag_name = node
             .node_name()
@@ -499,8 +499,6 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         }
     }
 
-    // So far, candidates are all ok.
-
     let mut candidates = HashMap::new();
     for e in elements_to_score {
         // If this paragraph is less than 25 characters, don't even count it.
@@ -516,9 +514,20 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         }
 
         let mut content_score: f32 = 0.0;
-        content_score += text.matches(",").count() as f32;
 
-        content_score += min(text.len() / 100, 3) as f32;
+        // Add a point for the paragraph itself as a base.
+        content_score += 1.0;
+
+        // Add points for any commas within this paragraph.
+        content_score += text.matches(|c| c == ',' || c == '、').count() as f32;
+
+        // For every 100 characters in this paragraph, add another point. Up to 3 points.
+        let additional = text.len() as f32 / 100.0;
+        if additional > 3.0 {
+            content_score += 3.0;
+        } else {
+            content_score += additional;
+        }
 
         for (level, ancestor) in ancestors.into_iter().enumerate() {
             let score_driver = if level == 0 {
@@ -539,20 +548,18 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         }
     }
 
-    let mut top_candidate: Option<CandidateItem> = None;
-    for (_, candidate) in &candidates {
-        if top_candidate.is_none() || candidate.score > top_candidate.as_ref().unwrap().score {
-            top_candidate = Some(candidate.clone());
-        }
+    let mut top_candidates = vec![];
+    for (_, c) in candidates.iter() {
+        top_candidates.push(c);
     }
-    let top_candidate = top_candidate.unwrap();
+    top_candidates.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
+
+    let top_candidate = top_candidates[0].clone();
 
     let new_doc = Document::from(r#""#);
     let mut content = new_doc.select("body");
 
     let top_selection = &top_candidate.sel;
-    // let top_candidate_class = top_selection.attr_or("class", "");
-    let sibling_score_threshold = (top_candidate.score * 0.2).max(10.0);
     top_selection
         .parent()
         .children()
@@ -571,7 +578,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
                 let id = sibling.get(0).unwrap().id;
                 match candidates.get(&id) {
-                    Some(candidate) if candidate.score > sibling_score_threshold => true,
+                    Some(candidate) if candidate.score / top_candidate.score > 0.75 => true,
                     _ => {
                         if sibling.is("p") {
                             let link_density = get_link_density(&sibling);
@@ -611,7 +618,7 @@ fn clean_html(doc: &Document) -> String {
     let html = doc.html().to_string();
     let html = RE_COMMENTS.replace_all(&html, "");
     let html = RE_KILL_BREAKS.replace_all(&html, "<br />");
-    let html = RE_SPACES.replace_all(&html, "");
+    // let html = RE_SPACES.replace_all(&html, "");
 
     html.to_string()
 }
@@ -625,6 +632,7 @@ fn pre_article(content: &Selection, title: &str) {
     remove_tag(&content, "object");
     remove_tag(&content, "embed");
     remove_tag(&content, "footer");
+    remove_tag(&content, "aside");
     remove_tag(&content, "link");
 
     content.select("*").iter().for_each(|mut s| {
@@ -760,6 +768,16 @@ fn get_table_row_and_column_count(table: &Selection) -> (usize, usize) {
     (rows, columns)
 }
 
+fn html_to_string(html: &str) -> String {
+    let document = Document::from(html);
+    let mut result = String::new();
+
+    for node in document.select("*").nodes() {
+        result.push_str(&node.text());
+    }
+    result
+}
+
 pub fn readablity(html: &str) -> Result<ParseResult, Error> {
     let document = Document::from(html);
 
@@ -768,10 +786,12 @@ pub fn readablity(html: &str) -> Result<ParseResult, Error> {
     prep_document(&document);
 
     let metadata = get_article_metadata(&document);
-    let article_html = grab_article(&document, &metadata.title);
+    let html = grab_article(&document, &metadata.title);
+    let plain = html_to_string(&html);
 
     Ok(ParseResult {
         metadata,
-        html: article_html,
+        html,
+        plain,
     })
 }

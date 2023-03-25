@@ -4,9 +4,8 @@ use super::error::Error;
 use super::handler::*;
 use super::schema::initialize_schema;
 use super::statements::*;
-use super::types::{ArticleContent, ArticleData, Articles, Payload};
+use super::types::{ArticleContent, ArticleData, Articles};
 
-use axum::routing::post;
 use axum::Json;
 use axum::{routing::get, Router};
 use headless_chrome::{Browser, LaunchOptionsBuilder};
@@ -48,7 +47,6 @@ pub fn router(core: Core) -> axum::Router {
     Router::new()
         .route("/health", get(health))
         .route("/articles", get(list_up).post(create))
-        .route("/headless", post(create_headless))
         .route("/articles/archived", get(list_up_archived))
         .route("/articles/liked", get(list_up_liked))
         .route(
@@ -152,38 +150,7 @@ impl Core {
         }
     }
 
-    pub async fn create(&self, payload: &Payload) -> Result<(), Error> {
-        let ulid = ulid::Ulid::new().to_string();
-
-        let mut cleaner = ammonia::Builder::default();
-        let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
-        let sanitized = cleaner.clean(&payload.html).to_string();
-        let html = sanitized.replace('\'', "''");
-        let title = payload.title.replace("'", "''");
-        let plain = payload.plain.trim().replace("'", "''");
-
-        let og = payload.og.clone().unwrap_or_default();
-
-        let beginning = create_beginning(&plain);
-
-        info!("{}: {} ({})", ulid, payload.title, payload.url);
-
-        self.db.execute(state_add(
-            &ulid,
-            &payload.url,
-            &title,
-            &html,
-            &og,
-            &plain,
-            &beginning,
-        ))?;
-
-        //add to schema
-        self.add_to_index(&ulid, &payload.title, &payload.plain)?;
-        Ok(())
-    }
-
-    pub async fn create_headless(&self, url: &str) -> Result<(), Error> {
+    pub async fn create(&self, url: &str) -> Result<(), Error> {
         let ulid = ulid::Ulid::new().to_string();
 
         //Scrape by headless_chrome
@@ -206,6 +173,7 @@ impl Core {
 
         let parse_result = readablity(&content).unwrap();
         let title = parse_result.metadata.title;
+        let plain = parse_result.plain;
         let og = parse_result.metadata.og.unwrap_or_default();
 
         let mut cleaner = ammonia::Builder::default();
@@ -213,7 +181,6 @@ impl Core {
         let sanitized = cleaner.clean(&parse_result.html).to_string();
         let html = sanitized.replace('\'', "''");
         // TODO!
-        let plain = "";
 
         let beginning = create_beginning(&plain);
 

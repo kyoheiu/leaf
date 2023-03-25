@@ -63,16 +63,8 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create(
-    State(core): State<Arc<Core>>,
-    Json(payload): Json<Payload>,
-) -> Result<(), Error> {
-    core.create(&payload).await
-}
-
-#[debug_handler]
-pub async fn create_headless(State(core): State<Arc<Core>>, body: String) -> Result<(), Error> {
-    core.create_headless(body.trim()).await
+pub async fn create(State(core): State<Arc<Core>>, body: String) -> Result<(), Error> {
+    core.create(body.trim()).await
 }
 
 #[debug_handler]
