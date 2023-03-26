@@ -1,15 +1,13 @@
 <h1>leaf</h1>
 
-![logo.png](images/logo.png)
+Instapaper is great, but you can self-host your own "read-later" Web app.
 
-Instapaper is great, but you can self-host your own "read-later" Web app!
-
-![https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.2.10?label=leaf-client](https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.2.10?label=leaf-client)
-![https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.2.10?label=leaf-server](https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.2.10?label=leaf-server)
+![https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.3.0?label=leaf-client](https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.2.10?label=leaf-client)
+![https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.3.0?label=leaf-server](https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.2.10?label=leaf-server)
 
 <hr />
 
-![screenshot.png](images/screenshot.png)
+![screenshot1.png](images/screenshot1.png)
 
 <hr />
 
@@ -75,10 +73,11 @@ make run
 - TypeScript as the frontend
   - Next.js
   - Auth.js (using GitHub account)
-  - puppeteer (chromium)
   - MUI
 - Rust as the backend
   - axum
+  - headless-chrome to get contents
+  - customized content extractor based on mozilla/readability (WIP)
   - ammonia as the sanitizer
   - tantivy as the full-text search engine
 - SQLite as the database
