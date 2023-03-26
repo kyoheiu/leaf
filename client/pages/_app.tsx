@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 	const [isLight, setIsLight] = useState<boolean>(true);
 
 	useEffect(() => {
-		const session = globalThis.sessionStorage.getItem("hmstrTheme");
+		const session = globalThis.sessionStorage.getItem("leafTheme");
 		if (!session || session === "light") {
 			setIsLight(() => true);
 		} else {

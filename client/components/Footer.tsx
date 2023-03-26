@@ -5,7 +5,7 @@ import { LOGO_SIZE } from "./Header";
 
 export const footerImage = () => {
 	return (
-		<Image src="/logo.png" alt="hmstr" height={LOGO_SIZE} width={LOGO_SIZE} />
+		<Image src="/logo.png" alt="leaf" height={LOGO_SIZE} width={LOGO_SIZE} />
 	);
 };
 

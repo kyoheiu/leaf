@@ -8,7 +8,7 @@ pub struct Payload {
     pub html: String,
     pub title: String,
     pub plain: String,
-    pub og: Option<String>,
+    pub cover: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -23,7 +23,7 @@ pub struct ArticleData {
     pub url: String,
     pub title: String,
     pub beginning: String,
-    pub og: String,
+    pub cover: String,
     pub progress: u16,
     pub archived: bool,
     pub liked: bool,
@@ -38,7 +38,7 @@ impl ArticleData {
             url: "".to_owned(),
             title: "".to_owned(),
             beginning: "".to_owned(),
-            og: "".to_owned(),
+            cover: "".to_owned(),
             progress: 0,
             archived: false,
             liked: false,

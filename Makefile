@@ -7,15 +7,15 @@ test:
 	hurl --test test.hurl
 
 stop:
-	killall node && killall hmstr-server
+	killall node && killall laef-server
 
 build:
-	sudo docker build --tag=kyoheiudev/hmstr-server:$(VER) server 
-	sudo docker build --tag=kyoheiudev/hmstr-client:$(VER) client 
+	sudo docker build --tag=kyoheiudev/leaf-server:$(VER) server 
+	sudo docker build --tag=kyoheiudev/leaf-client:$(VER) client 
 
 push:
-	sudo docker push kyoheiudev/hmstr-server:$(VER)
-	sudo docker push kyoheiudev/hmstr-client:$(VER)
+	sudo docker push kyoheiudev/leaf-server:$(VER)
+	sudo docker push kyoheiudev/leaf-client:$(VER)
 
 run:
 	sudo docker compose up -d

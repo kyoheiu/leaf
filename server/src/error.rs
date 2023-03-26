@@ -4,67 +4,76 @@ use axum::{
 };
 
 #[derive(Debug)]
-pub enum HmstrError {
+pub enum Error {
     Io(String),
     Sqlite(String),
     Ammonia(String),
     Tantivy(String),
     Tag(String),
+    HeadlessChrome(String),
 }
 
-impl std::error::Error for HmstrError {}
+impl std::error::Error for Error {}
 
-impl std::fmt::Display for HmstrError {
+impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let printable = match self {
-            HmstrError::Io(s) => s,
-            HmstrError::Sqlite(s) => s,
-            HmstrError::Ammonia(s) => s,
-            HmstrError::Tantivy(s) => s,
-            HmstrError::Tag(s) => s,
+            Error::Io(s) => s,
+            Error::Sqlite(s) => s,
+            Error::Ammonia(s) => s,
+            Error::Tantivy(s) => s,
+            Error::Tag(s) => s,
+            Error::HeadlessChrome(s) => s,
         };
         write!(f, "{}", printable)
     }
 }
 
-impl From<std::io::Error> for HmstrError {
+impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Self {
-        HmstrError::Io(err.to_string())
+        Error::Io(err.to_string())
     }
 }
 
-impl From<sqlite::Error> for HmstrError {
+impl From<sqlite::Error> for Error {
     fn from(err: sqlite::Error) -> Self {
-        HmstrError::Sqlite(err.to_string())
+        Error::Sqlite(err.to_string())
     }
 }
 
-impl From<ammonia::url::ParseError> for HmstrError {
+impl From<ammonia::url::ParseError> for Error {
     fn from(err: ammonia::url::ParseError) -> Self {
-        HmstrError::Ammonia(err.to_string())
+        Error::Ammonia(err.to_string())
     }
 }
 
-impl From<tantivy::TantivyError> for HmstrError {
+impl From<tantivy::TantivyError> for Error {
     fn from(err: tantivy::TantivyError) -> Self {
-        HmstrError::Tantivy(err.to_string())
+        Error::Tantivy(err.to_string())
     }
 }
 
-// impl From<headless_chrome::browser::process::LaunchOptionsBuilderError> for HmstrError {
+impl From<anyhow::Error> for Error {
+    fn from(err: anyhow::Error) -> Self {
+        Error::HeadlessChrome(err.to_string())
+    }
+}
+
+// impl From<headless_chrome::browser::process::LaunchOptionsBuilderError> for Error {
 //     fn from(err: headless_chrome::browser::process::LaunchOptionsBuilderError) -> Self {
-//         HmstrError::HeadlessChrome(err.to_string())
+//         Error::HeadlessChrome(err.to_string())
 //     }
 // }
 
-impl IntoResponse for HmstrError {
+impl IntoResponse for Error {
     fn into_response(self) -> Response {
         let body = match self {
-            HmstrError::Io(s) => s,
-            HmstrError::Sqlite(s) => s,
-            HmstrError::Ammonia(s) => s,
-            HmstrError::Tantivy(s) => s,
-            HmstrError::Tag(s) => s,
+            Error::Io(s) => s,
+            Error::Sqlite(s) => s,
+            Error::Ammonia(s) => s,
+            Error::Tantivy(s) => s,
+            Error::Tag(s) => s,
+            Error::HeadlessChrome(s) => s,
         };
         tracing::error!("{}", body);
         (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()

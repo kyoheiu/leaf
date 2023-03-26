@@ -70,7 +70,7 @@ export const Header = () => {
 	const toggleTheme = () => {
 		setIsLight(() => {
 			globalThis.sessionStorage.setItem(
-				"hmstrTheme",
+				"leafTheme",
 				isLight ? "dark" : "light",
 			);
 			return !isLight;
@@ -111,7 +111,7 @@ export const Header = () => {
 					>
 						<Image
 							src="/logo.png"
-							alt="hmstr"
+							alt="leaf"
 							height={LOGO_SIZE}
 							width={LOGO_SIZE}
 						/>

@@ -6,7 +6,7 @@ export default function Login() {
 	return (
 		<>
 			<Box className="login">
-				<div className="element-title">hmstr</div>
+				<div className="element-title">leaf</div>
 				<Button
 					className="login-button"
 					variant="outlined"

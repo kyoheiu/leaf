@@ -1,11 +1,14 @@
-use super::error::HmstrError;
+use crate::readable::{readablity, ParseOption};
+
+use super::error::Error;
 use super::handler::*;
 use super::schema::initialize_schema;
 use super::statements::*;
-use super::types::{ArticleContent, ArticleData, Articles, Payload};
+use super::types::{ArticleContent, ArticleData, Articles};
 
 use axum::Json;
 use axum::{routing::get, Router};
+use headless_chrome::{Browser, LaunchOptionsBuilder};
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
@@ -16,6 +19,12 @@ use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
 const SEARCH_LIMIT: usize = 50;
+const CHROME_ARGS: [&str; 4] = [
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--disable-setuid-sandbox",
+    "--no-sandbox",
+];
 const BEGINNING_LENGTH: usize = 100;
 const CHUNK_LENGTH: usize = 11;
 
@@ -63,7 +72,7 @@ pub async fn run(listener: TcpListener, core: Core) {
 }
 
 impl Core {
-    pub fn new() -> Result<Core, HmstrError> {
+    pub fn new() -> Result<Core, Error> {
         let db_path = match std::env::var("DATABASE_PATH") {
             Ok(p) => PathBuf::from(&p),
             Err(_) => PathBuf::from("./databases/.sqlite"),
@@ -86,7 +95,7 @@ impl Core {
         })
     }
 
-    pub async fn list_up(&self, statement: &str) -> Result<Json<Articles>, HmstrError> {
+    pub async fn list_up(&self, statement: &str) -> Result<Json<Articles>, Error> {
         let mut articles = vec![];
         self.db.iterate(statement, |pairs| {
             let mut article = ArticleData::new();
@@ -95,7 +104,7 @@ impl Core {
                     "id" => article.id = value.unwrap().to_owned(),
                     "title" => article.title = value.unwrap().to_owned(),
                     "url" => article.url = value.unwrap().to_owned(),
-                    "og" => article.og = value.unwrap().to_owned(),
+                    "cover" => article.cover = value.unwrap().to_owned(),
                     "beginning" => article.beginning = value.unwrap().to_owned(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
                     "archived" => {
@@ -141,41 +150,52 @@ impl Core {
         }
     }
 
-    pub async fn create(&self, payload: &Payload) -> Result<(), HmstrError> {
+    pub async fn create(&self, url: &str) -> Result<(), Error> {
         let ulid = ulid::Ulid::new().to_string();
+
+        //Scrape by headless_chrome
+        let option = LaunchOptionsBuilder::default()
+            .sandbox(false)
+            .path(Some(PathBuf::from("/usr/bin/chromium")))
+            .args(
+                CHROME_ARGS
+                    .iter()
+                    .map(|x| std::ffi::OsStr::new(x))
+                    .collect(),
+            )
+            .build()
+            .unwrap();
+        let browser = Browser::new(option)?;
+        let tab = browser.new_tab()?;
+        tab.navigate_to(url)?;
+        tab.wait_until_navigated()?;
+        let content = tab.get_content()?;
+
+        let parse_result = readablity(&content, &ParseOption::default()).unwrap();
+        let title = parse_result.metadata.title;
+        let plain = parse_result.plain.replace('\'', "''");
+        let cover = parse_result.metadata.cover.unwrap_or_default();
 
         let mut cleaner = ammonia::Builder::default();
         let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
-        let sanitized = cleaner.clean(&payload.html).to_string();
+        let sanitized = cleaner.clean(&parse_result.html).to_string();
         let html = sanitized.replace('\'', "''");
-        let title = payload.title.replace("'", "''");
-        let plain = payload.plain.trim().replace("'", "''");
-
-        let og = match &payload.og {
-            Some(og) => og.to_owned(),
-            None => "".to_owned(),
-        };
+        // TODO!
 
         let beginning = create_beginning(&plain);
 
-        info!("{}: {} ({})", ulid, payload.title, payload.url);
+        info!("{}: {} ({})", ulid, title, url);
 
         self.db.execute(state_add(
-            &ulid,
-            &payload.url,
-            &title,
-            &html,
-            &og,
-            &plain,
-            &beginning,
+            &ulid, &url, &title, &html, &cover, &plain, &beginning,
         ))?;
 
         //add to schema
-        self.add_to_index(&ulid, &payload.title, &payload.plain)?;
+        self.add_to_index(&ulid, &title, &plain)?;
         Ok(())
     }
 
-    pub async fn delete(&self, id: &str) -> Result<(), HmstrError> {
+    pub async fn delete(&self, id: &str) -> Result<(), Error> {
         self.db.execute(state_delete(id))?;
         info!("DELETED: {}", id);
         self.delete_from_index(id)?;
@@ -183,7 +203,7 @@ impl Core {
         Ok(())
     }
 
-    pub async fn read(&self, id: &str) -> Result<Json<ArticleContent>, HmstrError> {
+    pub async fn read(&self, id: &str) -> Result<Json<ArticleContent>, Error> {
         let mut article = ArticleContent::new();
         self.db.iterate(state_read(id), |pairs| {
             for &(column, value) in pairs.iter() {
@@ -208,7 +228,7 @@ impl Core {
         Ok(Json(article))
     }
 
-    pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, HmstrError> {
+    pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, Error> {
         info!("query: {}", query);
         let title = self.schema.get_field("title").unwrap();
         let plain = self.schema.get_field("plain").unwrap();
@@ -257,7 +277,7 @@ impl Core {
                         "url" => article.url = value.unwrap().to_owned(),
                         "title" => article.title = value.unwrap().to_owned(),
                         "beginning" => article.beginning = value.unwrap().to_owned(),
-                        "og" => article.og = value.unwrap().to_owned(),
+                        "cover" => article.cover = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
                         "archived" => {
                             article.archived = if value.unwrap() == "0" { false } else { true }
@@ -291,20 +311,20 @@ impl Core {
         Ok(Json(articles))
     }
 
-    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), HmstrError> {
+    pub async fn update_progress(&self, id: &str, pos: u16, prog: u16) -> Result<(), Error> {
         self.db.execute(state_upgrade_progress(pos, prog, id))?;
         Ok(())
     }
 
-    pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), HmstrError> {
+    pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), Error> {
         self.db.execute(state_toggle(toggle, id))?;
         info!("ID {} toggle {}", id, toggle);
         Ok(())
     }
 
-    pub async fn add_tag(&self, id: &str, tag: &str) -> Result<(), HmstrError> {
+    pub async fn add_tag(&self, id: &str, tag: &str) -> Result<(), Error> {
         if tag.is_empty() {
-            Err(HmstrError::Tag("Tag is empty.".to_owned()))
+            Err(Error::Tag("Tag is empty.".to_owned()))
         } else {
             self.db.execute(state_add_tag(id, tag))?;
             info!("Add tag {} to ID {}", tag, id);
@@ -312,13 +332,13 @@ impl Core {
         }
     }
 
-    pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), HmstrError> {
+    pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), Error> {
         self.db.execute(state_delete_tag(id, tag))?;
         info!("Delete tag {} of ID {}", tag, id);
         Ok(())
     }
     //add to schema
-    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), HmstrError> {
+    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), Error> {
         let mut index_writer = self.index.writer(50_000_000)?;
         let schema_id = self.schema.get_field("id").unwrap();
         let schema_title = self.schema.get_field("title").unwrap();
@@ -333,7 +353,7 @@ impl Core {
         Ok(())
     }
 
-    fn delete_from_index(&self, id: &str) -> Result<(), HmstrError> {
+    fn delete_from_index(&self, id: &str) -> Result<(), Error> {
         let mut index_writer = self.index.writer(50_000_000)?;
         let schema_id = self.schema.get_field("id").unwrap();
         let term = Term::from_field_text(schema_id, id);

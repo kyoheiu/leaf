@@ -1,27 +1,27 @@
 const addNewOne = (tab) => {
-	const gettingItem = browser.storage.local.get(["hmstrBase", "hmstrToken"]);
+	const gettingItem = browser.storage.local.get(["leafBase", "leafToken"]);
 	gettingItem.then((res) => {
-		const target = `${res.hmstrBase}/api/create`;
+		const target = `${res.leafBase}/api/create`;
 		console.log(`Add new article: ${tab.url}`);
 
 		fetch(target, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: res.hmstrToken,
+				Authorization: res.leafToken,
 			},
 			body: JSON.stringify({ url: tab.url }),
 		}).then((res) => {
 			console.log(res.statusText);
 			browser.notifications
-				.create("hmstrResult", {
+				.create("leafResult", {
 					type: "basic",
-					title: "hmstr",
+					title: "leaf",
 					message: `Result: ${res.statusText}`,
 				})
 				.then((r) => {
 					setTimeout(() => {
-						browser.notifications.clear("hmstrResult");
+						browser.notifications.clear("leafResult");
 					}, 3000);
 				});
 		});

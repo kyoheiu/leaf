@@ -1,15 +1,15 @@
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/hmstr-server:0.2.12
+    image: docker.io/kyoheiudev/leaf-server:0.3.0
     container_name: server
     volumes:
-      - ./server/databases:/var/hmstr/databases
+      - ./server/databases:/var/leaf/databases
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/hmstr-client:0.2.12
+    image: docker.io/kyoheiudev/leaf-client:0.3.0
     container_name: client
     volumes:
       - ./client/.env.production:/app/.env.production

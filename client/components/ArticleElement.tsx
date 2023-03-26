@@ -183,12 +183,12 @@ export default function ArticleElement(props: ElementProps) {
 					<Typography>{article.data.beginning}</Typography>
 				</Grid>
 				<Grid item xs={3}>
-					{article.data.og !== "" && (
+					{article.data.cover !== "" && (
 						<Avatar
 							className="og"
 							sx={{ width: 1, height: 100 }}
 							variant="rounded"
-							src={article.data.og}
+							src={article.data.cover}
 						/>
 					)}
 				</Grid>

@@ -1,15 +1,14 @@
 use reqwest::header::{self, HeaderMap};
 use serde::{Deserialize, Serialize};
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let mut args = std::env::args();
     let mut rdr = csv::Reader::from_path("instapaper-export.csv").unwrap();
     if args.len() == 1 {
         let mut i: usize = 0;
         for result in rdr.deserialize() {
             let article: Article = result.unwrap();
-            send_req(article).await;
+            send_req(article);
             i += 1;
             if i == 1 {
                 break;
@@ -26,11 +25,11 @@ async fn main() {
                 break;
             }
         }
-        send_multiple_req(urls).await;
+        send_multiple_req(urls);
     }
 }
 
-async fn send_multiple_req(urls: Vec<String>) {
+fn send_multiple_req(urls: Vec<String>) {
     let req = Reqs { url: urls };
     let j = serde_json::to_string(&req).unwrap();
     let mut headers = HeaderMap::new();
@@ -38,7 +37,7 @@ async fn send_multiple_req(urls: Vec<String>) {
         "Content-Type",
         header::HeaderValue::from_str("application/json").unwrap(),
     );
-    let client = reqwest::Client::builder()
+    let client = reqwest::blocking::Client::builder()
         .default_headers(headers)
         .build()
         .unwrap();
@@ -46,11 +45,10 @@ async fn send_multiple_req(urls: Vec<String>) {
         .post("http://localhost:3000/api/create_all")
         .body(j)
         .send()
-        .await
         .unwrap();
 }
 
-async fn send_req(article: Article) {
+fn send_req(article: Article) {
     println!("{:#?}", article);
     let req = Req {
         url: article.url.to_owned(),
@@ -61,7 +59,7 @@ async fn send_req(article: Article) {
         "Content-Type",
         header::HeaderValue::from_str("application/json").unwrap(),
     );
-    let client = reqwest::Client::builder()
+    let client = reqwest::blocking::Client::builder()
         .default_headers(headers)
         .build()
         .unwrap();
@@ -69,7 +67,6 @@ async fn send_req(article: Article) {
         .post("http://localhost:3000/api/create")
         .body(j)
         .send()
-        .await
         .unwrap();
 }
 

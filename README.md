@@ -1,15 +1,13 @@
-<h1>hmstr</h1>
+<h1>leaf</h1>
 
-![logo.png](images/logo.png)
+Instapaper is great, but you can self-host your own "read-later" Web app.
 
-Instapaper is great, but you can self-host your own "read-later" Web app!
-
-![https://img.shields.io/docker/image-size/kyoheiudev/hmstr-client/0.2.10?label=hmstr-client](https://img.shields.io/docker/image-size/kyoheiudev/hmstr-client/0.2.10?label=hmstr-client)
-![https://img.shields.io/docker/image-size/kyoheiudev/hmstr-server/0.2.10?label=hmstr-server](https://img.shields.io/docker/image-size/kyoheiudev/hmstr-server/0.2.10?label=hmstr-server)
+![https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.3.0?label=leaf-client](https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.2.10?label=leaf-client)
+![https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.3.0?label=leaf-server](https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.2.10?label=leaf-server)
 
 <hr />
 
-![screenshot.png](images/screenshot.png)
+![screenshot1.png](images/screenshot1.png)
 
 <hr />
 
@@ -20,7 +18,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app!
 ## What is this exactly
 
 - Save a web page by URL and read only its content later.
-- Specialized to "read": Use hmstr to read text-based articles.
+- Specialized to "read": Use leaf to read text-based articles.
 - Save your progress automatically.
 - Features:
   - like
@@ -31,7 +29,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app!
   - light/dark theme
   - built-in auth
 - With the
-  [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/hmstr-extension/),
+  [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
   you can easily add new article.
 
 ## Install to your server
@@ -41,7 +39,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app!
 
 ```
 NEXTAUTH_URL=https://your-site.url
-NEXT_PUBLIC_TITLE=hmstr
+NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=server
 NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
 CREDENTIALS_ID=YOUR_ID
@@ -75,10 +73,11 @@ make run
 - TypeScript as the frontend
   - Next.js
   - Auth.js (using GitHub account)
-  - puppeteer (chromium)
   - MUI
 - Rust as the backend
   - axum
+  - headless-chrome to get contents
+  - customized content extractor based on mozilla/readability (WIP)
   - ammonia as the sanitizer
   - tantivy as the full-text search engine
 - SQLite as the database
@@ -95,7 +94,7 @@ Add `.env.development.local` to the `client` directory with the following:
 
 ```
 NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_TITLE=hmstr
+NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=127.0.0.1
 NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
 CREDENTIALS_ID=test

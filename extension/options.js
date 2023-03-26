@@ -9,23 +9,23 @@ const err = () => {
 function saveOptions(e) {
 	browser.storage.local
 		.set({
-			hmstrBase: document.querySelector("#hmstrBase").value,
+			leafBase: document.querySelector("#leafBase").value,
 		})
 		.then(ok());
 	browser.storage.local
 		.set({
-			hmstrToken: document.querySelector("#hmstrToken").value,
+			leafToken: document.querySelector("#leafToken").value,
 		})
 		.then(ok());
 	document.querySelector("#managed-base").innerText =
-		document.querySelector("#hmstrBase").value;
+		document.querySelector("#leafBase").value;
 	e.preventDefault();
 }
 
 function restoreOptions() {
-	let storageItem = browser.storage.local.get("hmstrBase");
+	let storageItem = browser.storage.local.get("leafBase");
 	storageItem.then((res) => {
-		document.querySelector("#managed-base").innerText = res.hmstrBase;
+		document.querySelector("#managed-base").innerText = res.leafBase;
 	});
 }
 
