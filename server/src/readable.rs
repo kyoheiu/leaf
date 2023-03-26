@@ -7,7 +7,9 @@ use lazy_static::lazy_static;
 use nipper::Document;
 use nipper::Selection;
 use regex::Regex;
+use std::cmp::max;
 use std::collections::HashMap;
+use std::hash::Hash;
 use std::ops::Deref;
 
 use crate::error::Error;
@@ -15,13 +17,13 @@ lazy_static! {
     static ref RE_REPLACE_BRS: Regex = Regex::new(r#"(?is)(<br[^>]*>[ \n\r\t]*){2,}"#).unwrap();
     static ref RE_TITLE_SEPARATOR: Regex = Regex::new(r#"(?is) [\|\-\\/>»] "#).unwrap();
     static ref RE_TITLE_HIERARCHY_SEP: Regex = Regex::new(r#"(?is)[\\/>»]"#).unwrap();
-    static ref RE_BY_LINE: Regex = Regex::new(r#"(?is)byline|author|dateline|writtenby|p-author"#).unwrap();
+    static ref RE_BYLINE: Regex = Regex::new(r#"(?is)byline|author|dateline|writtenby|p-author"#).unwrap();
     static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?is)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap();
     static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?is)and|article|body|column|content|main|shadow"#).unwrap();
     static ref RE_UNLIKELY_ROLES: Regex = Regex::new(r#"(?is)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap();
     static ref RE_POSITIVE: Regex = Regex::new(r#"(?is)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap();
-    static ref RE_NEGATIVE: Regex = Regex::new(r#"(?is)-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap();
-    static ref RE_DIV_TO_P_ELEMENTS: Regex = Regex::new(r#"(?is)<(a|blockquote|dl|div|img|ol|p|pre|table|ul|select)"#).unwrap();
+    static ref RE_NEGATIVE: Regex = Regex::new(r#"combx|comment|com|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|form|textfield|uiScale|hidden"#).unwrap();
+    static ref RE_DIV_TO_P_ELEMENTS: Regex = Regex::new(r#"(?is)<(a|blockquote|dl|div|img|ol|p|pre|table|ul)"#).unwrap();
     static ref RE_VIDEOS: Regex = Regex::new(r#"(?is)//(www\.)?(dailymotion|youtube|youtube-nocookie|player\.vimeo)\.com"#).unwrap();
     static ref RE_P_IS_SENTENCE: Regex = Regex::new(r#"(?is)\.( |$)"#).unwrap();
     static ref RE_COMMENTS: Regex = Regex::new(r#"(?is)<!--[^>]+-->"#).unwrap();
@@ -65,7 +67,7 @@ macro_rules! get_node_ancestors {
         let mut parent = $sel.parent();
 
         for _ in 0..$depth {
-            if parent.length() == 0 {
+            if !parent.exists() {
                 break;
             } else {
                 ancestors.push(parent.clone());
@@ -82,37 +84,6 @@ macro_rules! set_node_tag {
         let html = $sel.html();
         let new_html = format!("<{}>{}<{}>", $tag, html, $tag);
         $sel.replace_with_html(new_html.as_str());
-    }};
-}
-
-macro_rules! get_class_or_id_weight {
-    ($sel: expr) => {{
-        let mut weight = 0.0;
-        let unit = 25.0;
-
-        if let Some(class) = $sel.attr("class") {
-            let class = &class.to_lowercase();
-            if RE_NEGATIVE.is_match(class) {
-                weight -= unit;
-            }
-
-            if RE_POSITIVE.is_match(class) {
-                weight += unit;
-            }
-        }
-
-        if let Some(id) = $sel.attr("id") {
-            let id = &id.to_lowercase();
-            if RE_NEGATIVE.is_match(id) {
-                weight -= unit;
-            }
-
-            if RE_POSITIVE.is_match(id) {
-                weight += unit;
-            }
-        }
-
-        weight
     }};
 }
 
@@ -215,7 +186,7 @@ fn remove_tag(sel: &Selection, tag: &str) {
 
 fn remove_headers(sel: &Selection) {
     sel.select("h1,h2,h3").iter().for_each(|mut h| {
-        if get_class_or_id_weight!(h) < 0.0 {
+        if get_class_or_id_weight(&h) < 0.0 {
             h.remove()
         }
     });
@@ -237,7 +208,7 @@ fn remove_conditionally(s: &Selection, tag: &str) {
         }
 
         let content_score = 0.0;
-        let weight = get_class_or_id_weight!(&node);
+        let weight = get_class_or_id_weight(&node);
         if weight + content_score < 0.0 {
             node.remove();
             return;
@@ -281,6 +252,13 @@ fn remove_conditionally(s: &Selection, tag: &str) {
     })
 }
 
+fn is_probably_visible(sel: &Selection) -> bool {
+    sel.attr("hidden").is_none()
+        && (sel.attr("aria-hidden").is_none()
+            || sel.attr("aria-hidden") != Some(StrTendril::from("true"))
+            || sel.has_class("fallback-image"))
+}
+
 fn get_link_density(sel: &Selection) -> f32 {
     let text_length = sel.text().len();
     if text_length == 0 {
@@ -302,7 +280,6 @@ fn get_link_density(sel: &Selection) -> f32 {
         };
         link_length += a.text().len() as f32 * co_efficient;
     });
-
     link_length / text_length as f32
 }
 
@@ -394,8 +371,6 @@ fn initialize_candidate_item(sel: Selection) -> CandidateItem {
     let mut content_score = 0.0;
     let tag_name = sel.get(0).unwrap().node_name().unwrap_or(StrTendril::new());
     match tag_name.to_lowercase().as_str() {
-        // "article" => content_score += 20.0,
-        // "section" => content_score += 8.0,
         "div" => content_score += 5.0,
         "pre" | "blockquote" | "td" => content_score += 3.0,
         "form" | "ol" | "ul" | "dl" | "dd" | "dt" | "li" | "adress" => content_score -= 3.0,
@@ -403,11 +378,40 @@ fn initialize_candidate_item(sel: Selection) -> CandidateItem {
         _ => (),
     }
 
-    content_score += get_class_or_id_weight!(sel);
+    content_score += get_class_or_id_weight(&sel);
     CandidateItem {
         score: content_score,
         sel,
     }
+}
+
+fn get_class_or_id_weight(sel: &Selection) -> f32 {
+    let mut weight = 0.0;
+    let unit = 25.0;
+
+    if let Some(class) = sel.attr("class") {
+        let class = &class.to_lowercase();
+        if RE_NEGATIVE.is_match(class) {
+            weight -= unit;
+        }
+
+        if RE_POSITIVE.is_match(class) {
+            weight += unit;
+        }
+    }
+
+    if let Some(id) = sel.attr("id") {
+        let id = &id.to_lowercase();
+        if RE_NEGATIVE.is_match(id) {
+            weight -= unit;
+        }
+
+        if RE_POSITIVE.is_match(id) {
+            weight += unit;
+        }
+    }
+
+    weight
 }
 
 fn has_ancestor_tag(sel: &Selection, tag_name: &str) -> bool {
@@ -430,20 +434,27 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
     // Remove unrelated-ish nodes
     for node in doc.select("*").nodes() {
-        let tag_name = node
-            .node_name()
-            .unwrap_or_else(|| tendril::StrTendril::new());
-
         let mut sel = Selection::from(node.clone());
         let class: &str = &sel.attr_or("class", "");
         let id: &str = &sel.attr_or("id", "");
         let match_str = [class.to_lowercase(), id.to_lowercase()].join(" ");
 
+        if !is_probably_visible(&sel) {
+            sel.remove();
+            continue;
+        }
+
+        // User is not able to see elements applied with both "aria-modal = true" and "role = dialog"
+        if sel.attr("aria-modal").is_some() && sel.attr("role") == Some(StrTendril::from("dialog"))
+        {
+            sel.remove();
+            continue;
+        }
+
         if let Some(rel) = sel.attr("rel") {
-            if rel.deref() == "author" || RE_BY_LINE.is_match(&match_str) {
+            if rel.deref() == "author" || RE_BYLINE.is_match(&match_str) {
                 let text = sel.text();
                 if is_valid_by_line!(&text) {
-                    let _author = Some(text.to_string());
                     sel.remove();
                     continue;
                 }
@@ -452,18 +463,11 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
         if RE_UNLIKELY_CANDIDATES.is_match(&match_str)
             && !RE_OK_MAYBE_CANDIDATE.is_match(&match_str)
-            && !sel.is("html")
             && !has_ancestor_tag(&sel, "table")
             && !has_ancestor_tag(&sel, "code")
             && !sel.is("body")
             && !sel.is("a")
-            && get_class_or_id_weight!(&sel) <= 0.0
         {
-            sel.remove();
-            continue;
-        }
-
-        if RE_UNLIKELY_CANDIDATES.is_match(&tag_name) {
             sel.remove();
             continue;
         }
@@ -472,11 +476,6 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             sel.remove();
             continue;
         }
-
-        // if RE_LIKELY_ELEMENTS.is_match(&tag_name) {
-        //     sel.remove();
-        //     continue;
-        // }
 
         if sel.is("div,section,header,h1,h2,h3,h4,h5,h6") && is_element_without_content!(&sel) {
             sel.remove();
@@ -530,7 +529,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         }
 
         for (level, ancestor) in ancestors.into_iter().enumerate() {
-            let score_driver = if level == 0 {
+            let score_divider = if level == 0 {
                 1
             } else if level == 1 {
                 2
@@ -539,20 +538,24 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             };
 
             let id = ancestor.get(0).unwrap().id;
-            let rate = 1.0 - get_link_density(&ancestor);
-            let score = content_score / (score_driver as f32);
+            let score = content_score / (score_divider as f32);
             let mut candidate = initialize_candidate_item(ancestor);
             candidate.score += score;
-            candidate.score *= rate;
-            candidates.insert(id, candidate);
+            candidates.entry(id).or_insert(candidate);
         }
     }
 
     let mut top_candidates = vec![];
-    for (_, c) in candidates.iter() {
+    for (_, c) in candidates.iter_mut() {
+        c.score *= 1.0 - get_link_density(&c.sel);
         top_candidates.push(c);
     }
     top_candidates.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
+
+    for c in top_candidates.iter().take(3) {
+        tracing::info!("{}", c.score);
+        tracing::info!("{}", c.sel.html().to_string());
+    }
 
     let top_candidate = top_candidates[0].clone();
 
@@ -568,17 +571,18 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             let append_sibling = if sibling.is_selection(&top_selection) {
                 true
             } else {
-                // let sibling_class = sibling.attr_or("class", "");
-                // let bonus =
-                //     if sibling_class == top_candidate_class && top_candidate_class.deref() != "" {
-                //         top_candidate.score * 0.2
-                //     } else {
-                //         0.0
-                //     };
+                let bonus = if sibling.attr("class") == top_selection.attr("class")
+                    && top_selection.attr("class").is_some()
+                {
+                    top_candidate.score * 0.2
+                } else {
+                    0.0
+                };
 
                 let id = sibling.get(0).unwrap().id;
+                let score_threshold = f32::max(10.0, top_candidate.score * 0.2);
                 match candidates.get(&id) {
-                    Some(candidate) if candidate.score / top_candidate.score > 0.75 => true,
+                    Some(candidate) if candidate.score + bonus > score_threshold => true,
                     _ => {
                         if sibling.is("p") {
                             let link_density = get_link_density(&sibling);
