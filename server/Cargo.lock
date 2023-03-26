@@ -674,32 +674,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "hmstr-server"
-version = "0.2.12"
-dependencies = [
- "ammonia",
- "anyhow",
- "axum",
- "headless_chrome",
- "html5ever 0.26.0",
- "hyper",
- "lazy_static",
- "nipper",
- "regex",
- "serde",
- "serde_json",
- "sqlite",
- "tantivy",
- "tokio",
- "tower",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "ulid",
- "unicode-width",
-]
-
-[[package]]
 name = "html5ever"
 version = "0.25.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -859,6 +833,32 @@ name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
+
+[[package]]
+name = "leaf-server"
+version = "0.3.0"
+dependencies = [
+ "ammonia",
+ "anyhow",
+ "axum",
+ "headless_chrome",
+ "html5ever 0.26.0",
+ "hyper",
+ "lazy_static",
+ "nipper",
+ "regex",
+ "serde",
+ "serde_json",
+ "sqlite",
+ "tantivy",
+ "tokio",
+ "tower",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "ulid",
+ "unicode-width",
+]
 
 [[package]]
 name = "levenshtein_automata"

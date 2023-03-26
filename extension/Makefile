@@ -1,2 +1,2 @@
 zip:
-	zip -r -FS hmstr-ex-.zip * --exclude '*.git*'
+	zip -r -FS leaf-ex-.zip * --exclude '*.git*'

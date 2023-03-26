@@ -4,12 +4,12 @@ COPY . .
 RUN cargo build --release
 
 FROM debian:stable-slim
-WORKDIR /hmstr-server
+WORKDIR /leaf-server
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get -y install sqlite3
-COPY --from=builder /home/server/target/release/hmstr-server . 
+COPY --from=builder /home/server/target/release/leaf-server . 
 ENV RUST_LOG info
-ENV DATABASE_PATH "/var/hmstr/databases/.sqlite"
-ENV SEARCH_PATH "/var/hmstr/databases/.search"
+ENV DATABASE_PATH "/var/leaf/databases/.sqlite"
+ENV SEARCH_PATH "/var/leaf/databases/.search"
 EXPOSE 8000
-ENTRYPOINT [ "./hmstr-server" ]
+ENTRYPOINT [ "./leaf-server" ]

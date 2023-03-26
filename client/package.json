@@ -1,6 +1,6 @@
 {
-  "name": "hmstr-client",
-  "version": "0.2.12",
+  "name": "leaf-client",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
