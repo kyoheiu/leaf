@@ -173,7 +173,7 @@ impl Core {
 
         let parse_result = readablity(&content).unwrap();
         let title = parse_result.metadata.title;
-        let plain = parse_result.plain;
+        let plain = parse_result.plain.replace('\'', "''");
         let og = parse_result.metadata.og.unwrap_or_default();
 
         let mut cleaner = ammonia::Builder::default();
