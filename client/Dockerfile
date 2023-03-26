@@ -24,7 +24,6 @@ RUN yarn install --non-interactive --frozen-lockfile --production
 # ==================================================
 FROM debian:stable-slim
 ENV NODE_ENV=production
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 WORKDIR /app
 
 COPY --from=node_modules /usr/local/include/ /usr/local/include/
@@ -37,13 +36,6 @@ COPY package.json yarn.lock next.config.js ./
 COPY --from=build /build/public ./public
 COPY --from=build /build/.next ./.next
 COPY --from=node_modules /modules/node_modules ./node_modules
-
-RUN apt-get update \
-    && apt-get install -y chromium fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
-      --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
-
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 EXPOSE 3000
 
