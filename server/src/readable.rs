@@ -7,9 +7,7 @@ use lazy_static::lazy_static;
 use nipper::Document;
 use nipper::Selection;
 use regex::Regex;
-use std::cmp::max;
 use std::collections::HashMap;
-use std::hash::Hash;
 use std::ops::Deref;
 
 use crate::error::Error;
@@ -19,7 +17,7 @@ lazy_static! {
     static ref RE_TITLE_HIERARCHY_SEP: Regex = Regex::new(r#"(?is)[\\/>»]"#).unwrap();
     static ref RE_BYLINE: Regex = Regex::new(r#"(?is)byline|author|dateline|writtenby|p-author"#).unwrap();
     static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?is)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap();
-    static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?is)and|article|body|column|content|main|shadow"#).unwrap();
+    static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?is)and|body|column|content|main|shadow"#).unwrap();
     static ref RE_UNLIKELY_ROLES: Regex = Regex::new(r#"(?is)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap();
     static ref RE_POSITIVE: Regex = Regex::new(r#"(?is)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap();
     static ref RE_NEGATIVE: Regex = Regex::new(r#"combx|comment|com|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|form|textfield|uiScale|hidden"#).unwrap();
@@ -475,17 +473,15 @@ fn grab_article<'a>(doc: &'a Document, title: &str, options: &ParseOption) -> St
         }
 
         // Remove unlikely candidates
-        if options.strip_unlikelys {
-            if RE_UNLIKELY_CANDIDATES.is_match(&match_str)
-                && !RE_OK_MAYBE_CANDIDATE.is_match(&match_str)
-                && !has_ancestor_tag(&sel, "table")
-                && !has_ancestor_tag(&sel, "code")
-                && !sel.is("body")
-                && !sel.is("a")
-            {
-                sel.remove();
-                continue;
-            }
+        if RE_UNLIKELY_CANDIDATES.is_match(&match_str)
+            && !RE_OK_MAYBE_CANDIDATE.is_match(&match_str)
+            && !has_ancestor_tag(&sel, "table")
+            && !has_ancestor_tag(&sel, "code")
+            && !sel.is("body")
+            && !sel.is("a")
+        {
+            sel.remove();
+            continue;
         }
 
         if RE_UNLIKELY_ROLES.is_match(&sel.attr_or("role", "").to_string()) {
@@ -513,6 +509,10 @@ fn grab_article<'a>(doc: &'a Document, title: &str, options: &ParseOption) -> St
             }
         }
     }
+
+    elements_to_score
+        .iter()
+        .for_each(|el| tracing::info!("{}", el.text()));
 
     let mut candidates = HashMap::new();
     for e in elements_to_score {
@@ -568,10 +568,10 @@ fn grab_article<'a>(doc: &'a Document, title: &str, options: &ParseOption) -> St
     }
     top_candidates.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
 
-    for c in top_candidates.iter().take(3) {
-        tracing::info!("{}", c.score);
-        tracing::info!("{}", c.sel.html().to_string());
-    }
+    // for c in top_candidates.iter().take(3) {
+    //     tracing::info!("{}", c.score);
+    //     tracing::info!("{}", c.sel.html().to_string());
+    // }
 
     let top_candidate = top_candidates[0].clone();
 
