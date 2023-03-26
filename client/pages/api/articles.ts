@@ -1,7 +1,4 @@
-import { Readability } from "@mozilla/readability";
 import type { NextApiRequest, NextApiResponse } from "next";
-import puppeteer, { Browser } from "puppeteer";
-import jsdom from "jsdom";
 
 export const getArticles = async () => {
 	const response = await fetch(
@@ -24,14 +21,6 @@ export const createArticle = async (url: string) => {
 		method: "POST",
 		body: url,
 	});
-};
-
-const crawl = async (url: string, browser: Browser): Promise<string> => {
-	const page = await browser.newPage();
-	await page.goto(url);
-	const text = await page.content();
-	await page.close();
-	return text;
 };
 
 export default async function handler(
