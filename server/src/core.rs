@@ -1,4 +1,4 @@
-use crate::readable::readablity;
+use crate::readable::{readablity, ParseOption};
 
 use super::error::Error;
 use super::handler::*;
@@ -171,7 +171,7 @@ impl Core {
         tab.wait_until_navigated()?;
         let content = tab.get_content()?;
 
-        let parse_result = readablity(&content).unwrap();
+        let parse_result = readablity(&content, &ParseOption::default()).unwrap();
         let title = parse_result.metadata.title;
         let plain = parse_result.plain.replace('\'', "''");
         let cover = parse_result.metadata.cover.unwrap_or_default();

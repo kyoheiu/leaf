@@ -102,6 +102,13 @@ impl Default for MetaData {
     }
 }
 
+#[derive(Debug, Default)]
+pub struct ParseOption {
+    pub strip_unlikelys: bool,
+    pub weight_classes: bool,
+    pub clean_conditionally: bool,
+}
+
 #[derive(Debug)]
 pub struct ParseResult {
     pub metadata: MetaData,
@@ -367,7 +374,10 @@ fn get_article_title(doc: &Document) -> String {
 
 // Initialize a node with the readability object. Also checks the
 // className/id for special names to add to its score.
-fn initialize_candidate_item(sel: Selection) -> CandidateItem {
+fn initialize_candidate_item<'a>(
+    sel: Selection<'a>,
+    options: &'a ParseOption,
+) -> CandidateItem<'a> {
     let mut content_score = 0.0;
     let tag_name = sel.get(0).unwrap().node_name().unwrap_or(StrTendril::new());
     match tag_name.to_lowercase().as_str() {
@@ -378,7 +388,9 @@ fn initialize_candidate_item(sel: Selection) -> CandidateItem {
         _ => (),
     }
 
-    content_score += get_class_or_id_weight(&sel);
+    if options.weight_classes {
+        content_score += get_class_or_id_weight(&sel);
+    }
     CandidateItem {
         score: content_score,
         sel,
@@ -429,7 +441,7 @@ fn has_ancestor_tag(sel: &Selection, tag_name: &str) -> bool {
     false
 }
 
-fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
+fn grab_article<'a>(doc: &'a Document, title: &str, options: &ParseOption) -> String {
     let mut elements_to_score = vec![];
 
     // Remove unrelated-ish nodes
@@ -462,15 +474,18 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             }
         }
 
-        if RE_UNLIKELY_CANDIDATES.is_match(&match_str)
-            && !RE_OK_MAYBE_CANDIDATE.is_match(&match_str)
-            && !has_ancestor_tag(&sel, "table")
-            && !has_ancestor_tag(&sel, "code")
-            && !sel.is("body")
-            && !sel.is("a")
-        {
-            sel.remove();
-            continue;
+        // Remove unlikely candidates
+        if options.strip_unlikelys {
+            if RE_UNLIKELY_CANDIDATES.is_match(&match_str)
+                && !RE_OK_MAYBE_CANDIDATE.is_match(&match_str)
+                && !has_ancestor_tag(&sel, "table")
+                && !has_ancestor_tag(&sel, "code")
+                && !sel.is("body")
+                && !sel.is("a")
+            {
+                sel.remove();
+                continue;
+            }
         }
 
         if RE_UNLIKELY_ROLES.is_match(&sel.attr_or("role", "").to_string()) {
@@ -540,7 +555,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
             let id = ancestor.get(0).unwrap().id;
             let score = content_score / (score_divider as f32);
-            let mut candidate = initialize_candidate_item(ancestor);
+            let mut candidate = initialize_candidate_item(ancestor, options);
             candidate.score += score;
             candidates.entry(id).or_insert(candidate);
         }
@@ -614,7 +629,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             }
         });
 
-    pre_article(&content, title);
+    pre_article(&content, title, options);
 
     return clean_html(&new_doc);
 }
@@ -628,11 +643,9 @@ fn clean_html(doc: &Document) -> String {
     html.to_string()
 }
 
-fn pre_article(content: &Selection, title: &str) {
+fn pre_article(content: &Selection, title: &str, options: &ParseOption) {
     mark_data_tables(&content);
     remove_attrs(&content);
-    remove_conditionally(&content, "form");
-    remove_conditionally(&content, "fieldset");
     remove_tag(&content, "h1");
     remove_tag(&content, "object");
     remove_tag(&content, "embed");
@@ -675,11 +688,15 @@ fn pre_article(content: &Selection, title: &str) {
     remove_tag(&content, "textarea");
     remove_tag(&content, "select");
     remove_tag(&content, "button");
-    remove_headers(&content);
 
-    remove_conditionally(&content, "table");
-    remove_conditionally(&content, "ul");
-    // remove_conditionally(&content, "div");
+    if options.clean_conditionally {
+        remove_headers(&content);
+        remove_conditionally(&content, "form");
+        remove_conditionally(&content, "fieldset");
+        remove_conditionally(&content, "table");
+        remove_conditionally(&content, "ul");
+        // remove_conditionally(&content, "div");
+    }
 
     content.select("p").iter().for_each(|mut p| {
         let img = p.select("img").length();
@@ -783,7 +800,7 @@ fn html_to_string(html: &str) -> String {
     result
 }
 
-pub fn readablity(html: &str) -> Result<ParseResult, Error> {
+pub fn readablity(html: &str, options: &ParseOption) -> Result<ParseResult, Error> {
     let document = Document::from(html);
 
     remove_script(&document);
@@ -791,7 +808,7 @@ pub fn readablity(html: &str) -> Result<ParseResult, Error> {
     prep_document(&document);
 
     let metadata = get_article_metadata(&document);
-    let html = grab_article(&document, &metadata.title);
+    let html = grab_article(&document, &metadata.title, &options);
     let plain = html_to_string(&html);
 
     Ok(ParseResult {
