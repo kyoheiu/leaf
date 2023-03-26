@@ -104,7 +104,7 @@ impl Core {
                     "id" => article.id = value.unwrap().to_owned(),
                     "title" => article.title = value.unwrap().to_owned(),
                     "url" => article.url = value.unwrap().to_owned(),
-                    "og" => article.og = value.unwrap().to_owned(),
+                    "cover" => article.cover = value.unwrap().to_owned(),
                     "beginning" => article.beginning = value.unwrap().to_owned(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
                     "archived" => {
@@ -174,7 +174,7 @@ impl Core {
         let parse_result = readablity(&content).unwrap();
         let title = parse_result.metadata.title;
         let plain = parse_result.plain.replace('\'', "''");
-        let og = parse_result.metadata.og.unwrap_or_default();
+        let cover = parse_result.metadata.cover.unwrap_or_default();
 
         let mut cleaner = ammonia::Builder::default();
         let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
@@ -187,7 +187,7 @@ impl Core {
         info!("{}: {} ({})", ulid, title, url);
 
         self.db.execute(state_add(
-            &ulid, &url, &title, &html, &og, &plain, &beginning,
+            &ulid, &url, &title, &html, &cover, &plain, &beginning,
         ))?;
 
         //add to schema
@@ -277,7 +277,7 @@ impl Core {
                         "url" => article.url = value.unwrap().to_owned(),
                         "title" => article.title = value.unwrap().to_owned(),
                         "beginning" => article.beginning = value.unwrap().to_owned(),
-                        "og" => article.og = value.unwrap().to_owned(),
+                        "cover" => article.cover = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
                         "archived" => {
                             article.archived = if value.unwrap() == "0" { false } else { true }

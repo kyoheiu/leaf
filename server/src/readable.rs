@@ -90,14 +90,14 @@ macro_rules! set_node_tag {
 #[derive(Debug)]
 pub struct MetaData {
     pub title: String,
-    pub og: Option<String>,
+    pub cover: Option<String>,
 }
 
 impl Default for MetaData {
     fn default() -> MetaData {
         MetaData {
             title: "".to_owned(),
-            og: None,
+            cover: None,
         }
     }
 }
@@ -341,7 +341,7 @@ fn get_article_metadata(doc: &Document) -> MetaData {
         }
 
         if property.deref() == "og:image" || name.deref() == "twitter:image" {
-            metadata.og = Some(content.to_string());
+            metadata.cover = Some(content.to_string());
         }
 
         if property.deref() == "og:title" || name.deref() == "twitter:title" {
@@ -444,8 +444,9 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             continue;
         }
 
-        // User is not able to see elements applied with both "aria-modal = true" and "role = dialog"
-        if sel.attr("aria-modal").is_some() && sel.attr("role") == Some(StrTendril::from("dialog"))
+        // User is not able to see elements applied with both "aria-modal = true" and "role = dialcover"
+        if sel.attr("aria-modal").is_some()
+            && sel.attr("role") == Some(StrTendril::from("dialcover"))
         {
             sel.remove();
             continue;
