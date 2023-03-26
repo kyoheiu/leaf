@@ -2,8 +2,8 @@
 
 Instapaper is great, but you can self-host your own "read-later" Web app.
 
-![https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.3.0?label=leaf-client](https://img.shields.io/docker/image-size/kyoheiudev/leaf-client/0.2.10?label=leaf-client)
-![https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.3.0?label=leaf-server](https://img.shields.io/docker/image-size/kyoheiudev/leaf-server/0.2.10?label=leaf-server)
+![https://img.shields.io/docker/image-size/kyoheiudev/leaf-client](https://img.shields.io/docker/image-size/kyoheiudev/leaf-client)
+![https://img.shields.io/docker/image-size/kyoheiudev/leaf-server](https://img.shields.io/docker/image-size/kyoheiudev/leaf-server)
 
 <hr />
 
