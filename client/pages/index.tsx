@@ -1,6 +1,6 @@
 import {
-	Articles,
 	ArticleData,
+	Articles,
 	ElementKind,
 	WrappedData,
 } from "../types/types";
@@ -39,7 +39,15 @@ export default function Home({
 	};
 
 	if (list.length === 0) {
-		return <h1>No article found.</h1>;
+		return (
+			<>
+				<Header />
+				<Stack className="articles-list" spacing={5}>
+					<div>Add new article from the top form!</div>
+					{Footer(isLast, reload)}
+				</Stack>
+			</>
+		);
 	}
 
 	const wrapped: WrappedData[] = list.map((x) => ({
