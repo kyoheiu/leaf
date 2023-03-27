@@ -41,8 +41,10 @@ macro_rules! is_valid_by_line {
 
 macro_rules! is_element_without_content {
     ($sel: expr) => {{
-        let text = $sel.text();
-        text.trim() == ""
+        let children = $sel.children();
+        $sel.text().trim().len() == 0
+            && (children.length() == 0
+                || children.length() == $sel.select("br").length() + $sel.select("hr").length())
     }};
 }
 
