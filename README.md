@@ -72,7 +72,7 @@ make run
 
 - TypeScript as the frontend
   - Next.js
-  - Auth.js (using GitHub account)
+  - Auth.js
   - MUI
 - Rust as the backend
   - axum
