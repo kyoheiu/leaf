@@ -121,6 +121,22 @@ struct CandidateItem<'a> {
     sel: Selection<'a>,
 }
 
+fn shingles(s: &str) -> std::collections::HashSet<String> {
+    let chars: Vec<_> = s.chars().collect();
+    chars
+        .windows(2)
+        .map(|w| w.iter().cloned().collect())
+        .collect()
+}
+
+fn jaccard_distance(s1: &str, s2: &str) -> f64 {
+    let s1_shingles = shingles(s1);
+    let s2_shingles = shingles(s2);
+    let inter = s1_shingles.intersection(&s2_shingles).count();
+    let union = s1_shingles.union(&s2_shingles).count();
+    (inter as f64) / (union as f64)
+}
+
 fn remove_script(doc: &Document) {
     doc.select("script").remove();
     doc.select("noscript").remove();
@@ -664,40 +680,21 @@ fn prep_article(content: &Selection, title: &str, options: &ParseOption) {
         }
     });
 
-    let mut h2s = content.select("h2");
-
-    if h2s.length() == 1 {
-        let text = h2s.text();
-        println!("{} {}", text.len(), title.len());
-        let length_similar_rate = text.len() as f64 / title.len() as f64 - 1.0;
-
-        if length_similar_rate.abs() < 0.5 {
-            let title_matches = if length_similar_rate > 0.0 {
-                text.contains(title)
-            } else {
-                title.contains(text.deref())
-            };
-
-            if title_matches {
-                h2s.remove()
-            }
+    content.select("h1").iter().for_each(|mut h1| {
+        if jaccard_distance(&h1.text().to_string(), title) < 0.75 {
+            let html: &str = &h1.html();
+            let mut h2 = "<h2>".to_string();
+            h2.push_str(html);
+            h2.push_str("</h2>");
+            h1.replace_with_html(h2.as_str());
         }
-    }
+    });
 
     remove_tag(&content, "iframe");
     remove_tag(&content, "input");
     remove_tag(&content, "textarea");
     remove_tag(&content, "select");
     remove_tag(&content, "button");
-
-    if options.clean_conditionally {
-        remove_headers(&content);
-        remove_conditionally(&content, "form");
-        remove_conditionally(&content, "fieldset");
-        remove_conditionally(&content, "table");
-        remove_conditionally(&content, "ul");
-        // remove_conditionally(&content, "div");
-    }
 
     content.select("p").iter().for_each(|mut p| {
         let img = p.select("img").length();
