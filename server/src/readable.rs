@@ -658,13 +658,16 @@ fn clean_html(doc: &Document) -> String {
 
 fn prep_article(content: &Selection, title: &str, options: &ParseOption) {
     mark_data_tables(&content);
+
     remove_attrs(&content);
-    remove_tag(&content, "h1");
+
+    remove_conditionally(&content, "form");
+    remove_conditionally(&content, "fieldset");
     remove_tag(&content, "object");
     remove_tag(&content, "embed");
     remove_tag(&content, "footer");
-    remove_tag(&content, "aside");
     remove_tag(&content, "link");
+    remove_tag(&content, "aside");
 
     content.select("*").iter().for_each(|mut s| {
         let id = s.attr_or("id", "");
