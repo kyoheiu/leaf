@@ -28,6 +28,7 @@ lazy_static! {
     static ref RE_KILL_BREAKS: Regex = Regex::new(r#"(?is)(<br\s*/?>(\s|&nbsp;?)*)+"#).unwrap();
     static ref RE_SPACES: Regex = Regex::new(r#"(?is)\s{2,}|\n+"#).unwrap();
     static ref RE_HASHURL: Regex = Regex::new(r#"^#.+"#).unwrap();
+    static ref RE_SHARE_ELEMENT: Regex = Regex::new(r#"(?i)(\b|_)(share|sharedaddy)(\b|_)"#).unwrap();
 }
 
 const DATA_TABLE_ATTR: &'static str = "XXX-DATA-TABLE";
@@ -629,7 +630,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str, options: &ParseOption) -> St
             }
         });
 
-    pre_article(&content, title, options);
+    prep_article(&content, title, options);
 
     return clean_html(&new_doc);
 }
@@ -643,7 +644,7 @@ fn clean_html(doc: &Document) -> String {
     html.to_string()
 }
 
-fn pre_article(content: &Selection, title: &str, options: &ParseOption) {
+fn prep_article(content: &Selection, title: &str, options: &ParseOption) {
     mark_data_tables(&content);
     remove_attrs(&content);
     remove_tag(&content, "h1");
@@ -658,7 +659,7 @@ fn pre_article(content: &Selection, title: &str, options: &ParseOption) {
         let class = s.attr_or("class", "");
         let match_str = format!("{} {}", id, class);
 
-        if match_str.contains("share") {
+        if RE_SHARE_ELEMENT.is_match(&match_str) && s.text().len() < 500 {
             s.remove();
         }
     });
