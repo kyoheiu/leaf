@@ -169,10 +169,6 @@ fn remove_attrs(s: &Selection) {
         s1.remove_attr("style");
         s1.remove_attr("valign");
         s1.remove_attr("vspace");
-        s1.remove_attr("onclick");
-        s1.remove_attr("onmouseover");
-        s1.remove_attr("border");
-        s1.remove_attr("style");
 
         if tag_name.deref() != "table"
             && tag_name.deref() != "th"
