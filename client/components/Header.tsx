@@ -13,6 +13,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Grid from "@mui/material/Grid";
 import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -176,6 +177,11 @@ export const Header = () => {
 							"aria-labelledby": "basic-button",
 						}}
 					>
+						<MenuItem>
+							<MuiLink underline="none" component={Link} href="/">
+								<ArrowBackIosNewIcon sx={{ fontSize: button_size }} /> Top
+							</MuiLink>
+						</MenuItem>
 						<MenuItem>
 							<MuiLink underline="none" component={Link} href="/liked">
 								<FavoriteIcon sx={{ fontSize: button_size }} /> Liked
