@@ -1,3 +1,4 @@
+import { Link as MuiLink } from "@mui/material";
 import { ArticleContent } from "../../types/types";
 import { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
@@ -13,6 +14,8 @@ import { useSession } from "next-auth/react";
 import Link from "@mui/material/Link";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
+import Image from "next/image";
+import { LOGO_SIZE } from "../../components/Header";
 
 type Data = ArticleContent;
 
@@ -180,8 +183,21 @@ export default function Article({
 				<title>
 					{articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
 				</title>
-				<script src="/readability.js" />
 			</Head>
+			<MuiLink
+				className="site-title"
+				component={Link}
+				underline="none"
+				href="/"
+			>
+				<Image
+					src="/logo.png"
+					alt="leaf"
+					style={{ margin: 0 }}
+					height={LOGO_SIZE}
+					width={LOGO_SIZE}
+				/>
+			</MuiLink>
 			<div className="article-title">{articleContent.title}</div>
 			<div className="article-url">
 				<Link href={articleContent.url}>{articleContent.url}</Link>
