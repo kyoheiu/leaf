@@ -525,9 +525,9 @@ fn grab_article<'a>(doc: &'a Document, title: &str, options: &ParseOption) -> St
         }
     }
 
-    elements_to_score
-        .iter()
-        .for_each(|el| tracing::info!("{}", el.text()));
+    // elements_to_score
+    //     .iter()
+    //     .for_each(|el| tracing::info!("{}", el.text()));
 
     let mut candidates = HashMap::new();
     for e in elements_to_score {
