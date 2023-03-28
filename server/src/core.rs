@@ -172,7 +172,7 @@ impl Core {
         let content = tab.get_content()?;
 
         let parse_result = readablity(&content, &ParseOption::default()).unwrap();
-        let title = parse_result.metadata.title;
+        let title = parse_result.metadata.title.replace('\'', "''");
         let plain = parse_result.plain.replace('\'', "''");
         let cover = parse_result.metadata.cover.unwrap_or_default();
 
