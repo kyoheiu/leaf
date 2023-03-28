@@ -1,7 +1,6 @@
-use crate::readable::{readablity, ParseOption};
-
 use super::error::Error;
 use super::handler::*;
+use super::readable::readability;
 use super::schema::initialize_schema;
 use super::statements::*;
 use super::types::{ArticleContent, ArticleData, Articles};
@@ -171,7 +170,7 @@ impl Core {
         tab.wait_until_navigated()?;
         let content = tab.get_content()?;
 
-        let parse_result = readablity(&content, &ParseOption::default()).unwrap();
+        let parse_result = readability(&content).unwrap();
         let title = parse_result.metadata.title.replace('\'', "''");
         let plain = parse_result.plain.replace('\'', "''");
         let cover = parse_result.metadata.cover.unwrap_or_default();
