@@ -241,13 +241,12 @@ fn remove_conditionally(s: &Selection, tag: &str) {
         }
 
         let node_text = node.text();
-        let mut commas_count = node_text.matches(",").count();
-        commas_count += node_text.matches("，").count();
+        let commas_count = node_text.matches(|c| c == ',' || c == '、').count();
         if commas_count < 10 {
-            let p = node.select("p").length() as f64;
-            let img = node.select("img").length() as f64;
-            let li = node.select("li").length() as f64 - 100.0;
-            let input = node.select("input").length() as f64;
+            let p = node.select("p").length() as f32;
+            let img = node.select("img").length() as f32;
+            let li = node.select("li").length() as f32 - 100.0;
+            let input = node.select("input").length() as f32;
 
             let mut embed_count = 0;
             node.select("embed").iter().for_each(|embed| {
