@@ -584,12 +584,50 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
     }
     top_candidates.sort_by(|a, b| b.score.partial_cmp(&a.score).unwrap());
 
-    // for c in top_candidates.iter().take(3) {
-    //     tracing::info!("{}", c.score);
-    //     tracing::info!("{}", c.sel.html().to_string());
-    // }
+    let mut top_candidate = top_candidates[0].clone();
 
-    let top_candidate = top_candidates[0].clone();
+    // Because of our bonus system, parents of candidates might have scores
+    // themselves. They get half of the node. There won't be nodes with higher
+    // scores than our topCandidate, but if we see the score going *up* in the first
+    // few steps up the tree, that's a decent sign that there might be more content
+    // lurking in other places that we want to unify in. The sibling stuff
+    // below does some of that - but only if we've looked high enough up the DOM
+    // tree.
+
+    let mut parent_of_top = top_candidate.sel.parent();
+    let mut last_score = top_candidate.score;
+    let score_threshold = last_score / 3.0;
+    while !parent_of_top.is("body") {
+        match candidates.get(&parent_of_top.get(0).unwrap().id) {
+            None => {
+                parent_of_top = parent_of_top.parent();
+                continue;
+            }
+            Some(c) => {
+                let parent_score = c.score;
+                if parent_score > score_threshold {
+                    break;
+                }
+                if parent_score > last_score {
+                    top_candidate = c.clone();
+                    break;
+                }
+                last_score = c.score;
+                parent_of_top = parent_of_top.parent();
+            }
+        }
+    }
+
+    // If the top candidate is the only child, use parent instead. This will help sibling
+    // joining logic when adjacent content is actually located in parent's sibling node.
+    let mut parent_of_top = top_candidate.sel.parent();
+    while !parent_of_top.is("body") && parent_of_top.children().length() == 1 {
+        top_candidate = match candidates.get(&parent_of_top.get(0).unwrap().id) {
+            Some(c) => c.clone(),
+            None => initialize_candidate_item(parent_of_top),
+        };
+        parent_of_top = top_candidate.sel.parent();
+    }
 
     let new_doc = Document::from(r#""#);
     let mut content = new_doc.select("body");
