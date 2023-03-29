@@ -211,8 +211,16 @@ fn remove_tag(sel: &Selection, tag: &str) {
 }
 
 fn remove_conditionally(s: &Selection, tag: &str) {
-    let is_list = (tag == "ul") || (tag == "ol");
     s.select(tag).iter().for_each(|mut node| {
+        let mut is_list = (tag == "ul") || (tag == "ol");
+        if !is_list {
+            let mut list_length = 0;
+            node.select("ul,ol").iter().for_each(|li| {
+                list_length += li.text().len();
+            });
+            is_list = list_length as f32 / node.text().len() as f32 > 0.9;
+        }
+
         if let Some(ancestor) = get_ancestor_tag(&node, "table", 100) {
             if let Some(value) = ancestor.attr(DATA_TABLE_ATTR) {
                 if value.deref() == "1" {
