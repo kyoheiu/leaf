@@ -19,8 +19,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Router, useRouter } from "next/router";
 
 export default function ArticleElement(props: ElementProps) {
+	const router = useRouter();
 	const [article, setArticle] = useState(props.element);
 	const kind = props.kind;
 	const [open, setOpen] = useState(false);
@@ -123,6 +125,10 @@ export default function ArticleElement(props: ElementProps) {
 		}
 	};
 
+	const navigateToTag = (tag: string) => {
+		router.push(`/tags/${tag}`);
+	};
+
 	const deleteTag = async (id: string, tag: string) => {
 		const res = await fetch(`/api/articles/${id}?kind=delete`, {
 			method: "POST",
@@ -179,8 +185,8 @@ export default function ArticleElement(props: ElementProps) {
 				</MuiLink>
 			</div>
 			<Grid container spacing={2}>
-				<Grid item xs={9} className="beginning">
-					<Typography>{article.data.beginning}</Typography>
+				<Grid item xs={9}>
+					<Typography className="element-beginning">{article.data.beginning}</Typography>
 				</Grid>
 				<Grid item xs={3}>
 					{article.data.cover !== "" && (
@@ -200,13 +206,12 @@ export default function ArticleElement(props: ElementProps) {
 							{
 								return (
 									<span key={`tag-element${index.toString()}`}>
-										<Link href={`/tags/${x}`}>
-											<Chip
-												label={x}
-												id={`${article.data.id}_delete_tag`}
-												onDelete={() => deleteTag(article.data.id, x)}
-											/>
-										</Link>
+										<Chip
+											label={x}
+											id={`${article.data.id}_delete_tag`}
+											onClick={() => navigateToTag(x)}
+											onDelete={() => deleteTag(article.data.id, x)}
+										/>
 										&nbsp;
 									</span>
 								);
