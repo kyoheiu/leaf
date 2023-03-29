@@ -77,7 +77,7 @@ make run
 - Rust as the backend
   - axum
   - headless-chrome to get contents
-  - customized content extractor based on mozilla/readability (WIP)
+  - customized content extractor based on mozilla/readability
   - ammonia as the sanitizer
   - tantivy as the full-text search engine
 - SQLite as the database
