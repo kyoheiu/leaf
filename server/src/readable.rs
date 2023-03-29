@@ -570,7 +570,10 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
             let score = content_score / (score_divider as f32);
             let mut candidate = initialize_candidate_item(ancestor);
             candidate.score += score;
-            candidates.entry(id).or_insert(candidate);
+            candidates
+                .entry(id)
+                .and_modify(|c: &mut CandidateItem| c.score += score)
+                .or_insert(candidate);
         }
     }
 
