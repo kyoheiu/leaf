@@ -4,9 +4,9 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect, useState } from "react";
 import React from "react";
 import { ColorMode } from "../context/ColorMode";
-import "../styles/globals.css";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 	const [isLight, setIsLight] = useState<boolean>(true);
