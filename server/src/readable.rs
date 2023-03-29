@@ -688,15 +688,6 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
     return clean_html(&new_doc.select("body"));
 }
 
-fn clean_html(doc: &Selection) -> String {
-    let html = doc.html().to_string();
-    let html = RE_COMMENTS.replace_all(&html, "");
-    let html = RE_KILL_BREAKS.replace_all(&html, "<br />");
-    // let html = RE_SPACES.replace_all(&html, "");
-
-    html.to_string()
-}
-
 fn prep_article(content: &Selection, title: &str) {
     mark_data_tables(&content);
 
@@ -761,6 +752,15 @@ fn prep_article(content: &Selection, title: &str) {
             br.remove()
         }
     })
+}
+
+fn clean_html(doc: &Selection) -> String {
+    let html = doc.html().to_string();
+    let html = RE_COMMENTS.replace_all(&html, "");
+    let html = RE_KILL_BREAKS.replace_all(&html, "<br />");
+    // let html = RE_SPACES.replace_all(&html, "");
+
+    html.to_string()
 }
 
 fn mark_data_tables(s: &Selection) {
