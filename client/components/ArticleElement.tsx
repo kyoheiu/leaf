@@ -19,7 +19,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 export default function ArticleElement(props: ElementProps) {
 	const router = useRouter();
