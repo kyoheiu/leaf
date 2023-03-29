@@ -428,7 +428,7 @@ fn get_class_or_id_weight(sel: &Selection) -> f32 {
     let unit = 25.0;
 
     if let Some(class) = sel.attr("class") {
-        let class = &class.to_lowercase();
+        let class = &class.to_string();
         if RE_NEGATIVE.is_match(class) {
             weight -= unit;
         }
@@ -439,7 +439,7 @@ fn get_class_or_id_weight(sel: &Selection) -> f32 {
     }
 
     if let Some(id) = sel.attr("id") {
-        let id = &id.to_lowercase();
+        let id = &id.to_string();
         if RE_NEGATIVE.is_match(id) {
             weight -= unit;
         }
@@ -650,10 +650,10 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
 
     prep_article(&content, title);
 
-    return clean_html(&new_doc);
+    return clean_html(&new_doc.select("body"));
 }
 
-fn clean_html(doc: &Document) -> String {
+fn clean_html(doc: &Selection) -> String {
     let html = doc.html().to_string();
     let html = RE_COMMENTS.replace_all(&html, "");
     let html = RE_KILL_BREAKS.replace_all(&html, "<br />");
@@ -665,7 +665,8 @@ fn clean_html(doc: &Document) -> String {
 fn prep_article(content: &Selection, title: &str) {
     mark_data_tables(&content);
 
-    remove_attrs(&content);
+    // do not have to do this because we have ammonia.
+    // remove_attrs(&content);
 
     remove_conditionally(&content, "form");
     remove_conditionally(&content, "fieldset");
@@ -685,6 +686,18 @@ fn prep_article(content: &Selection, title: &str) {
         }
     });
 
+    remove_tag(&content, "iframe");
+    remove_tag(&content, "input");
+    remove_tag(&content, "textarea");
+    remove_tag(&content, "select");
+    remove_tag(&content, "button");
+
+    // Do these last as the previous stuff may have removed junk
+    // that will affect these
+    remove_conditionally(&content, "table");
+    remove_conditionally(&content, "ul");
+    remove_conditionally(&content, "div");
+
     content.select("h1").iter().for_each(|mut h1| {
         if jaccard_distance(&h1.text().to_string(), title) < 0.75 {
             let html: &str = &h1.html();
@@ -694,12 +707,6 @@ fn prep_article(content: &Selection, title: &str) {
             h1.replace_with_html(h2.as_str());
         }
     });
-
-    remove_tag(&content, "iframe");
-    remove_tag(&content, "input");
-    remove_tag(&content, "textarea");
-    remove_tag(&content, "select");
-    remove_tag(&content, "button");
 
     content.select("p").iter().for_each(|mut p| {
         let img = p.select("img").length();
