@@ -555,12 +555,7 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         content_score += text.matches(|c| c == ',' || c == '、').count() as f32;
 
         // For every 100 characters in this paragraph, add another point. Up to 3 points.
-        let additional = text.len() as f32 / 100.0;
-        if additional > 3.0 {
-            content_score += 3.0;
-        } else {
-            content_score += additional;
-        }
+        content_score += f32::min(text.len() as f32 / 100.0, 3.0);
 
         for (level, ancestor) in ancestors.into_iter().enumerate() {
             let score_divider = if level == 0 {
