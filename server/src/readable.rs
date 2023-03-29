@@ -12,22 +12,21 @@ use std::ops::Deref;
 
 use crate::error::Error;
 lazy_static! {
-    static ref RE_REPLACE_BRS: Regex = Regex::new(r#"(?is)(<br[^>]*>[ \n\r\t]*){2,}"#).unwrap();
-    static ref RE_TITLE_SEPARATOR: Regex = Regex::new(r#"(?is) [\|\-\\/>»] "#).unwrap();
-    static ref RE_TITLE_HIERARCHY_SEP: Regex = Regex::new(r#"(?is)[\\/>»]"#).unwrap();
-    static ref RE_BYLINE: Regex = Regex::new(r#"(?is)byline|author|dateline|writtenby|p-author"#).unwrap();
-    static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?is)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|\spager\s|popup|yom-remote"#).unwrap();
-    static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?is)and|body|column|content|main|shadow"#).unwrap();
-    static ref RE_UNLIKELY_ROLES: Regex = Regex::new(r#"(?is)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap();
-    static ref RE_POSITIVE: Regex = Regex::new(r#"(?is)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap();
-    //Deleted 'com' because it matches classes such as 'common'
-    static ref RE_NEGATIVE: Regex = Regex::new(r#"combx|comment|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|form|textfield|uiScale|hidden"#).unwrap();
-    static ref RE_DIV_TO_P_ELEMENTS: Regex = Regex::new(r#"(?is)<(a|blockquote|dl|div|img|ol|p|pre|table|ul)"#).unwrap();
-    static ref RE_VIDEOS: Regex = Regex::new(r#"(?is)//(www\.)?(dailymotion|youtube|youtube-nocookie|player\.vimeo)\.com"#).unwrap();
-    static ref RE_P_IS_SENTENCE: Regex = Regex::new(r#"(?is)\.( |$)"#).unwrap();
-    static ref RE_COMMENTS: Regex = Regex::new(r#"(?is)<!--[^>]+-->"#).unwrap();
-    static ref RE_KILL_BREAKS: Regex = Regex::new(r#"(?is)(<br\s*/?>(\s|&nbsp;?)*)+"#).unwrap();
-    static ref RE_SPACES: Regex = Regex::new(r#"(?is)\s{2,}|\n+"#).unwrap();
+    static ref RE_REPLACE_BRS: Regex = Regex::new(r#"(?i)(<br[^>]*>[ \n\r\t]*){2,}"#).unwrap();
+    static ref RE_TITLE_SEPARATOR: Regex = Regex::new(r#"(?i) [\|\-\\/>»] "#).unwrap();
+    static ref RE_TITLE_HIERARCHY_SEP: Regex = Regex::new(r#"(?i)[\\/>»]"#).unwrap();
+    static ref RE_BYLINE: Regex = Regex::new(r#"(?i)byline|author|dateline|writtenby|p-author"#).unwrap();
+    static ref RE_UNLIKELY_CANDIDATES: Regex = Regex::new(r#"(?i)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap();
+    static ref RE_OK_MAYBE_CANDIDATE: Regex = Regex::new(r#"(?i)and|article|body|column|content|main|shadow"#).unwrap();
+    static ref RE_UNLIKELY_ROLES: Regex = Regex::new(r#"(?i)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap();
+    static ref RE_POSITIVE: Regex = Regex::new(r#"(?i)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap();
+    static ref RE_NEGATIVE: Regex = Regex::new(r#"-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap();
+    static ref RE_DIV_TO_P_ELEMENTS: Regex = Regex::new(r#"(?i)<(a|blockquote|dl|div|img|ol|p|pre|table|ul)"#).unwrap();
+    static ref RE_VIDEOS: Regex = Regex::new(r#"(?i)//(www\.)?(dailymotion|youtube|youtube-nocookie|player\.vimeo)\.com"#).unwrap();
+    static ref RE_P_IS_SENTENCE: Regex = Regex::new(r#"(?i)\.( |$)"#).unwrap();
+    static ref RE_COMMENTS: Regex = Regex::new(r#"(?i)<!--[^>]+-->"#).unwrap();
+    static ref RE_KILL_BREAKS: Regex = Regex::new(r#"(?i)(<br\s*/?>(\s|&nbsp;?)*)+"#).unwrap();
+    static ref RE_SPACES: Regex = Regex::new(r#"(?i)\s{2,}|\n+"#).unwrap();
     static ref RE_HASHURL: Regex = Regex::new(r#"^#.+"#).unwrap();
     static ref RE_SHARE_ELEMENT: Regex = Regex::new(r#"(?i)(\b|_)(share|sharedaddy)(\b|_)"#).unwrap();
     static ref RE_PHRASING_ELEMS: Regex = Regex::new(r#"(?i)^(abbr|audio|b|bdo|br|button|cite|code|data|datalist|dfn
