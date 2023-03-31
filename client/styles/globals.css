@@ -32,7 +32,8 @@ video {
 
 .element-title {
     font-size: 1.35em;
-    font-family: var(--lora-font);
+    font-family: var(--lora-font), serif;
+    font-weight: 500;
     line-height: 1.3;
 }
 
