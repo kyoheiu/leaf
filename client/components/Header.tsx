@@ -7,7 +7,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Link as MuiLink, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
-import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -34,9 +33,6 @@ export const LOGO_SIZE = 42;
 export const Header = () => {
 	const router = useRouter();
 
-	const logo_width = 1;
-	const button_width = 0.8;
-	const input_width = 12 - logo_width - button_width * 2;
 	const button_size = 18;
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

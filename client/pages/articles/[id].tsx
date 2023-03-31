@@ -9,15 +9,12 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import Login from "../../components/Login";
-import { useSession } from "next-auth/react";
 import Link from "@mui/material/Link";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
 import Image from "next/image";
 import { LOGO_SIZE } from "../../components/Header";
 import AppBar from "@mui/material/AppBar";
-import Grid from "@mui/material/Grid";
 import { ColorMode } from "../../context/ColorMode";
 import LinkIcon from '@mui/icons-material/Link';
 import toast from "react-simple-toasts";
@@ -178,11 +175,6 @@ export default function Article({
 			</>
 		);
 	};
-
-	const logo_width = 1;
-	const button_width = 0.8;
-	const input_width = 12 - logo_width - button_width * 2;
-	const button_size = 18;
 
 	return (
 		<>
