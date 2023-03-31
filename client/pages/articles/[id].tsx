@@ -16,9 +16,8 @@ import Image from "next/image";
 import { LOGO_SIZE } from "../../components/Header";
 import AppBar from "@mui/material/AppBar";
 import { ColorMode } from "../../context/ColorMode";
-import LinkIcon from '@mui/icons-material/Link';
-import toast from "react-simple-toasts";
 import Tags from "../../components/Tags";
+import LinkButton from "../../components/LinkButton";
 
 type Data = ArticleContent;
 
@@ -144,17 +143,10 @@ export default function Article({
 		return { __html: articleContent.html };
 	};
 
-	const copyToClipboard = async () => {
-		await navigator.clipboard.writeText(articleContent.url);
-		toast("URL copied to clipboard.");
-	}
-
 	const Buttons = ({ data }: { data: ArticleContent }) => {
 		return (
 			<>
-				<Button onClick={copyToClipboard}>
-					<LinkIcon sx={{ fontSize: 20 }} />
-				</Button>
+				<LinkButton url={articleContent.url} />
 				<Button onClick={toggleLiked}>
 					{data.liked ? (
 						<FavoriteIcon sx={{ fontSize: 20 }} />
@@ -183,7 +175,7 @@ export default function Article({
 					{articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
 				</title>
 			</Head>
-			<AppBar position="fixed" color="default">
+			<AppBar elevation={0} position="fixed" color="default">
 				<Toolbar sx={{ display: "flex" }} variant="dense">
 					<MuiLink
 						className="site-title"
