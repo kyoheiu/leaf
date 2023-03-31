@@ -13,6 +13,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import LinkButton from "../components/LinkButton";
 
 export default function ArticleElement(props: ElementProps) {
 	const [article, setArticle] = useState(props.element);
@@ -117,9 +118,8 @@ export default function ArticleElement(props: ElementProps) {
 				</Grid>
 			</Grid>
 			<div className="element-url">
-				<MuiLink color="primary" underline="hover" href={article.data.url}>
-					{`${article.data.url.slice(0, 27)}...`}
-				</MuiLink>
+				{`${article.data.url.slice(0, 27)}...`}
+				<LinkButton url={article.data.url} />
 			</div>
 			<Grid container spacing={2}>
 				<Grid item xs={9}>
