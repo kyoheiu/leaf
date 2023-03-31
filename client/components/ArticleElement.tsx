@@ -19,44 +19,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import ArchiveIcon from "@mui/icons-material/Archive";
 import UnarchiveIcon from "@mui/icons-material/Unarchive";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useRouter } from "next/router";
 
 export default function ArticleElement(props: ElementProps) {
-	const router = useRouter();
 	const [article, setArticle] = useState(props.element);
 	const kind = props.kind;
-	const [open, setOpen] = useState(false);
-
-	const handleClickOpen = () => {
-		setOpen(true);
-	};
-
-	const handleClose = () => {
-		setOpen(false);
-	};
-
-	const submitAndClose = async (id: string) => {
-		const element = document.getElementById(`${id}_add_tag`);
-		const tag = (element as HTMLInputElement).value;
-		const res = await fetch(`/api/articles/${id}?kind=add`, {
-			method: "POST",
-			body: tag,
-		});
-		if (!res.ok) {
-			console.log("Cannot add tag.");
-			setOpen(false);
-		} else {
-			setArticle((x) => ({
-				...x,
-				data: {
-					...x.data,
-					tags: [...x.data.tags, tag.toLowerCase()],
-				},
-			}));
-			setOpen(false);
-		}
-	};
-
 	const toggleLiked = async (id: string) => {
 		const res = await fetch(`/api/articles/${id}?toggle=liked`, {
 			method: "POST",
@@ -125,29 +91,6 @@ export default function ArticleElement(props: ElementProps) {
 		}
 	};
 
-	const navigateToTag = (tag: string) => {
-		router.push(`/tags/${tag}`);
-	};
-
-	const deleteTag = async (id: string, tag: string) => {
-		const res = await fetch(`/api/articles/${id}?kind=delete`, {
-			method: "POST",
-			body: tag,
-		});
-		if (!res.ok) {
-			console.log("Cannot delete tag.");
-		} else {
-			const updated = article.data.tags.filter((x) => x !== tag);
-			setArticle((x) => ({
-				...x,
-				data: {
-					...x.data,
-					tags: updated,
-				},
-			}));
-		}
-	};
-
 	if ((kind === ElementKind.Top && article.data.archived) || !article.visible) {
 		return <></>;
 	}
@@ -201,47 +144,7 @@ export default function ArticleElement(props: ElementProps) {
 			</Grid>
 			<Grid container>
 				<Grid item xs={9}>
-					{article.data.tags.length !== 0 &&
-						article.data.tags.map((x, index) => {
-							{
-								return (
-									<span key={`tag-element${index.toString()}`}>
-										<Chip
-											label={x}
-											id={`${article.data.id}_delete_tag`}
-											onClick={() => navigateToTag(x)}
-											onDelete={() => deleteTag(article.data.id, x)}
-										/>
-										&nbsp;
-									</span>
-								);
-							}
-						})}
-					&nbsp;
-					<Chip
-						label={article.data.tags.length ? "+" : "Add new tag"}
-						onClick={handleClickOpen}
-					/>
-					<Dialog open={open} onClose={handleClose}>
-						<DialogTitle>Add new tag.</DialogTitle>
-						<DialogContent>
-							<TextField
-								autoFocus
-								margin="dense"
-								id={`${article.data.id}_add_tag`}
-								label="New tag name"
-								type="text"
-								fullWidth
-								variant="standard"
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button onClick={handleClose}>Cancel</Button>
-							<Button onClick={() => submitAndClose(article.data.id)}>
-								Add
-							</Button>
-						</DialogActions>
-					</Dialog>
+					<Tags tags={article.data.tags} id={article.data.id} />
 				</Grid>
 			</Grid>
 			<LinearProgress

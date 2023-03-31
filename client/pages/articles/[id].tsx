@@ -21,6 +21,7 @@ import Grid from "@mui/material/Grid";
 import { ColorMode } from "../../context/ColorMode";
 import LinkIcon from '@mui/icons-material/Link';
 import toast from "react-simple-toasts";
+import Tags from "../../components/Tags";
 
 type Data = ArticleContent;
 
@@ -39,7 +40,6 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Article({
 	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const { data: session, status } = useSession();
 	const { isLight } = useContext(ColorMode);
 
 	const [articleContent, setArticleContent] = useState<ArticleContent>(data);
@@ -138,10 +138,6 @@ export default function Article({
 		}
 	};
 
-	if (status === "loading") {
-		return <div>Loading...</div>;
-	}
-
 	if (!articleContent) {
 		return <h1>No article found.</h1>;
 	}
@@ -188,7 +184,7 @@ export default function Article({
 	const input_width = 12 - logo_width - button_width * 2;
 	const button_size = 18;
 
-	return session ? (
+	return (
 		<>
 			<Head>
 				<title>
@@ -222,6 +218,7 @@ export default function Article({
 			<Divider className="article-divider" />
 			<div dangerouslySetInnerHTML={create_markup()} />
 			<Divider className="article-divider" />
+			<Tags tags={articleContent.tags} id={articleContent.id} />
 			<MuiLink
 				className="site-title"
 				component={Link}
@@ -236,7 +233,6 @@ export default function Article({
 				/>
 			</MuiLink>
 		</>
-	) : (
-		<Login />
-	);
+	)
+		;
 }

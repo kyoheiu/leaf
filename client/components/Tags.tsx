@@ -45,7 +45,7 @@ export default function Tags(data: TagsProps) {
 		if (!res.ok) {
 			console.log("Cannot delete tag.");
 		} else {
-			const updated = data.tags.filter((x) => x !== tag);
+			const updated = tags.filter((x) => x !== tag);
 			setTags(() => updated);
 		}
 	};
@@ -70,7 +70,7 @@ export default function Tags(data: TagsProps) {
 				})}
 			&nbsp;
 			<Chip
-				label={data.tags.length ? "+" : "Add new tag"}
+				label={tags.length ? "+" : "Add new tag"}
 				onClick={handleClickOpen}
 			/>
 			<Dialog open={open} onClose={handleClose}>
