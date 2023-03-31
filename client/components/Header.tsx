@@ -5,13 +5,14 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Link as MuiLink } from "@mui/material";
+import { Link as MuiLink, Toolbar } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import Grid from "@mui/material/Grid";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import CloseIcon from "@mui/icons-material/Close";
@@ -94,6 +95,33 @@ export const Header = () => {
 		}
 	};
 
+	const BarSearch = () => {
+		return <>
+			<MuiLink href="#" onClick={handleClickSearchOpen}>
+				<SearchIcon sx={{ fontSize: button_size, display: { xs: "none", sm: "inherit" } }} />
+			</MuiLink>
+			<Dialog open={searchOpen} onClose={handleSearchClose}>
+				<DialogTitle>Search.</DialogTitle>
+				<DialogContent>
+					<TextField
+						id={"search"}
+						label=""
+						type="text"
+						variant="standard"
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleSearchClose}>
+						<CloseIcon />
+					</Button>
+					<Button onClick={searchAndClose}>
+						<SearchIcon />
+					</Button>
+				</DialogActions>
+			</Dialog>
+		</>;
+	}
+
 	return (
 		<>
 			<Head>
@@ -102,8 +130,8 @@ export const Header = () => {
 			<Backdrop open={progress}>
 				<CircularProgress />
 			</Backdrop>
-			<Grid container textAlign="center" spacing={1} className="header">
-				<Grid item xs={logo_width}>
+			<AppBar position="fixed" color="default">
+				<Toolbar variant="regular" sx={{ display: "flex", textAlign: "center" }}>
 					<MuiLink
 						className="site-title"
 						component={Link}
@@ -111,15 +139,16 @@ export const Header = () => {
 						href="/"
 					>
 						<Image
-							src="/logo.png"
+							src={isLight ? "/logo_light.png" : "/logo_dark.png"}
 							alt="leaf"
 							height={LOGO_SIZE}
 							width={LOGO_SIZE}
 						/>
 					</MuiLink>
-				</Grid>
-				<Grid item xs={input_width}>
 					<form onSubmit={createNew}>
+						&nbsp;
+						&nbsp;
+						&nbsp;
 						<TextField
 							id={"add_new"}
 							type="url"
@@ -127,89 +156,68 @@ export const Header = () => {
 							onChange={(e) => setUrl(() => e.target.value)}
 							placeholder="Add URL"
 							size="small"
-							fullWidth
 							variant="standard"
 						/>
 					</form>
-				</Grid>
-				<Grid item xs={button_width}>
-					<MuiLink href="#" onClick={handleClickSearchOpen}>
-						<SearchIcon sx={{ fontSize: button_size }} />
-					</MuiLink>
-					<Dialog open={searchOpen} onClose={handleSearchClose}>
-						<DialogTitle>Search.</DialogTitle>
-						<DialogContent>
-							<TextField
-								margin="dense"
-								id={"search"}
-								label=""
-								type="text"
-								fullWidth
-								variant="standard"
-							/>
-						</DialogContent>
-						<DialogActions>
-							<Button onClick={handleSearchClose}>
-								<CloseIcon />
-							</Button>
-							<Button onClick={searchAndClose}>
-								<SearchIcon />
-							</Button>
-						</DialogActions>
-					</Dialog>
-				</Grid>
-				<Grid item xs={button_width}>
-					<Button
-						id="basic-button"
-						aria-controls={open ? "basic-menu" : undefined}
-						aria-haspopup="true"
-						aria-expanded={open ? "true" : undefined}
-						onClick={handleClick}
-					>
-						<MenuIcon sx={{ fontSize: button_size }} />
-					</Button>
-					<Menu
-						id="basic-menu"
-						anchorEl={anchorEl}
-						open={open}
-						onClose={handleClose}
-						MenuListProps={{
-							"aria-labelledby": "basic-button",
-						}}
-					>
-						<MenuItem>
-							<MuiLink underline="none" component={Link} href="/">
-								<ArrowBackIosNewIcon sx={{ fontSize: button_size }} /> Top
-							</MuiLink>
-						</MenuItem>
-						<MenuItem>
-							<MuiLink underline="none" component={Link} href="/liked">
-								<FavoriteIcon sx={{ fontSize: button_size }} /> Liked
-							</MuiLink>
-						</MenuItem>
-						<MenuItem>
-							<MuiLink underline="none" component={Link} href="/archived">
-								<ArchiveIcon sx={{ fontSize: button_size }} /> Archived
-							</MuiLink>
-						</MenuItem>
-						<MenuItem>
-							<MuiLink underline="none" href="#" onClick={toggleTheme}>
-								{isLight ? (
-									<DarkModeIcon sx={{ fontSize: button_size }} />
-								) : (
-									<LightModeIcon sx={{ fontSize: button_size }} />
-								)}{" "}
-								Change theme
-							</MuiLink>
-						</MenuItem>
-						<MenuItem>
-							<MuiLink underline="none" href="#" onClick={() => signOut()}>
-								<LogoutIcon sx={{ fontSize: button_size }} /> Log out
-							</MuiLink>
-						</MenuItem>
-					</Menu>
-				</Grid>
-			</Grid>
+					<div style={{ marginLeft: "auto" }}>
+						<BarSearch />
+						<Button
+							id="basic-button"
+							aria-controls={open ? "basic-menu" : undefined}
+							aria-haspopup="true"
+							aria-expanded={open ? "true" : undefined}
+							onClick={(e) => handleClick(e)}
+						>
+							<MenuIcon sx={{ fontSize: button_size }} />
+						</Button>
+						<Menu
+							id="basic-menu"
+							anchorEl={anchorEl}
+							open={open}
+							onClose={handleClose}
+							MenuListProps={{
+								"aria-labelledby": "basic-button",
+							}}
+						>
+							<MenuItem>
+								<MuiLink underline="none" component={Link} href="/">
+									<ArrowBackIosNewIcon sx={{ fontSize: button_size }} /> Top
+								</MuiLink>
+							</MenuItem>
+							<MenuItem sx={{ display: { xs: "inherit", sm: "none" } }}>
+								<MuiLink underline="none" href="#" onClick={handleClickSearchOpen}>
+									<SearchIcon sx={{ fontSize: button_size, }} /> Search
+								</MuiLink>
+							</MenuItem>
+							<MenuItem>
+								<MuiLink underline="none" component={Link} href="/liked">
+									<FavoriteIcon sx={{ fontSize: button_size }} /> Liked
+								</MuiLink>
+							</MenuItem>
+							<MenuItem>
+								<MuiLink underline="none" component={Link} href="/archived">
+									<ArchiveIcon sx={{ fontSize: button_size }} /> Archived
+								</MuiLink>
+							</MenuItem>
+							<MenuItem>
+								<MuiLink underline="none" href="#" onClick={toggleTheme}>
+									{isLight ? (
+										<DarkModeIcon sx={{ fontSize: button_size }} />
+									) : (
+										<LightModeIcon sx={{ fontSize: button_size }} />
+									)}{" "}
+									Change theme
+								</MuiLink>
+							</MenuItem>
+							<MenuItem>
+								<MuiLink underline="none" href="#" onClick={() => signOut()}>
+									<LogoutIcon sx={{ fontSize: button_size }} /> Log out
+								</MuiLink>
+							</MenuItem>
+						</Menu>
+					</div>
+				</Toolbar>
+			</AppBar>
 		</>
 	);
 };

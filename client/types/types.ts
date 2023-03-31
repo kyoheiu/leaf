@@ -32,6 +32,7 @@ export interface ArticleContent {
   archived: boolean;
   liked: boolean;
   timestamp: string;
+  tags: string[];
 }
 
 export enum ElementKind {
@@ -47,5 +48,6 @@ export interface ElementProps {
 }
 
 export interface TagsProps {
+  id: string,
   tags: string[];
 }

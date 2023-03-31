@@ -267,7 +267,6 @@ export default function ArticleElement(props: ElementProps) {
 				<Button onClick={() => deleteArticleContent(article.data.id)}>
 					<DeleteForeverIcon sx={{ fontSize: 20 }} />
 				</Button>
-				<Tags tags={article.data.tags} />
 			</div>
 		</div>
 	);

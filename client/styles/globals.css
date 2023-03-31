@@ -19,7 +19,7 @@ video {
 }
 
 .articles-list {
-    padding-top: 30px;
+    padding-top: 60px;
 }
 
 .article-element {
@@ -31,7 +31,7 @@ video {
 }
 
 .element-title {
-    font-size: 1.3em;
+    font-size: 1.35em;
     font-family: var(--lora-font);
     line-height: 1.3;
 }
@@ -50,9 +50,10 @@ video {
     font-size: 1.5em;
     font-family: var(--lora-font);
     font-weight: bold;
-    line-height: 1.3;
+    line-height: 1.2;
     width: 75%;
     margin: auto;
+    margin-top: 72px;
     text-align: center;
 }
 
@@ -71,8 +72,8 @@ video {
 }
 
 .article-divider {
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
 }
 
 h1 {

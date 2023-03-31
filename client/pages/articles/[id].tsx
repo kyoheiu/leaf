@@ -1,6 +1,6 @@
-import { Link as MuiLink } from "@mui/material";
+import { Link as MuiLink, Toolbar } from "@mui/material";
 import { ArticleContent } from "../../types/types";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
@@ -16,6 +16,11 @@ import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
 import Image from "next/image";
 import { LOGO_SIZE } from "../../components/Header";
+import AppBar from "@mui/material/AppBar";
+import Grid from "@mui/material/Grid";
+import { ColorMode } from "../../context/ColorMode";
+import LinkIcon from '@mui/icons-material/Link';
+import toast from "react-simple-toasts";
 
 type Data = ArticleContent;
 
@@ -35,6 +40,7 @@ export default function Article({
 	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { data: session, status } = useSession();
+	const { isLight } = useContext(ColorMode);
 
 	const [articleContent, setArticleContent] = useState<ArticleContent>(data);
 
@@ -145,37 +151,42 @@ export default function Article({
 		return { __html: articleContent.html };
 	};
 
+	const copyToClipboard = async () => {
+		await navigator.clipboard.writeText(articleContent.url);
+		toast("URL copied to clipboard.");
+	}
+
 	const Buttons = ({ data }: { data: ArticleContent }) => {
 		return (
-			<nav>
-				<ul className="article-buttons">
-					<li className="article-button">
-						<Button onClick={toggleLiked}>
-							{data.liked ? (
-								<FavoriteIcon sx={{ fontSize: 20 }} />
-							) : (
-								<FavoriteBorderIcon sx={{ fontSize: 20 }} />
-							)}
-						</Button>
-					</li>
-					<li className="article-button">
-						<Button onClick={toggleArchived}>
-							{data.archived ? (
-								<UnarchiveIcon sx={{ fontSize: 20 }} />
-							) : (
-								<ArchiveIcon sx={{ fontSize: 20 }} />
-							)}
-						</Button>
-					</li>
-					<li className="article-button">
-						<Button onClick={deleteArticleItself}>
-							<DeleteForeverIcon sx={{ fontSize: 20 }} />
-						</Button>
-					</li>
-				</ul>
-			</nav>
+			<>
+				<Button onClick={copyToClipboard}>
+					<LinkIcon sx={{ fontSize: 20 }} />
+				</Button>
+				<Button onClick={toggleLiked}>
+					{data.liked ? (
+						<FavoriteIcon sx={{ fontSize: 20 }} />
+					) : (
+						<FavoriteBorderIcon sx={{ fontSize: 20 }} />
+					)}
+				</Button>
+				<Button onClick={toggleArchived}>
+					{data.archived ? (
+						<UnarchiveIcon sx={{ fontSize: 20 }} />
+					) : (
+						<ArchiveIcon sx={{ fontSize: 20 }} />
+					)}
+				</Button>
+				<Button onClick={deleteArticleItself}>
+					<DeleteForeverIcon sx={{ fontSize: 20 }} />
+				</Button>
+			</>
 		);
 	};
+
+	const logo_width = 1;
+	const button_width = 0.8;
+	const input_width = 12 - logo_width - button_width * 2;
+	const button_size = 18;
 
 	return session ? (
 		<>
@@ -184,6 +195,33 @@ export default function Article({
 					{articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
 				</title>
 			</Head>
+			<AppBar position="fixed" color="default">
+				<Toolbar sx={{ display: "flex" }} variant="dense">
+					<MuiLink
+						className="site-title"
+						component={Link}
+						underline="none"
+						href="/"
+					>
+						<Image
+							src={isLight ? "/logo_light.png" : "/logo_dark.png"}
+							alt="leaf"
+							height={LOGO_SIZE}
+							width={LOGO_SIZE}
+						/>
+					</MuiLink>
+					<div style={{ marginLeft: "auto" }}>
+						<Buttons data={articleContent} />
+					</div>
+				</Toolbar>
+			</AppBar>
+			<div className="article-title">{articleContent.title}</div>
+			<div className="article-url">
+				<Link href={articleContent.url}>{articleContent.url}</Link>
+			</div>
+			<Divider className="article-divider" />
+			<div dangerouslySetInnerHTML={create_markup()} />
+			<Divider className="article-divider" />
 			<MuiLink
 				className="site-title"
 				component={Link}
@@ -191,25 +229,12 @@ export default function Article({
 				href="/"
 			>
 				<Image
-					src="/logo.png"
+					src={isLight ? "/logo_light.png" : "/logo_dark.png"}
 					alt="leaf"
-					style={{ margin: 0 }}
 					height={LOGO_SIZE}
 					width={LOGO_SIZE}
 				/>
 			</MuiLink>
-			<div className="article-title">{articleContent.title}</div>
-			<div className="article-url">
-				<Link href={articleContent.url}>{articleContent.url}</Link>
-			</div>
-			<Buttons data={articleContent} />
-			<Divider className="article-divider" />
-			<div dangerouslySetInnerHTML={create_markup()} />
-			<Divider className="article-divider" />
-			<div className="article-url-bottom">
-				<Link href={articleContent.url}>{articleContent.url}</Link>
-			</div>
-			<Buttons data={articleContent} />
 		</>
 	) : (
 		<Login />

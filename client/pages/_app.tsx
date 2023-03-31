@@ -35,6 +35,25 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 				main: "#777",
 			},
 		},
+		components: {
+			MuiToolbar: {
+				styleOverrides: {
+					dense: {
+						height: 45,
+						minHeight: 45
+					}
+				}
+			}
+		},
+		breakpoints: {
+			values: {
+				xs: 0,
+				sm: 600,
+				md: 768,
+				lg: 1025,
+				xl: 1536,
+			},
+		}
 	});
 
 	const dark = createTheme({
@@ -50,6 +69,25 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 				primary: "#ddd",
 			},
 		},
+		components: {
+			MuiToolbar: {
+				styleOverrides: {
+					dense: {
+						height: 45,
+						minHeight: 45
+					}
+				}
+			}
+		},
+		breakpoints: {
+			values: {
+				xs: 0,
+				sm: 600,
+				md: 768,
+				lg: 1025,
+				xl: 1536,
+			},
+		}
 	});
 
 	return (<>
