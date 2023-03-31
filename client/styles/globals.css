@@ -73,7 +73,7 @@ video {
 }
 
 .article-divider {
-    margin: 2em;
+    margin: 2em !important;
 }
 
 h1 {
