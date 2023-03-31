@@ -26,3 +26,9 @@ export const Footer = (isLast: boolean, reload: () => Promise<void>) => {
 
 	return <footer>{isLast ? footerImage(isLight) : syncButton(reload)}</footer>;
 };
+
+export const SearchFooter = () => {
+	const { isLight } = useContext(ColorMode);
+
+	return (<footer>{footerImage(isLight)}</footer>);
+}
