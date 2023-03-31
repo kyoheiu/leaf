@@ -127,7 +127,7 @@ export const Header = () => {
 				<CircularProgress />
 			</Backdrop>
 			<AppBar elevation={0} position="fixed" color="default">
-				<Toolbar variant="regular" sx={{ display: "flex", textAlign: "center" }}>
+				<Toolbar sx={{ display: "flex", textAlign: "center" }}>
 					<MuiLink
 						className="site-title"
 						component={Link}

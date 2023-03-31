@@ -176,7 +176,7 @@ export default function Article({
 				</title>
 			</Head>
 			<AppBar elevation={0} position="fixed" color="default">
-				<Toolbar sx={{ display: "flex" }} variant="dense">
+				<Toolbar sx={{ display: "flex" }}>
 					<MuiLink
 						className="site-title"
 						component={Link}
