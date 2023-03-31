@@ -48,13 +48,13 @@ video {
 }
 
 .article-title {
-    font-size: 1.5em;
+    font-size: 1.7em;
     font-family: var(--lora-font);
     font-weight: bold;
     line-height: 1.2;
     width: 75%;
     margin: auto;
-    margin-top: 72px;
+    margin-top: 80px;
     text-align: center;
 }
 
@@ -73,8 +73,7 @@ video {
 }
 
 .article-divider {
-    margin-top: 1.2em;
-    margin-bottom: 1.2em;
+    margin: 2em;
 }
 
 h1 {
