@@ -224,6 +224,20 @@ impl Core {
             }
             true
         })?;
+
+        //get tags
+        let mut tags = vec![];
+        self.db.iterate(state_list_tags(&id), |pairs| {
+            for &(column, value) in pairs.iter() {
+                match column {
+                    "tag" => tags.push(value.unwrap().to_owned()),
+                    _ => {}
+                }
+            }
+            true
+        })?;
+        article.tags = tags;
+
         Ok(Json(article))
     }
 
