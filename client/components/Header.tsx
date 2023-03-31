@@ -126,7 +126,7 @@ export const Header = () => {
 			<Backdrop open={progress}>
 				<CircularProgress />
 			</Backdrop>
-			<AppBar position="fixed" color="default">
+			<AppBar elevation={0} position="fixed" color="default">
 				<Toolbar variant="regular" sx={{ display: "flex", textAlign: "center" }}>
 					<MuiLink
 						className="site-title"
