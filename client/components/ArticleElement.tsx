@@ -18,6 +18,11 @@ import LinkButton from "../components/LinkButton";
 export default function ArticleElement(props: ElementProps) {
 	const [article, setArticle] = useState(props.element);
 	const kind = props.kind;
+
+	const trimUrl = (url: string) => {
+		return url.split("/").slice(2, 3).join("/");
+	}
+
 	const toggleLiked = async (id: string) => {
 		const res = await fetch(`/api/articles/${id}?toggle=liked`, {
 			method: "POST",
@@ -118,7 +123,7 @@ export default function ArticleElement(props: ElementProps) {
 				</Grid>
 			</Grid>
 			<div className="element-url">
-				{`${article.data.url.slice(0, 27)}...`}
+				{trimUrl(article.data.url)}
 				<LinkButton url={article.data.url} />
 			</div>
 			<Grid container spacing={2}>
