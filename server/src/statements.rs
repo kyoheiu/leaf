@@ -1,4 +1,5 @@
-const CHUNK: &str = "11";
+const PAGINATION: usize = 20;
+const CHUNK: &str = "21";
 
 pub fn state_create_articles_table() -> String {
     "
@@ -97,56 +98,60 @@ pub fn state_list_tag(name: &str) -> String {
     )
 }
 
-pub fn state_reload(id: &str) -> String {
+pub fn state_reload(page: usize) -> String {
+    let skip = (page - 1) * PAGINATION;
     format!(
         "
          SELECT *
          FROM articles
-         WHERE id < '{}' AND archived = 0
+         WHERE archived = 0
          ORDER BY id DESC
-         LIMIT {}
+         LIMIT {} OFFSET {}
         ",
-        id, CHUNK
+        CHUNK, skip
     )
 }
 
-pub fn state_reload_archived(id: &str) -> String {
+pub fn state_reload_archived(page: usize) -> String {
+    let skip = (page - 1) * PAGINATION;
     format!(
         "
          SELECT *
          FROM articles
-         WHERE id < '{}' AND archived = 1
+         WHERE archived = 1
          ORDER BY id DESC
-         LIMIT {}
+         LIMIT {} OFFSET {}
         ",
-        id, CHUNK
+        CHUNK, skip
     )
 }
 
-pub fn state_reload_liked(id: &str) -> String {
+pub fn state_reload_liked(page: usize) -> String {
+    let skip = (page - 1) * PAGINATION;
     format!(
         "
          SELECT *
          FROM articles
-         WHERE id < '{}' AND liked = 1
+         WHERE liked = 1
          ORDER BY id DESC
-         LIMIT {}
+         LIMIT {} OFFSET {}
         ",
-        id, CHUNK
+        CHUNK, skip
     )
 }
 
-pub fn state_reload_list_tag(id: &str, name: &str) -> String {
+pub fn state_reload_list_tag(name: &str, page: usize) -> String {
+    let skip = (page - 1) * PAGINATION;
     format!(
         "
          SELECT *
          FROM articles
          INNER JOIN tags ON articles.id = tags.ulid
-         WHERE id < '{}' AND tags.tag = '{}'
+         WHERE tags.tag = '{}'
          ORDER BY id DESC
-         LIMIT {}
+         LIMIT {} OFFSET {}
         ",
-        id, name, CHUNK
+        name, CHUNK, skip
     )
 }
 

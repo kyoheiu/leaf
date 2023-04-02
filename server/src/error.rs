@@ -1,3 +1,5 @@
+use std::num::ParseIntError;
+
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
@@ -6,6 +8,7 @@ use axum::{
 #[derive(Debug)]
 pub enum Error {
     Io(String),
+    ParseInt(String),
     Sqlite(String),
     Ammonia(String),
     Tantivy(String),
@@ -19,6 +22,7 @@ impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let printable = match self {
             Error::Io(s) => s,
+            Error::ParseInt(s) => s,
             Error::Sqlite(s) => s,
             Error::Ammonia(s) => s,
             Error::Tantivy(s) => s,
@@ -32,6 +36,12 @@ impl std::fmt::Display for Error {
 impl From<std::io::Error> for Error {
     fn from(err: std::io::Error) -> Self {
         Error::Io(err.to_string())
+    }
+}
+
+impl From<ParseIntError> for Error {
+    fn from(err: ParseIntError) -> Self {
+        Error::ParseInt(err.to_string())
     }
 }
 
@@ -69,6 +79,7 @@ impl IntoResponse for Error {
     fn into_response(self) -> Response {
         let body = match self {
             Error::Io(s) => s,
+            Error::ParseInt(s) => s,
             Error::Sqlite(s) => s,
             Error::Ammonia(s) => s,
             Error::Tantivy(s) => s,

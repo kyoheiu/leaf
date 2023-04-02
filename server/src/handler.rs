@@ -25,10 +25,11 @@ pub async fn list_up(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Result<Json<Articles>, Error> {
-    if param.contains_key("reload") {
-        let id = param.get("reload").unwrap();
-        info!("RELOAD: from id {}", id);
-        core.list_up(&state_reload(&id)).await
+    if param.contains_key("page") {
+        let page = param.get("page").unwrap();
+        let page: usize = page.parse()?;
+        info!("RELOAD: page {}", page);
+        core.list_up(&state_reload(page)).await
     } else {
         core.list_up(&state_list_up()).await
     }
@@ -39,10 +40,11 @@ pub async fn list_up_archived(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Result<Json<Articles>, Error> {
-    if param.contains_key("reload") {
-        let id = param.get("reload").unwrap();
-        info!("RELOAD ARCHIVED: from id {}", id);
-        core.list_up(&state_reload_archived(&id)).await
+    if param.contains_key("page") {
+        let page = param.get("page").unwrap();
+        let page: usize = page.parse()?;
+        info!("RELOAD ACHIVED: page {}", page);
+        core.list_up(&state_reload_archived(page)).await
     } else {
         core.list_up(&state_list_up_archived()).await
     }
@@ -53,10 +55,11 @@ pub async fn list_up_liked(
     State(core): State<Arc<Core>>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Result<Json<Articles>, Error> {
-    if param.contains_key("reload") {
-        let id = param.get("reload").unwrap();
-        info!("RELOAD LIKED: from id {}", id);
-        core.list_up(&state_reload_liked(&id)).await
+    if param.contains_key("page") {
+        let page = param.get("page").unwrap();
+        let page: usize = page.parse()?;
+        info!("RELOAD ACHIVED: page {}", page);
+        core.list_up(&state_reload_liked(page)).await
     } else {
         core.list_up(&state_list_up_liked()).await
     }
@@ -133,10 +136,11 @@ pub async fn list_up_tag(
     Path(name): Path<String>,
     Query(param): Query<BTreeMap<String, String>>,
 ) -> Result<Json<Articles>, Error> {
-    if param.contains_key("reload") {
-        let id = param.get("reload").unwrap();
-        info!("RELOAD TAGGED: from id {}", id);
-        core.list_up(&state_reload_list_tag(&id, &name.to_lowercase()))
+    if param.contains_key("page") {
+        let page = param.get("page").unwrap();
+        let page: usize = page.parse()?;
+        info!("RELOAD TAGGED: page {}", page);
+        core.list_up(&state_reload_list_tag(&name.to_lowercase(), page))
             .await
     } else {
         core.list_up(&state_list_tag(&name.to_lowercase())).await
