@@ -172,7 +172,6 @@ impl Core {
 
         let parse_result = readability(&content).unwrap();
         let title = parse_result.metadata.title.replace('\'', "''");
-        let plain = parse_result.plain.replace('\'', "''");
         let cover = parse_result.metadata.cover.unwrap_or_default();
 
         let mut cleaner = ammonia::Builder::default();
@@ -180,17 +179,15 @@ impl Core {
         let sanitized = cleaner.clean(&parse_result.html).to_string();
         let html = sanitized.replace('\'', "''");
         // TODO!
-
-        let beginning = create_beginning(&plain);
+        let beginning = create_beginning(&parse_result.plain);
 
         info!("{}: {} ({})", ulid, title, url);
 
-        self.db.execute(state_add(
-            &ulid, &url, &title, &html, &cover, &plain, &beginning,
-        ))?;
+        self.db
+            .execute(state_add(&ulid, &url, &title, &html, &cover, &beginning))?;
 
         //add to schema
-        self.add_to_index(&ulid, &title, &plain)?;
+        self.add_to_index(&ulid, &title, &parse_result.plain)?;
         Ok(())
     }
 
@@ -211,7 +208,6 @@ impl Core {
                     "url" => article.url = value.unwrap().to_owned(),
                     "title" => article.title = value.unwrap().to_owned(),
                     "html" => article.html = value.unwrap().to_owned(),
-                    "plain" => article.plain = value.unwrap().to_owned(),
                     "position" => article.position = value.unwrap().parse().unwrap(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
                     "archived" => {

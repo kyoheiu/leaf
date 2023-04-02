@@ -2,15 +2,6 @@ use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Payload {
-    pub url: String,
-    pub html: String,
-    pub title: String,
-    pub plain: String,
-    pub cover: Option<String>,
-}
-
 #[derive(Debug, Serialize)]
 pub struct Articles {
     pub data: Vec<ArticleData>,
@@ -54,7 +45,6 @@ pub struct ArticleContent {
     pub url: String,
     pub title: String,
     pub html: String,
-    pub plain: String,
     pub position: u16,
     pub progress: u16,
     pub archived: bool,
@@ -70,7 +60,6 @@ impl ArticleContent {
             url: "".to_owned(),
             title: "".to_owned(),
             html: "".to_owned(),
-            plain: "".to_owned(),
             position: 0,
             progress: 0,
             archived: false,

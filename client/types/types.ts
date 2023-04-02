@@ -26,7 +26,6 @@ export interface ArticleContent {
   url: string;
   title: string;
   html: string;
-  plain: string;
   position: number;
   progress: number;
   archived: boolean;
