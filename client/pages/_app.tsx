@@ -36,11 +36,19 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 			},
 		},
 		components: {
+			MuiAppBar: {
+				styleOverrides: {
+					root: {
+						background: "#fff",
+						borderBottom: "solid #ccc 1px"
+					}
+				}
+			},
 			MuiToolbar: {
 				styleOverrides: {
 					dense: {
 						height: 45,
-						minHeight: 45
+						minHeight: 45,
 					}
 				}
 			}
