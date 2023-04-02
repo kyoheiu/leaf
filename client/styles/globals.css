@@ -28,13 +28,19 @@ video {
 
 .element-timestamp {
     font-size: 0.8em;
+    color: #444;
 }
 
 .element-title {
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-family: var(--lora-font), serif;
     font-weight: 500;
     line-height: 1.3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
 }
 
 .element-url {
@@ -44,7 +50,15 @@ video {
 
 .element-beginning {
     font-size: 0.9em;
+    color: #444;
+    font-family: --var(--opensans-font);
+    font-weight: 300;
     margin: 5px 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
 }
 
 .article-title {
