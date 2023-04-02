@@ -45,7 +45,7 @@ export default function Archived({
 	return (
 		<>
 			<Header />
-			<Stack className="articles-list" spacing={5}>
+			<Stack className="articles-list" spacing={6}>
 				{PageInfo("/archived")}
 				{wrapped.map((e, index) => {
 					return (

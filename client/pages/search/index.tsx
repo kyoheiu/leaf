@@ -27,7 +27,7 @@ export default function Searched(props: Data) {
 	return (
 		<>
 			<Header />
-			<Stack className="articles-list" spacing={5}>
+			<Stack className="articles-list" spacing={6}>
 				{PageInfo(`QUERY: ${props.query} | RESULTS: ${props.data.length}`)}
 				{wrapped.map((e, index) => {
 					return (

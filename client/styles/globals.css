@@ -31,15 +31,15 @@ video {
 }
 
 .element-title {
-    font-size: 1.35em;
+    font-size: 1.3em;
     font-family: var(--lora-font), serif;
     font-weight: 500;
     line-height: 1.3;
 }
 
 .element-url {
-    font-size: 0.9em;
-    margin: 5px 0;
+    font-size: 0.8em;
+    margin: 3px 0;
 }
 
 .element-beginning {

@@ -109,19 +109,17 @@ export default function ArticleElement(props: ElementProps) {
 			<div className="element-timestamp">
 				{article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
 			</div>
-			<Grid container>
-				<Grid item xs={9} className="element-title">
-					<MuiLink
-						component={Link}
-						color="primary"
-						underline="hover"
-						href={`/articles/${article.data.id}`}
-						scroll={false}
-					>
-						{article.data.title}
-					</MuiLink>
-				</Grid>
-			</Grid>
+			<div className="element-title">
+				<MuiLink
+					component={Link}
+					color="primary"
+					underline="hover"
+					href={`/articles/${article.data.id}`}
+					scroll={false}
+				>
+					{article.data.title}
+				</MuiLink>
+			</div>
 			<div className="element-url">
 				{trimUrl(article.data.url)}
 				<LinkButton url={article.data.url} />
@@ -134,7 +132,7 @@ export default function ArticleElement(props: ElementProps) {
 					{article.data.cover !== "" && (
 						<Avatar
 							className="og"
-							sx={{ width: 1, height: 100 }}
+							sx={{ width: 1, height: 90 }}
 							variant="rounded"
 							src={article.data.cover}
 						/>

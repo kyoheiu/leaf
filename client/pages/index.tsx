@@ -40,7 +40,7 @@ export default function Home({
 		return (
 			<>
 				<Header />
-				<Stack className="articles-list" spacing={5}>
+				<Stack className="articles-list" spacing={6}>
 					<div>Add new article from the top form!</div>
 					{footerImage()}
 				</Stack>
@@ -56,7 +56,7 @@ export default function Home({
 	return (
 		<>
 			<Header />
-			<Stack className="articles-list" spacing={5}>
+			<Stack className="articles-list" spacing={6}>
 				{wrapped.map((e, index) => {
 					return (
 						<ArticleElement

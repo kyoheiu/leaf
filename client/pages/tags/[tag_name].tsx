@@ -51,7 +51,7 @@ export default function Tagged({
 	return (
 		<>
 			<Header />
-			<Stack className="articles-list" spacing={5}>
+			<Stack className="articles-list" spacing={6}>
 				{PageInfo(`TAG: ${tag_name}`)}
 				{wrapped.map((e, index) => {
 					return (

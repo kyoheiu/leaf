@@ -45,7 +45,7 @@ export default function Liked({
 	return (
 		<>
 			<Header />
-			<Stack className="articles-list" spacing={5}>
+			<Stack className="articles-list" spacing={6}>
 				{PageInfo("/liked")}
 				{wrapped.map((e, index) => {
 					return (
