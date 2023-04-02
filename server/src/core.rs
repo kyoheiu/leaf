@@ -25,7 +25,7 @@ const CHROME_ARGS: [&str; 4] = [
     "--no-sandbox",
 ];
 const BEGINNING_LENGTH: usize = 100;
-const CHUNK_LENGTH: usize = 11;
+const CHUNK_LENGTH: usize = 21;
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
