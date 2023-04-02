@@ -52,49 +52,47 @@ export default function Tags(data: TagsProps) {
 
 	return (
 		<>
-			<div className="article-tags">
-				{tags.length !== 0 &&
-					tags.map((x, index) => {
-						{
-							return (
-								<span key={`tag-element${index.toString()}`}>
-									<Chip
-										label={x}
-										id={`${data.id}_delete_tag`}
-										onClick={() => navigateToTag(x)}
-										onDelete={() => deleteTag(data.id, x)}
-									/>
-									&nbsp;
-								</span>
-							);
-						}
-					})}
-				&nbsp;
-				<Chip
-					label={tags.length ? "+" : "Add new tag"}
-					onClick={handleClickOpen}
-				/>
-				<Dialog open={open} onClose={handleClose}>
-					<DialogTitle>Add new tag.</DialogTitle>
-					<DialogContent>
-						<TextField
-							autoFocus
-							margin="dense"
-							id={`${data.id}_add_tag`}
-							label="New tag name"
-							type="text"
-							fullWidth
-							variant="standard"
-						/>
-					</DialogContent>
-					<DialogActions>
-						<Button onClick={handleClose}>Cancel</Button>
-						<Button onClick={() => submitAndClose(data.id)}>
-							Add
-						</Button>
-					</DialogActions>
-				</Dialog>
-			</div>
+			{tags.length !== 0 &&
+				tags.map((x, index) => {
+					{
+						return (
+							<span key={`tag-element${index.toString()}`}>
+								<Chip
+									label={x}
+									id={`${data.id}_delete_tag`}
+									onClick={() => navigateToTag(x)}
+									onDelete={() => deleteTag(data.id, x)}
+								/>
+								&nbsp;
+							</span>
+						);
+					}
+				})}
+			&nbsp;
+			<Chip
+				label={tags.length ? "+" : "Add new tag"}
+				onClick={handleClickOpen}
+			/>
+			<Dialog open={open} onClose={handleClose}>
+				<DialogTitle>Add new tag.</DialogTitle>
+				<DialogContent>
+					<TextField
+						autoFocus
+						margin="dense"
+						id={`${data.id}_add_tag`}
+						label="New tag name"
+						type="text"
+						fullWidth
+						variant="standard"
+					/>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleClose}>Cancel</Button>
+					<Button onClick={() => submitAndClose(data.id)}>
+						Add
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</>
 	);
 }
