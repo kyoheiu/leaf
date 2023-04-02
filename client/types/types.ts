@@ -42,6 +42,13 @@ export enum ElementKind {
   Searched,
 }
 
+export enum PaginationKind {
+  Top,
+  Archived,
+  Liked,
+  Tags
+}
+
 export interface ElementProps {
   element: WrappedData;
   kind: ElementKind;

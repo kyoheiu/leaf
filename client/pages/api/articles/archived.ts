@@ -8,9 +8,9 @@ export const getArchivedArticles = async () => {
   return data;
 };
 
-const reloadArchivedArticles = async (id: string) => {
+export const reloadArchivedArticles = async (page: string) => {
   const response = await fetch(
-    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/archived?reload=${id}`,
+    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/archived?page=${page}`,
   );
   const data = await response.json();
   return data;

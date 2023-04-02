@@ -1,46 +1,41 @@
 import {
-	ArticleData,
 	Articles,
 	ElementKind,
 	WrappedData,
+	PaginationKind
 } from "../../types/types";
 import ArticleElement from "../../components/ArticleElement";
 import { Header } from "../../components/Header";
-import { Footer } from "../../components/Footer";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import { useState } from "react";
 import Stack from "@mui/material/Stack";
-import { getArchivedArticles } from "../api/articles/archived";
+import { getArchivedArticles, reloadArchivedArticles } from "../api/articles/archived";
 import { PageInfo } from "../../components/PageInfo";
+import { useRouter } from "next/router";
+import { Pagination } from "../../components/Pagination";
 
 type Data = Articles;
 
 export const getServerSideProps: GetServerSideProps<{
 	data: Data;
-}> = async () => {
-	const data = await getArchivedArticles();
-	return { props: { data } };
+}> = async (context) => {
+	if (context.query.page) {
+		const data = await reloadArchivedArticles(context.query.page as string)
+		return { props: { data } };
+	} else {
+		const data = await getArchivedArticles();
+		return { props: { data } };
+	}
 };
 
 export default function Archived({
 	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-	const [list, setList] = useState<ArticleData[]>(data.data ?? []);
-	const [isLast, setIsLast] = useState(data.is_last);
+	const router = useRouter();
+	const page = router.query.page;
 
-	const reload = async () => {
-		if (list.length !== 0) {
-			const res = await fetch(
-				`/api/articles/archived?reload=${list.slice(-1)[0].id}`,
-			);
-			const j = await res.json();
-			if (j.is_last) {
-				setIsLast(true);
-			}
-			setList((arr) => arr.concat(j.data));
-		}
-	};
+	const list = data.data;
+	const isLast = data.is_last;
 
 	const wrapped: WrappedData[] = list.map((x) => ({
 		visible: true,
@@ -61,7 +56,7 @@ export default function Archived({
 						/>
 					);
 				})}
-				{Footer(isLast, reload)}
+				{Pagination(page, isLast, PaginationKind.Archived)}
 			</Stack>
 		</>
 	);

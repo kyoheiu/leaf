@@ -8,9 +8,9 @@ export const getArticles = async () => {
 	return data;
 };
 
-const reloadArticles = async (id: string) => {
+export const reloadArticles = async (page: string) => {
 	const response = await fetch(
-		`http://${process.env.NEXT_PUBLIC_HOST}:8000/articles?reload=${id}`,
+		`http://${process.env.NEXT_PUBLIC_HOST}:8000/articles?page=${page}`,
 	);
 	const data = await response.json();
 	return data;
@@ -29,11 +29,11 @@ export default async function handler(
 ) {
 	if (req.method === "GET") {
 		const query = req.query;
-		if (!query.reload) {
+		if (!query.page) {
 			const data = await getArticles();
 			return res.json(data);
 		} else {
-			const data = await reloadArticles(query.reload as string);
+			const data = await reloadArticles(query.page as string);
 			return res.json(data);
 		}
 	} else if (req.method === "POST") {
