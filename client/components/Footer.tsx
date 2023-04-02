@@ -5,7 +5,8 @@ import { LOGO_SIZE } from "./Header";
 import { useContext } from "react";
 import { ColorMode } from "../context/ColorMode";
 
-export const footerImage = (isLight: boolean) => {
+export const footerImage = () => {
+	const { isLight } = useContext(ColorMode);
 	return (
 		isLight ?
 			<Image src="/logo_light.png" alt="leaf" height={LOGO_SIZE} width={LOGO_SIZE} /> :
@@ -22,13 +23,9 @@ const syncButton = (reload: () => Promise<void>) => {
 };
 
 export const Footer = (isLast: boolean, reload: () => Promise<void>) => {
-	const { isLight } = useContext(ColorMode);
-
-	return <footer>{isLast ? footerImage(isLight) : syncButton(reload)}</footer>;
+	return <footer>{isLast ? footerImage() : syncButton(reload)}</footer>;
 };
 
 export const SearchFooter = () => {
-	const { isLight } = useContext(ColorMode);
-
-	return (<footer>{footerImage(isLight)}</footer>);
+	return (<footer>{footerImage()}</footer>);
 }
