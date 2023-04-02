@@ -6,7 +6,7 @@ import React from "react";
 import { ColorMode } from "../context/ColorMode";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { JetBrains_Mono, Lora, Open_Sans } from '@next/font/google';
+import { JetBrains_Mono, Lora, Open_Sans } from 'next/font/google';
 import "../styles/globals.css";
 
 const jetBrains = JetBrains_Mono({ subsets: ['latin'] });
