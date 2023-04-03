@@ -179,7 +179,7 @@ impl Core {
         let sanitized = cleaner.clean(&parse_result.html).to_string();
         let html = sanitized.replace('\'', "''");
         // TODO!
-        let beginning = create_beginning(&parse_result.plain);
+        let beginning = create_beginning(&parse_result.plain).replace('\'', "''");
 
         info!("{}: {} ({})", ulid, title, url);
 
