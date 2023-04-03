@@ -111,3 +111,8 @@ make -i dev
 ```
 
 Then you can see the page on `localhost:3000`.
+
+## TODO
+
+- Chrome extension
+- Import & Export
