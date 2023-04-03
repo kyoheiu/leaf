@@ -176,7 +176,7 @@ export default function Article({
 				</title>
 			</Head>
 			<AppBar elevation={0} position="fixed" color="default">
-				<Toolbar sx={{ display: "flex" }}>
+				<Toolbar variant="dense" sx={{ display: "flex" }}>
 					<MuiLink
 						className="site-title"
 						component={Link}
@@ -200,7 +200,9 @@ export default function Article({
 				<Link href={articleContent.url}>{articleContent.url}</Link>
 			</div>
 			<Divider className="article-divider" />
-			<div dangerouslySetInnerHTML={create_markup()} />
+			<div className="article-content">
+				<div dangerouslySetInnerHTML={create_markup()} />
+			</div>
 			<Divider className="article-divider" />
 			<div className="article-tags">
 				<Tags tags={articleContent.tags} id={articleContent.id} />

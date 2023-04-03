@@ -60,7 +60,7 @@ const pageUp = (page: string, kind: PaginationKind, tag_name?: string | undefine
 export const Pagination = (page: string | string[] | undefined, isLast: boolean, kind: PaginationKind, tag_name?: string | undefined) => {
     if (!page && isLast) {
         return <>
-            <Typography align="center">
+            <Typography className="pagination">
                 {(!page && isLast) &&
                     footerImage()
                 }
@@ -68,7 +68,7 @@ export const Pagination = (page: string | string[] | undefined, isLast: boolean,
         </>;
     } else if (!page && !isLast || page === "1") {
         return <>
-            <Typography align="center">
+            <Typography className="pagination">
                 <a href={secondPage(kind, tag_name)}>
                     <KeyboardArrowRightIcon fontSize="large" />
                 </a>
@@ -76,7 +76,7 @@ export const Pagination = (page: string | string[] | undefined, isLast: boolean,
         </>;
     } else if (page && !isLast) {
         return <>
-            <Typography align="center">
+            <Typography className="pagination">
                 <a href={pageDown(page as string, kind, tag_name)}>
                     <KeyboardArrowLeftIcon fontSize="large" />
                 </a>
@@ -87,7 +87,7 @@ export const Pagination = (page: string | string[] | undefined, isLast: boolean,
         </>;
     } else {
         return <>
-            <Typography align="center">
+            <Typography className="pagination">
                 <a href={pageDown(page as string, kind, tag_name)}>
                     <KeyboardArrowLeftIcon fontSize="large" />
                 </a>

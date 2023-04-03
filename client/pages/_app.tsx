@@ -25,6 +25,8 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 		}
 	}, []);
 
+	const theme = createTheme();
+
 	const light = createTheme({
 		palette: {
 			mode: "light",
@@ -51,6 +53,17 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 						minHeight: 45,
 					}
 				}
+			},
+			MuiInput: {
+				styleOverrides: {
+					root: {
+						fontSize: "0.8em",
+						[theme.breakpoints.down("md")]: {
+							height: 20
+						},
+						height: 30
+					}
+				}
 			}
 		},
 		breakpoints: {
@@ -68,7 +81,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 		palette: {
 			mode: "dark",
 			primary: {
-				main: "#bbb",
+				main: "#ddd",
 			},
 			secondary: {
 				main: "#888",
@@ -76,13 +89,28 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 			text: {
 				primary: "#ddd",
 			},
+			background: {
+				default: "#041124",
+			}
 		},
 		components: {
 			MuiToolbar: {
 				styleOverrides: {
 					dense: {
 						height: 45,
-						minHeight: 45
+						minHeight: 45,
+						background: "#041124",
+					}
+				}
+			},
+			MuiInput: {
+				styleOverrides: {
+					root: {
+						fontSize: "0.8em",
+						[theme.breakpoints.down("sm")]: {
+							height: 20
+						},
+						height: 30
 					}
 				}
 			}

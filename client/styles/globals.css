@@ -28,7 +28,6 @@ video {
 
 .element-timestamp {
     font-size: 0.8em;
-    color: #444;
 }
 
 .element-title {
@@ -50,7 +49,6 @@ video {
 
 .element-beginning {
     font-size: 0.9em;
-    color: #444;
     font-family: --var(--opensans-font);
     font-weight: 300;
     margin: 5px 0;
@@ -61,12 +59,16 @@ video {
     overflow: hidden;
 }
 
+.pagination {
+    text-align: center;
+    padding-bottom: 50px;
+}
+
 .article-title {
     font-size: 1.7em;
     font-family: var(--lora-font);
     font-weight: bold;
     line-height: 1.2;
-    width: 75%;
     margin: auto;
     margin-top: 80px;
     text-align: center;
@@ -79,11 +81,9 @@ video {
     width: 75%;
 }
 
-.article-url-bottom {
-    font-size: 0.9em;
-    margin-top: 2em;
-    margin-bottom: 1em;
-    text-align: right;
+.article-content {
+    width: 90%;
+    margin: auto;
 }
 
 .article-divider {
@@ -95,31 +95,32 @@ video {
 }
 
 h1 {
-    font-size: 1.4em;
+    font-size: 1.5em;
     font-weight: bold;
 }
 
 h2 {
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: bold;
 }
 
 h3 {
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: bold;
 }
 
 h4 {
-    font-size: 1.1em;
+    font-size: 1.2em;
     font-weight: bold;
 }
 
 h5 {
-    font-size: 1.05em;
+    font-size: 1.1em;
     font-weight: bold;
 }
 
 h6 {
+    font-size: 1.05em;
     font-weight: bold;
 }
 
