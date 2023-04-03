@@ -9,9 +9,9 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 
 ![screenshot1.png](images/screenshot1.png)
 
-<hr />
-
 ![screenshot2.png](images/screenshot2.png)
+
+![screenshot3.png](images/screenshot3.png)
 
 <hr />
 
