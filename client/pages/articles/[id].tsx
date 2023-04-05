@@ -86,8 +86,12 @@ export default function Article({
 	}, []);
 
 	useEffect(() => {
-		globalThis.addEventListener("scroll", saveScrollPos);
-		return () => globalThis.removeEventListener("scroll", saveScrollPos);
+		const interval = setInterval(() => {
+			console.log('This will be called every 2 seconds');
+			saveScrollPos();
+		}, 2000);
+
+		return () => clearInterval(interval);
 	}, []);
 
 	const toggleLiked = async () => {
