@@ -18,7 +18,6 @@ import AppBar from "@mui/material/AppBar";
 import { ColorMode } from "../../context/ColorMode";
 import Tags from "../../components/Tags";
 import LinkButton from "../../components/LinkButton";
-import { flushSync } from "react-dom";
 
 type Data = ArticleContent;
 
