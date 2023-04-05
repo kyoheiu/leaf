@@ -18,8 +18,15 @@ import AppBar from "@mui/material/AppBar";
 import { ColorMode } from "../../context/ColorMode";
 import Tags from "../../components/Tags";
 import LinkButton from "../../components/LinkButton";
+import { flushSync } from "react-dom";
 
 type Data = ArticleContent;
+
+interface Update {
+	pos: number,
+	prog: number,
+	updated: boolean
+}
 
 export const getServerSideProps: GetServerSideProps<{
 	data: Data;
@@ -37,27 +44,37 @@ export default function Article({
 	data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const { isLight } = useContext(ColorMode);
+	let currentPosition = 0;
 
 	const [articleContent, setArticleContent] = useState<ArticleContent>(data);
 
-	const getScrollPosition = () => {
+	const getScrollPosition = (): Update => {
 		const bodyheight = document.documentElement.scrollHeight;
 		const scrolled = document.documentElement.scrollTop;
 		const client = document.documentElement.clientHeight;
 		const pos = Math.round((scrolled * 100) / bodyheight);
 		const prog = Math.abs(bodyheight - client - scrolled);
+
+		let updated = false;
+		if (pos !== currentPosition) {
+			console.debug(pos);
+			console.debug(currentPosition);
+			currentPosition = pos;
+			updated = true;
+		}
+
 		if (prog < 1) {
-			return { pos: pos, prog: 100 };
+			return { pos: pos, prog: 100, updated: updated };
 		} else {
-			return { pos: pos, prog: 100 - Math.round((prog * 100) / bodyheight) };
+			return { pos: pos, prog: 100 - Math.round((prog * 100) / bodyheight), updated: updated };
 		}
 	};
 
 	const saveScrollPos = () => {
-		const n = getScrollPosition();
-		if (n.pos !== 0) {
+		const updated = getScrollPosition();
+		if (updated.pos !== 0 && updated.updated) {
 			fetch(
-				`/api/articles/${articleContent.id}?pos=${n.pos}&prog=${n.prog}`,
+				`/api/articles/${articleContent.id}?pos=${updated.pos}&prog=${updated.prog}`,
 				{
 					method: "POST",
 				},
@@ -73,7 +90,6 @@ export default function Article({
 		const scroll = Math.round(
 			(document.documentElement.scrollHeight * articleContent.position) / 100,
 		);
-		console.log(articleContent.position);
 		globalThis.scrollTo(0, scroll);
 	};
 
@@ -87,7 +103,6 @@ export default function Article({
 
 	useEffect(() => {
 		const interval = setInterval(() => {
-			console.log('This will be called every 2 seconds');
 			saveScrollPos();
 		}, 2000);
 
