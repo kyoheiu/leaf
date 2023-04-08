@@ -151,11 +151,18 @@ pre>code {
 blockquote {
     border-left: 3px solid #666;
     font-style: italic;
-    padding: 0.5rem;
-    margin: 0.3rem;
+    padding: 0.2rem;
+    margin: 0.2rem;
+}
+
+ul,
+ol {
+    margin-left: 0.6rem;
+    padding-left: 0.6rem;
 }
 
 table {
+    border-collapse: collapse;
     max-width: 90%;
 }
 
@@ -165,7 +172,8 @@ table th {
 
 table th,
 td {
-    border: 1px solid #666;
+    border: 1px #666;
+    border-style: solid none;
 }
 
 table td {
