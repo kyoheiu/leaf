@@ -87,7 +87,6 @@ video {
 }
 
 .article-content {
-    width: 90%;
     margin: auto;
 }
 
@@ -139,7 +138,7 @@ h6 {
 }
 
 pre {
-    overflow: scroll;
+    overflow-x: scroll;
     padding: 1em;
     border: 1px solid #666;
 }
