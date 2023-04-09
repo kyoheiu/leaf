@@ -144,7 +144,6 @@ pre {
 }
 
 pre>code {
-    max-width: 90%;
     font-family: var(--jetbrains-font);
 }
 
