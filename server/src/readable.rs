@@ -390,6 +390,13 @@ fn get_article_title(doc: &Document) -> String {
     }
 }
 
+fn has_child_block_element(sel: &Selection) -> bool {
+    let mut result = false;
+    sel.children().iter().any(|child| {
+        child.is("blockquote,dl,div,img,ol,p,pre,table,ul") || has_child_block_element(&child)
+    })
+}
+
 fn is_phrasing_content(sel: &Selection) -> bool {
     let tag_name = sel
         .get(0)
@@ -517,15 +524,15 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         }
     }
 
-    for mut sel in doc.select("*").iter().into_iter() {
+    for mut sel in doc.select("*").iter() {
         if sel.is("section,h2,h3,h4,h5,h6,p,td,pre") {
             elements_to_score.push(sel);
         } else if sel.is("div") {
-            if has_single_p_inside_element!(&sel) {
+            if has_single_p_inside_element!(&sel) && get_link_density(&sel) < 0.25 {
                 let node = sel.children();
                 sel.replace_with_selection(&node);
                 elements_to_score.push(sel);
-            } else if !has_child_block_element!(&sel) {
+            } else if !has_child_block_element(&sel) {
                 set_node_tag!(&mut sel, "p");
                 elements_to_score.push(sel);
             }
@@ -694,12 +701,12 @@ fn prep_article(content: &Selection, title: &str) {
     // do not have to do this because we have ammonia.
     // remove_attrs(&content);
 
-    remove_conditionally(&content, "form");
-    remove_conditionally(&content, "fieldset");
-    remove_tag(&content, "object");
-    remove_tag(&content, "embed");
+    // remove_conditionally(&content, "form");
+    // remove_conditionally(&content, "fieldset");
+    // remove_tag(&content, "object");
+    // remove_tag(&content, "embed");
     remove_tag(&content, "footer");
-    remove_tag(&content, "link");
+    // remove_tag(&content, "link");
     remove_tag(&content, "aside");
 
     content.select("*").iter().for_each(|mut s| {
@@ -712,11 +719,11 @@ fn prep_article(content: &Selection, title: &str) {
         }
     });
 
-    remove_tag(&content, "iframe");
-    remove_tag(&content, "input");
-    remove_tag(&content, "textarea");
-    remove_tag(&content, "select");
-    remove_tag(&content, "button");
+    // remove_tag(&content, "iframe");
+    // remove_tag(&content, "input");
+    // remove_tag(&content, "textarea");
+    // remove_tag(&content, "select");
+    // remove_tag(&content, "button");
 
     // Do these last as the previous stuff may have removed junk
     // that will affect these
@@ -854,11 +861,39 @@ pub fn readability(html: &str) -> Result<ParseResult, Error> {
 
     let metadata = get_article_metadata(&document);
     let html = grab_article(&document, &metadata.title);
-    let plain = html_to_string(&html);
+
+    let mut cleaner = ammonia::Builder::default();
+    let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
+    let sanitized = cleaner.clean(&html).to_string();
+
+    let plain = html_to_string(&sanitized);
 
     Ok(ParseResult {
         metadata,
-        html,
+        html: sanitized,
         plain,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use std::fs::read_to_string;
+
+    use super::*;
+
+    #[test]
+    fn test_readability_001() {
+        // https://zenn.dev/inamiy/books/3dd014a50f321040a047/viewer/ff60bc16b7b952a91adb
+        let source = read_to_string("tests/001_source.html").unwrap();
+        let result = readability(&source).unwrap().html;
+        assert_eq!(result, read_to_string("tests/001_expected.html").unwrap());
+    }
+
+    #[test]
+    fn test_readability_002() {
+        // https://drewdevault.com/2023/03/09/2023-03-09-Comment-or-no-comment.html
+        let source = read_to_string("tests/002_source.html").unwrap();
+        let result = readability(&source).unwrap().html;
+        assert_eq!(result, read_to_string("tests/002_expected.html").unwrap());
+    }
 }
