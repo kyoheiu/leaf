@@ -174,10 +174,7 @@ impl Core {
         let title = parse_result.metadata.title.replace('\'', "''");
         let cover = parse_result.metadata.cover.unwrap_or_default();
 
-        let mut cleaner = ammonia::Builder::default();
-        let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
-        let sanitized = cleaner.clean(&parse_result.html).to_string();
-        let html = sanitized.replace('\'', "''");
+        let html = parse_result.html.replace('\'', "''");
         // TODO!
         let beginning = create_beginning(&parse_result.plain).replace('\'', "''");
 
@@ -387,10 +384,11 @@ fn create_beginning(s: &str) -> String {
         }
         if c.is_whitespace() {
             whitespace_flag = true;
+            result.push(' ');
         } else {
             whitespace_flag = false;
+            result.push(c);
         }
-        result.push(c);
         if let Some(w) = unicode_width::UnicodeWidthChar::width(c) {
             len += w;
         }
@@ -430,11 +428,11 @@ mod tests {
 
         let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
         let body = String::from_utf8(body.to_vec()).unwrap();
-        assert_eq!(body, "Hello, world.\n");
+        assert_eq!(body, "Hello, world.");
     }
 
     #[tokio::test]
-    async fn test_add() {
+    async fn test_create() {
         let core = Core::new().unwrap();
         let router = router(core);
 
@@ -442,8 +440,8 @@ mod tests {
             .oneshot(
                 Request::builder()
                     .method(Method::POST)
-                    .uri("/a?url=http://paulgraham.com/weird.html")
-                    .body(Body::empty())
+                    .uri("/articles")
+                    .body(Body::from("https://example.com"))
                     .unwrap(),
             )
             .await
