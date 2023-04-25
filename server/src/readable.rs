@@ -30,7 +30,7 @@ lazy_static! {
     static ref RE_HASHURL: Regex = Regex::new(r#"^#.+"#).unwrap();
     static ref RE_SHARE_ELEMENT: Regex = Regex::new(r#"(?i)(\b|_)(share|sharedaddy)(\b|_)"#).unwrap();
     static ref RE_PHRASING_ELEMS: Regex = Regex::new(r#"(?i)^(abbr|audio|b|bdo|br|button|cite|code|data|datalist|dfn
-    em|embed|i|img|input|kbd|label|mark|math|meter|noscript|object|output|progress|q|ruby|samp|script|select|small|span|strong|sub|sup|textarea|time|vaar|wbr)$"#).unwrap();
+    em|embed|i|img|input|kbd|label|mark|math|meter|noscript|object|output|progress|q|ruby|samp|script|select|small|span|strong|sub|sup|textarea|time|var|wbr)$"#).unwrap();
 }
 
 const DATA_TABLE_ATTR: &'static str = "XXX-DATA-TABLE";
