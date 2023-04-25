@@ -877,16 +877,34 @@ pub fn readability(html: &str) -> Result<ParseResult, Error> {
 
 #[cfg(test)]
 mod tests {
-    use std::fs::read_to_string;
-
     use super::*;
+    use std::fs::read_to_string;
+    use std::io::Write;
+    use tempfile::NamedTempFile;
+
+    fn difft(left: String, right: String) {
+        let mut file_left = NamedTempFile::new().unwrap();
+        writeln!(file_left, "{}", left).unwrap();
+        let mut file_right = NamedTempFile::new().unwrap();
+        writeln!(file_right, "{}", right).unwrap();
+        let output = std::process::Command::new("difft")
+            .args([file_left.path(), file_right.path()])
+            .output()
+            .unwrap();
+        let diff = output.stdout;
+        println!("{}", String::from_utf8(diff).unwrap());
+        file_left.close().unwrap();
+        file_right.close().unwrap();
+    }
 
     #[test]
     fn test_readability_001() {
         // https://zenn.dev/inamiy/books/3dd014a50f321040a047/viewer/ff60bc16b7b952a91adb
         let source = read_to_string("tests/001_source.html").unwrap();
         let result = readability(&source).unwrap().html;
-        assert_eq!(result, read_to_string("tests/001_expected.html").unwrap());
+        let expected = read_to_string("tests/001_expected.html").unwrap();
+        difft(result.clone(), expected.clone());
+        assert_eq!(result, expected);
     }
 
     #[test]
@@ -894,6 +912,18 @@ mod tests {
         // https://drewdevault.com/2023/03/09/2023-03-09-Comment-or-no-comment.html
         let source = read_to_string("tests/002_source.html").unwrap();
         let result = readability(&source).unwrap().html;
-        assert_eq!(result, read_to_string("tests/002_expected.html").unwrap());
+        let expected = read_to_string("tests/002_expected.html").unwrap();
+        difft(result.clone(), expected.clone());
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_readability_003() {
+        // https://drewdevault.com/2023/04/24/2023-04-24-Who-leads-us.html
+        let source = read_to_string("tests/003_source.html").unwrap();
+        let result = readability(&source).unwrap().html;
+        let expected = read_to_string("tests/003_expected.html").unwrap();
+        difft(result.clone(), expected.clone());
+        assert_eq!(result, expected);
     }
 }
