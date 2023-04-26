@@ -23,6 +23,12 @@ video {
     margin: auto;
 }
 
+.header-buttons {
+    margin-left: auto;
+    display: flex;
+    margin-top: auto;
+}
+
 .articles-list {
     padding-top: 60px;
 }
