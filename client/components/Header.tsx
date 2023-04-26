@@ -12,7 +12,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { RiHeart2Line, RiInboxArchiveLine, RiArrowDropLeftLine, RiSearch2Line, RiCloseFill, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
+import { RiHeart2Line, RiInboxArchiveLine, RiArrowDropLeftLine, RiSearch2Line, RiCloseLine, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -83,23 +83,23 @@ export const Header = () => {
 
 	const BarSearch = () => {
 		return <>
-			<MuiLink href="#" onClick={handleClickSearchOpen}>
+			<Button onClick={handleClickSearchOpen}>
 				<RiSearch2Line />
-			</MuiLink>
+			</Button>
 			<Dialog open={searchOpen} onClose={handleSearchClose}>
 				<DialogTitle>Search.</DialogTitle>
 				<DialogContent>
 					<TextField
+						autoFocus
 						id={"search"}
 						label=""
 						type="text"
 						variant="standard"
-						focused
 					/>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleSearchClose}>
-						<RiCloseFill />
+						<RiCloseLine />
 					</Button>
 					<Button onClick={searchAndClose}>
 						<RiSearch2Line />
@@ -147,7 +147,7 @@ export const Header = () => {
 							/>
 						</div>
 					</form>
-					<div style={{ marginLeft: "auto", display: "flex" }}>
+					<div className="header-buttons">
 						<BarSearch />
 						<Button
 							id="basic-button"
