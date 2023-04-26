@@ -134,19 +134,20 @@ export const Header = () => {
 					</MuiLink>
 					<form onSubmit={createNew}>
 						&nbsp;
-						&nbsp;
-						&nbsp;
-						<TextField
-							id={"add_new"}
-							type="url"
-							value={url}
-							onChange={(e) => setUrl(() => e.target.value)}
-							placeholder="Add URL"
-							size="small"
-							variant="standard"
-						/>
+						<div>
+							<TextField
+								className="form-to-add"
+								id={"add_new"}
+								type="url"
+								value={url}
+								onChange={(e) => setUrl(() => e.target.value)}
+								placeholder="Add URL"
+								size="small"
+								variant="standard"
+							/>
+						</div>
 					</form>
-					<div style={{ marginLeft: "auto" }}>
+					<div style={{ marginLeft: "auto", display: "flex" }}>
 						<BarSearch />
 						<Button
 							id="basic-button"

@@ -58,10 +58,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 				styleOverrides: {
 					root: {
 						fontSize: "0.8em",
-						[theme.breakpoints.down("md")]: {
-							height: 20
-						},
-						height: 30
+						height: 20
 					}
 				}
 			}
@@ -107,10 +104,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 				styleOverrides: {
 					root: {
 						fontSize: "0.8em",
-						[theme.breakpoints.down("sm")]: {
-							height: 20
-						},
-						height: 30
+						height: 20
 					}
 				}
 			}
