@@ -1,4 +1,4 @@
-import { Chip, Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button } from "@mui/material";
+import { Chip, Dialog, DialogContent, TextField, DialogActions, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { TagsProps } from "../types/types";
@@ -75,7 +75,6 @@ export default function Tags(data: TagsProps) {
 				onClick={handleClickOpen}
 			/>
 			<Dialog open={open} onClose={handleClose}>
-				<DialogTitle>Add new tag</DialogTitle>
 				<DialogContent>
 					<TextField
 						autoFocus
@@ -83,6 +82,7 @@ export default function Tags(data: TagsProps) {
 						id={`${data.id}_add_tag`}
 						type="text"
 						fullWidth
+						placeholder="Add new tag"
 						variant="standard"
 					/>
 				</DialogContent>
