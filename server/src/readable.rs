@@ -403,6 +403,10 @@ fn is_phrasing_content(sel: &Selection) -> bool {
             || tag_name == "ins" && sel.children().iter().all(|x| is_phrasing_content(&x)))
 }
 
+fn is_whitespace(sel: &Selection) -> bool {
+    sel.text().len() == 0 || sel.is("br")
+}
+
 // Initialize a node with the readability object. Also checks the
 // className/id for special names to add to its score.
 fn initialize_candidate_item<'a>(sel: Selection<'a>) -> CandidateItem<'a> {
@@ -521,6 +525,21 @@ fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
         if sel.is("section,h2,h3,h4,h5,h6,p,td,pre") {
             elements_to_score.push(sel);
         } else if sel.is("div") {
+            let mut children_of_p = vec![];
+            for child in sel.children().iter() {
+                if is_phrasing_content(&child) && is_whitespace(&child) {
+                    children_of_p.push(child);
+                }
+            }
+            if !children_of_p.is_empty() {
+                let mut p = String::new();
+                for child in children_of_p {
+                    p.push_str(&child.html().to_string());
+                }
+                p = format!("<p>{}</p>", p);
+                sel.replace_with_html(p.as_str());
+            }
+
             if has_single_p_inside_element!(&sel) && get_link_density(&sel) < 0.25 {
                 let node = sel.children();
                 sel.replace_with_selection(&node);
