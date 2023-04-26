@@ -41,7 +41,7 @@ export default function Home({
 			<>
 				<Header />
 				<Stack className="articles-list" spacing={6}>
-					<div>Add new article from the top form!</div>
+					<div>Add new articles from the form in the top bar.</div>
 					{footerImage()}
 				</Stack>
 			</>
