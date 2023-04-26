@@ -75,7 +75,7 @@ export default function Tags(data: TagsProps) {
 				onClick={handleClickOpen}
 			/>
 			<Dialog open={open} onClose={handleClose}>
-				<DialogTitle>Add new tag.</DialogTitle>
+				<DialogTitle>Add new tag</DialogTitle>
 				<DialogContent>
 					<TextField
 						autoFocus
