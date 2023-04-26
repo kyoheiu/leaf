@@ -1,6 +1,5 @@
 import { footerImage } from "../components/Footer";
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import { SlArrowLeft, SlArrowRight } from "react-icons/sl"
 import { Typography } from "@mui/material";
 import Link from "next/link";
 import { PaginationKind } from "../types/types";
@@ -70,7 +69,7 @@ export const Pagination = (page: string | string[] | undefined, isLast: boolean,
         return <>
             <Typography className="pagination">
                 <a href={secondPage(kind, tag_name)}>
-                    <KeyboardArrowRightIcon fontSize="large" />
+                    <SlArrowRight />
                 </a>
             </Typography>
         </>;
@@ -78,10 +77,13 @@ export const Pagination = (page: string | string[] | undefined, isLast: boolean,
         return <>
             <Typography className="pagination">
                 <a href={pageDown(page as string, kind, tag_name)}>
-                    <KeyboardArrowLeftIcon fontSize="large" />
+                    <SlArrowLeft />
                 </a>
+                &nbsp;
+                &nbsp;
+                &nbsp;
                 <Link href={pageUp(page as string, kind, tag_name)}>
-                    <KeyboardArrowRightIcon fontSize="large" />
+                    <SlArrowRight />
                 </Link>
             </Typography>
         </>;
@@ -89,7 +91,7 @@ export const Pagination = (page: string | string[] | undefined, isLast: boolean,
         return <>
             <Typography className="pagination">
                 <a href={pageDown(page as string, kind, tag_name)}>
-                    <KeyboardArrowLeftIcon fontSize="large" />
+                    <SlArrowLeft />
                 </a>
             </Typography>
         </>

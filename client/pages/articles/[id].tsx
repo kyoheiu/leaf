@@ -4,11 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import UnarchiveIcon from "@mui/icons-material/Unarchive";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { RiHeart2Line, RiHeart2Fill, RiInboxArchiveLine, RiInboxUnarchiveFill, RiDeleteBin2Line } from "react-icons/ri";
 import Link from "@mui/material/Link";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
@@ -167,20 +163,20 @@ export default function Article({
 				<LinkButton url={articleContent.url} />
 				<Button onClick={toggleLiked}>
 					{data.liked ? (
-						<FavoriteIcon sx={{ fontSize: 20 }} />
+						<RiHeart2Fill />
 					) : (
-						<FavoriteBorderIcon sx={{ fontSize: 20 }} />
+						<RiHeart2Line />
 					)}
 				</Button>
 				<Button onClick={toggleArchived}>
 					{data.archived ? (
-						<UnarchiveIcon sx={{ fontSize: 20 }} />
+						<RiInboxUnarchiveFill />
 					) : (
-						<ArchiveIcon sx={{ fontSize: 20 }} />
+						<RiInboxArchiveLine />
 					)}
 				</Button>
 				<Button onClick={deleteArticleItself}>
-					<DeleteForeverIcon sx={{ fontSize: 20 }} />
+					<RiDeleteBin2Line />
 				</Button>
 			</>
 		);

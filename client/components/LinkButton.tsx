@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
 import toast from "react-simple-toasts";
-import LinkIcon from '@mui/icons-material/Link';
+import { RiLink } from "react-icons/ri"
 
 type urlProp = {
     url: string
@@ -15,7 +15,7 @@ export default function Login(data: urlProp) {
     return (
         <>
             <Button onClick={() => copyToClipboard(data.url)}>
-                <LinkIcon sx={{ fontSize: 20 }} />
+                <RiLink />
             </Button>
         </>);
 }

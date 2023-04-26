@@ -8,11 +8,7 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import Avatar from "@mui/material/Avatar";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import UnarchiveIcon from "@mui/icons-material/Unarchive";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { RiHeart2Line, RiHeart2Fill, RiInboxArchiveLine, RiInboxUnarchiveFill, RiDeleteBin2Line } from "react-icons/ri";
 import LinkButton from "../components/LinkButton";
 
 export default function ArticleElement(props: ElementProps) {
@@ -152,20 +148,21 @@ export default function ArticleElement(props: ElementProps) {
 			<div>
 				<Button onClick={() => toggleLiked(article.data.id)}>
 					{article.data.liked ? (
-						<FavoriteIcon sx={{ fontSize: 20 }} />
+						<RiHeart2Fill />
 					) : (
-						<FavoriteBorderIcon sx={{ fontSize: 20 }} />
+						<RiHeart2Line />
 					)}
 				</Button>
 				<Button onClick={() => toggleArchived(article.data.id)}>
 					{article.data.archived ? (
-						<UnarchiveIcon sx={{ fontSize: 20 }} />
+						<RiInboxUnarchiveFill />
 					) : (
-						<ArchiveIcon sx={{ fontSize: 20 }} />
+						<RiInboxArchiveLine />
 					)}
 				</Button>
 				<Button onClick={() => deleteArticleContent(article.data.id)}>
-					<DeleteForeverIcon sx={{ fontSize: 20 }} />
+					<RiDeleteBin2Line />
+
 				</Button>
 			</div>
 		</div>
