@@ -30,39 +30,52 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
   - built-in auth
 - With the
   [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
-  you can easily add new article.
+  you can easily add new articles.
 
-## Install to your server
+## Deploy
 
-1. After `git clone` this repo, add `.env.production` in the `client` directory
-   with the following contents:
+1. You just need 2 files: `docker-compose.yml` and `.env.production`.
 
+`docker-compose.yml`
+```
+version: "3"
+services:
+  server:
+    image: docker.io/kyoheiudev/leaf-server:0.3.10
+    container_name: leaf-server
+    volumes:
+      - ./server/databases:/var/leaf/databases
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8000:8000
+  client:
+    image: docker.io/kyoheiudev/leaf-client:0.3.10
+    container_name: leaf-client
+    volumes:
+      - ./path/to/.env.production:/app/.env.production
+    ports:
+      - 3000:3000
+```
+
+`.env.production`
 ```
 NEXTAUTH_URL=https://your-site.url
 NEXT_PUBLIC_TITLE=leaf
-NEXT_PUBLIC_HOST=server
+NEXT_PUBLIC_HOST=leaf-server
 NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
 CREDENTIALS_ID=YOUR_ID
 CREDENTIALS_PASSWORD=SO_STRONG_PASSWORD
 WEB_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
 ```
 
-You should edit `NEXTAUTH_SECRET`, `CREDENTIALS_ID`, `CREDENTIALS_PASSWORD` and
+You should edit `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `CREDENTIALS_ID`, `CREDENTIALS_PASSWORD` and
 `WEB_API_TOKEN`.
 
 _You can add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to this file to make
 it more secured with 2FA._
 
-2. `make run` in the root directory,and the Next.js client will begin listening
-   on port 3000.
-
-## Update
-
-```
-make down
-git pull
-make run
-```
+2. `docker compose up -d` and the app will start listening on port 3000.
+   (The SQLite database and search index are created in the directory described in your `docker-compose.yml`)
 
 ## Architecture
 
