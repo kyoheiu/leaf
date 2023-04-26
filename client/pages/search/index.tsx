@@ -4,7 +4,7 @@ import ArticleElement from "../../components/ArticleElement";
 import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";
 import Stack from "@mui/material/Stack";
-import { SearchFooter } from "../../components/Footer";
+import { footerImage } from "../../components/Footer";
 import { PageInfo } from "../../components/PageInfo";
 
 type Data = {
@@ -38,7 +38,7 @@ export default function Searched(props: Data) {
 						/>
 					);
 				})}
-				<SearchFooter />
+				<footer>{footerImage()}</footer>
 			</Stack>
 		</>
 	);
