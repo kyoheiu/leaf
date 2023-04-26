@@ -22,7 +22,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --non-interactive --frozen-lockfile --production
 
 # ==================================================
-FROM debian:stable-slim
+FROM debian:bookworm-slim
 ENV NODE_ENV=production
 WORKDIR /app
 

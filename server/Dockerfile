@@ -3,7 +3,7 @@ WORKDIR /home/server
 COPY . .
 RUN cargo build --release
 
-FROM debian:stable-slim
+FROM debian:bookworm-slim
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN apt-get update \
