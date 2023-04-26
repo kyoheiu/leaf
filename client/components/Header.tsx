@@ -41,16 +41,6 @@ export const Header = () => {
 	const handleSearchClose = () => {
 		setSearchOpen(false);
 	};
-	const searchAndClose = async () => {
-		const queries = (document.getElementById("search") as HTMLInputElement)
-			.value;
-		const split = queries
-			.split(/(\s+)/)
-			.filter((x) => x.trim().length > 0)
-			.join("+");
-		router.push(`/search?q=${split}`);
-	};
-
 	const [url, setUrl] = useState<string>("");
 	const [progress, setProgress] = useState(false);
 	const { isLight, setIsLight } = useContext(ColorMode);
@@ -87,25 +77,21 @@ export const Header = () => {
 				<RiSearch2Line />
 			</Button>
 			<Dialog open={searchOpen} onClose={handleSearchClose}>
-				<DialogTitle>Search.</DialogTitle>
+				<DialogTitle>Search</DialogTitle>
 				<DialogContent>
-					<TextField
-						autoFocus
-						id={"search"}
-						label=""
-						type="text"
-						variant="standard"
-					/>
+					<form action="/search" method="get">
+						<TextField
+							autoFocus
+							id="search"
+							name="q"
+							label=""
+							type="text"
+							variant="standard"
+						/>
+
+					</form>
 				</DialogContent>
-				<DialogActions>
-					<Button onClick={handleSearchClose}>
-						<RiCloseLine />
-					</Button>
-					<Button onClick={searchAndClose}>
-						<RiSearch2Line />
-					</Button>
-				</DialogActions>
-			</Dialog>
+			</Dialog >
 		</>;
 	}
 
