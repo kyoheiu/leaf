@@ -1,16 +1,16 @@
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.3.9
-    container_name: server
+    image: docker.io/kyoheiudev/leaf-server:0.3.10
+    container_name: leaf-server
     volumes:
       - ./server/databases:/var/leaf/databases
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.3.9
-    container_name: client
+    image: docker.io/kyoheiudev/leaf-client:0.3.10
+    container_name: leaf-client
     volumes:
       - ./client/.env.production:/app/.env.production
     ports:
