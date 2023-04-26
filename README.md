@@ -36,7 +36,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 
 1. You just need 2 files: `docker-compose.yml` and `.env.production`.
 
-`docker-compose.yml`
+`docker-compose.yml` example
 ```
 version: "3"
 services:
@@ -57,7 +57,7 @@ services:
       - 3000:3000
 ```
 
-`.env.production`
+`.env.production` example
 ```
 NEXTAUTH_URL=https://your-site.url
 NEXT_PUBLIC_TITLE=leaf
