@@ -48,13 +48,6 @@ macro_rules! has_single_p_inside_element {
     }};
 }
 
-macro_rules! has_child_block_element {
-    ($sel: expr) => {{
-        let html = $sel.html();
-        RE_DIV_TO_P_ELEMENTS.is_match(&html)
-    }};
-}
-
 macro_rules! get_node_ancestors {
     ($sel:expr, $depth: expr) => {{
         let mut ancestors = vec![];
