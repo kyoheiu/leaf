@@ -77,7 +77,6 @@ export const Header = () => {
 				<RiSearch2Line />
 			</Button>
 			<Dialog open={searchOpen} onClose={handleSearchClose}>
-				<DialogTitle>Search</DialogTitle>
 				<DialogContent>
 					<form action="/search" method="get">
 						<TextField
