@@ -112,6 +112,7 @@ h1 {
 h2 {
     font-size: 1.4em;
     font-weight: bold;
+    border-bottom: thin solid #666;
 }
 
 h3 {
