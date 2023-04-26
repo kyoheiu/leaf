@@ -25,8 +25,6 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 		}
 	}, []);
 
-	const theme = createTheme();
-
 	const light = createTheme({
 		palette: {
 			mode: "light",
