@@ -2,6 +2,7 @@ import { Chip, Dialog, DialogTitle, DialogContent, TextField, DialogActions, But
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { TagsProps } from "../types/types";
+import { RiCloseLine, RiAddLine } from "react-icons/ri";
 
 export default function Tags(data: TagsProps) {
 	const [tags, setTags] = useState(data.tags);
@@ -80,16 +81,15 @@ export default function Tags(data: TagsProps) {
 						autoFocus
 						margin="dense"
 						id={`${data.id}_add_tag`}
-						label="New tag name"
 						type="text"
 						fullWidth
 						variant="standard"
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleClose}>Cancel</Button>
+					<Button onClick={handleClose}><RiCloseLine /></Button>
 					<Button onClick={() => submitAndClose(data.id)}>
-						Add
+						<RiAddLine />
 					</Button>
 				</DialogActions>
 			</Dialog>
