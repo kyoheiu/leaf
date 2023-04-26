@@ -146,6 +146,7 @@ fn is_element_without_content(sel: &Selection) -> bool {
             || children.length() == sel.select("br").length() + sel.select("hr").length())
 }
 
+#[allow(dead_code)]
 fn remove_attrs(s: &Selection) {
     s.select("*").iter().for_each(|mut s1| {
         let tag_name = s1
@@ -384,7 +385,6 @@ fn get_article_title(doc: &Document) -> String {
 }
 
 fn has_child_block_element(sel: &Selection) -> bool {
-    let mut result = false;
     sel.children().iter().any(|child| {
         child.is("blockquote,dl,div,img,ol,p,pre,table,ul") || has_child_block_element(&child)
     })
