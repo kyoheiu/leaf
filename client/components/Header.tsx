@@ -12,15 +12,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import SearchIcon from "@mui/icons-material/Search";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import CloseIcon from "@mui/icons-material/Close";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LogoutIcon from "@mui/icons-material/Logout";
-import MenuIcon from "@mui/icons-material/Menu";
+import { RiHeart2Line, RiInboxArchiveLine, RiArrowDropLeftLine, RiSearch2Line, RiCloseFill, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -32,8 +24,6 @@ export const LOGO_SIZE = 42;
 
 export const Header = () => {
 	const router = useRouter();
-
-	const button_size = 18;
 
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
@@ -94,7 +84,7 @@ export const Header = () => {
 	const BarSearch = () => {
 		return <>
 			<MuiLink href="#" onClick={handleClickSearchOpen}>
-				<SearchIcon sx={{ fontSize: button_size, display: { xs: "none", sm: "inherit" } }} />
+				<RiSearch2Line />
 			</MuiLink>
 			<Dialog open={searchOpen} onClose={handleSearchClose}>
 				<DialogTitle>Search.</DialogTitle>
@@ -104,14 +94,15 @@ export const Header = () => {
 						label=""
 						type="text"
 						variant="standard"
+						focused
 					/>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleSearchClose}>
-						<CloseIcon />
+						<RiCloseFill />
 					</Button>
 					<Button onClick={searchAndClose}>
-						<SearchIcon />
+						<RiSearch2Line />
 					</Button>
 				</DialogActions>
 			</Dialog>
@@ -164,7 +155,7 @@ export const Header = () => {
 							aria-expanded={open ? "true" : undefined}
 							onClick={(e) => handleClick(e)}
 						>
-							<MenuIcon sx={{ fontSize: button_size }} />
+							<RiMenuLine />
 						</Button>
 						<Menu
 							id="basic-menu"
@@ -177,37 +168,32 @@ export const Header = () => {
 						>
 							<MenuItem>
 								<MuiLink underline="none" component={Link} href="/">
-									<ArrowBackIosNewIcon sx={{ fontSize: button_size }} /> Top
-								</MuiLink>
-							</MenuItem>
-							<MenuItem sx={{ display: { xs: "inherit", sm: "none" } }}>
-								<MuiLink underline="none" href="#" onClick={handleClickSearchOpen}>
-									<SearchIcon sx={{ fontSize: button_size, }} /> Search
+									<RiArrowDropLeftLine /> Top
 								</MuiLink>
 							</MenuItem>
 							<MenuItem>
 								<MuiLink underline="none" component={Link} href="/liked">
-									<FavoriteIcon sx={{ fontSize: button_size }} /> Liked
+									<RiHeart2Line /> Liked
 								</MuiLink>
 							</MenuItem>
 							<MenuItem>
 								<MuiLink underline="none" component={Link} href="/archived">
-									<ArchiveIcon sx={{ fontSize: button_size }} /> Archived
+									<RiInboxArchiveLine /> Archived
 								</MuiLink>
 							</MenuItem>
 							<MenuItem>
 								<MuiLink underline="none" href="#" onClick={toggleTheme}>
 									{isLight ? (
-										<DarkModeIcon sx={{ fontSize: button_size }} />
+										<RiMoonLine />
 									) : (
-										<LightModeIcon sx={{ fontSize: button_size }} />
+										<RiSunLine />
 									)}{" "}
 									Change theme
 								</MuiLink>
 							</MenuItem>
 							<MenuItem>
 								<MuiLink underline="none" href="#" onClick={() => signOut()}>
-									<LogoutIcon sx={{ fontSize: button_size }} /> Log out
+									<RiLogoutBoxLine /> Log out
 								</MuiLink>
 							</MenuItem>
 						</Menu>
