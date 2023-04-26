@@ -11,6 +11,7 @@ export default function Login() {
 					className="login-button"
 					variant="outlined"
 					onClick={() => signIn()}
+					title="log in"
 				>
 					Log in
 				</Button>

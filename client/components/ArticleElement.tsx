@@ -146,21 +146,21 @@ export default function ArticleElement(props: ElementProps) {
 				value={article.data.progress}
 			/>
 			<div>
-				<Button onClick={() => toggleLiked(article.data.id)}>
+				<Button onClick={() => toggleLiked(article.data.id)} title="toggle liked">
 					{article.data.liked ? (
 						<RiHeart2Fill />
 					) : (
 						<RiHeart2Line />
 					)}
 				</Button>
-				<Button onClick={() => toggleArchived(article.data.id)}>
+				<Button onClick={() => toggleArchived(article.data.id)} title="toggle archived">
 					{article.data.archived ? (
 						<RiInboxUnarchiveFill />
 					) : (
 						<RiInboxArchiveLine />
 					)}
 				</Button>
-				<Button onClick={() => deleteArticleContent(article.data.id)}>
+				<Button onClick={() => deleteArticleContent(article.data.id)} title="delete">
 					<RiDeleteBin2Line />
 
 				</Button>

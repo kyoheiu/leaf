@@ -161,21 +161,21 @@ export default function Article({
 		return (
 			<>
 				<LinkButton url={articleContent.url} />
-				<Button onClick={toggleLiked}>
+				<Button onClick={toggleLiked} title="toggle liked">
 					{data.liked ? (
 						<RiHeart2Fill />
 					) : (
 						<RiHeart2Line />
 					)}
 				</Button>
-				<Button onClick={toggleArchived}>
+				<Button onClick={toggleArchived} title="toggle archived">
 					{data.archived ? (
 						<RiInboxUnarchiveFill />
 					) : (
 						<RiInboxArchiveLine />
 					)}
 				</Button>
-				<Button onClick={deleteArticleItself}>
+				<Button onClick={deleteArticleItself} title="delete">
 					<RiDeleteBin2Line />
 				</Button>
 			</>

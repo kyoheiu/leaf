@@ -83,7 +83,7 @@ export const Header = () => {
 
 	const BarSearch = () => {
 		return <>
-			<Button onClick={handleClickSearchOpen}>
+			<Button onClick={handleClickSearchOpen} title="search">
 				<RiSearch2Line />
 			</Button>
 			<Dialog open={searchOpen} onClose={handleSearchClose}>
@@ -155,6 +155,7 @@ export const Header = () => {
 							aria-haspopup="true"
 							aria-expanded={open ? "true" : undefined}
 							onClick={(e) => handleClick(e)}
+							title="menu"
 						>
 							<RiMenuLine />
 						</Button>
