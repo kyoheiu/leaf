@@ -12,7 +12,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { RiHeart2Line, RiInboxArchiveLine, RiArrowDropLeftLine, RiSearch2Line, RiCloseLine, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
+import { RiHeart2Line, RiInboxArchiveLine, RiArrowDropLeftLine, RiSearch2Line, RiCloseLine, RiHome2Line, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -156,7 +156,7 @@ export const Header = () => {
 						>
 							<MenuItem>
 								<MuiLink underline="none" component={Link} href="/">
-									<RiArrowDropLeftLine /> Top
+									<RiHome2Line /> Top
 								</MuiLink>
 							</MenuItem>
 							<MenuItem>
