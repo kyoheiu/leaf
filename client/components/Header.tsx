@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import { Link as MuiLink, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
@@ -12,7 +11,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { RiHeart2Line, RiInboxArchiveLine, RiArrowDropLeftLine, RiSearch2Line, RiCloseLine, RiHome2Line, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
+import { RiHeart2Line, RiInboxArchiveLine, RiSearch2Line, RiCloseLine, RiHome2Line, RiSunLine, RiMoonLine, RiLogoutBoxLine, RiMenuLine } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -41,6 +40,16 @@ export const Header = () => {
 	const handleSearchClose = () => {
 		setSearchOpen(false);
 	};
+	const searchAndClose = async () => {
+		const queries = (document.getElementById("search") as HTMLInputElement)
+			.value;
+		const split = queries
+			.split(/(\s+)/)
+			.filter((x) => x.trim().length > 0)
+			.join("+");
+		router.push(`/search?q=${split}`);
+	};
+
 	const [url, setUrl] = useState<string>("");
 	const [progress, setProgress] = useState(false);
 	const { isLight, setIsLight } = useContext(ColorMode);
@@ -85,11 +94,20 @@ export const Header = () => {
 							name="q"
 							label=""
 							type="text"
+							placeholder="Search"
 							variant="standard"
 						/>
 
 					</form>
 				</DialogContent>
+				<DialogActions>
+					<Button onClick={handleSearchClose}>
+						<RiCloseLine />
+					</Button>
+					<Button onClick={searchAndClose}>
+						<RiSearch2Line />
+					</Button>
+				</DialogActions>
 			</Dialog >
 		</>;
 	}
