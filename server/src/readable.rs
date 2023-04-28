@@ -48,24 +48,6 @@ macro_rules! has_single_p_inside_element {
     }};
 }
 
-macro_rules! get_node_ancestors {
-    ($sel:expr, $depth: expr) => {{
-        let mut ancestors = vec![];
-        let mut parent = $sel.parent();
-
-        for _ in 0..$depth {
-            if !parent.exists() {
-                break;
-            } else {
-                ancestors.push(parent.clone());
-                parent = parent.parent();
-            }
-        }
-
-        ancestors
-    }};
-}
-
 macro_rules! set_node_tag {
     ($sel: expr, $tag: expr) => {{
         let html = $sel.html();
