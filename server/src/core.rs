@@ -175,7 +175,6 @@ impl Core {
         let cover = parse_result.metadata.cover.unwrap_or_default();
 
         let html = parse_result.html.replace('\'', "''");
-        // TODO!
         let beginning = create_beginning(&parse_result.plain).replace('\'', "''");
 
         info!("{}: {} ({})", ulid, title, url);
