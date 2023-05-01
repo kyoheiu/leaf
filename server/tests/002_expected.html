@@ -1,0 +1,253 @@
+
+  <article>
+    <p>My software tends to have a surprisingly low number of comments. One of my
+projects, <a href="https://git.sr.ht/~sircmpwn/scdoc" rel="noopener noreferrer">scdoc</a>, has 25 comments among its 1,133 lines of C code, or 2%,
+compared to the average of 19%.<sup><a rel="noopener noreferrer">1</a></sup> Naturally, I insist that my code is
+well-written in spite of this divergence from the norm. Allow me to explain.</p>
+<p>The philosophy and implementation of code comments varies widely in the
+industry, and some view comment density as a proxy for code quality.<sup><a rel="noopener noreferrer">2</a></sup> I’ll
+state my views here, but will note that yours may differ and I find that
+acceptable; I am not here to suggest that your strategy is wrong and I will
+happily adopt it when I write a patch for your codebase.</p>
+<p>Let’s begin with an illustrative example from one of my projects:</p>
+<div><pre><code><span>// Reads the next entry from an EFI [[FILE_PROTOCOL]] handle of an open
+</span><span>// directory. The return value is statically allocated and will be overwritten
+</span><span>// on the next call.
+</span><span></span><span>export</span> <span>fn</span> <span>readdir</span><span>(</span><span>dir</span><span>:</span> <span>*</span><span>FILE_PROTOCOL</span><span>)</span> <span>(</span><span>*</span><span>FILE_INFO</span> <span>|</span> <span>void</span> <span>|</span> <span>error</span><span>)</span> <span>=</span> <span>{</span>
+	<span>// size(FILE_INFO) plus reserve up to 512 bytes for file name (FAT32
+</span><span></span>	<span>// maximum, times two for wstr encoding)
+</span><span></span>	<span>static</span> <span>let</span> <span>buf</span><span>:</span> <span>[</span><span>FILE_INFO_SIZE</span> <span>+</span> <span>512</span><span>]</span><span>u8</span> <span>=</span> <span>[</span><span>0.</span><span>..];</span>
+	<span>const</span> <span>n</span> <span>=</span> <span>read</span><span>(</span><span>dir</span><span>,</span> <span>buf</span><span>)</span><span>?</span><span>;</span>
+	<span>if</span> <span>(</span><span>n</span> <span>==</span> <span>0</span><span>)</span> <span>{</span>
+		<span>return</span><span>;</span>
+	<span>};</span>
+	<span>return</span> <span>&amp;</span><span>buf</span><span>[</span><span>0</span><span>]</span><span>:</span> <span>*</span><span>FILE_INFO</span><span>;</span>
+<span>};</span>
+</code></pre></div><p>This code illustrates two of my various approaches to writing comments. The
+first comment is a documentation comment: the intended audience is the consumer
+of this API. The call-site has access to the following information:</p>
+<ul>
+<li>This comment</li>
+<li>The name of the function, and the module in which it resides (efi::readdir)</li>
+<li>The parameter names and types</li>
+<li>The return type</li>
+</ul>
+<p>The goal is for the user of this function to gather enough information from
+these details to correctly utilize this API.</p>
+<p>The module in which it resides suggests that this function interacts with the
+EFI (Extensible Firmware Interface) standard, and the user would be wise to pair
+a reading of this code (or API) with skimming the relevant standard. Indeed, the
+strategic naming of the FILE_PROTOCOL and FILE_INFO types (notably written in
+defiance of the Hare style guide), provide hints to the relevant parts of the
+EFI specification to read for a complete understanding of this code.</p>
+<p>The name of the function is also carefully chosen to carry some weight: it is a
+reference to the Unix readdir function, which brings with it an intuition about
+its purpose and usage for programmers familiar with a Unix environment.</p>
+<p>The return type also provides hints about the function’s use: it may return
+either a FILE_INFO pointer, void (nothing), or an error. Without reading the
+documentation string, and taking the name and return type into account, we might
+(correctly) surmise that we need to call this function repeatedly to read file
+details out of a directory until it returns void, indicating that all entries
+have been processed, handling any errors which might occur along the way.</p>
+<p>We have established a lot of information about this function without actually
+reading the comment; in my philosophy of programming I view this information as
+a critical means for the author to communicate to the user, and we can lean on
+it to reduce the need for explicit documentation. Nevertheless, the
+documentation comment adds something here. The first sentence is a relatively
+information-sparse summary of the function’s purpose, and mainly exists to tick
+a box in the Hare style guide.<sup><a rel="noopener noreferrer">3</a></sup> The second sentence is the only real reason
+this comment exists: to clarify an important detail for the user which is not
+apparent from the function signature, namely the storage semantics associated
+with the return value.</p>
+<p>Let’s now study the second comment’s purpose:</p>
+<div><pre><code><span>// size(FILE_INFO) plus reserve up to 512 bytes for file name (FAT32
+</span><span>// maximum, times two for wstr encoding)
+</span><span></span><span>static</span> <span>let</span> <span>buf</span><span>:</span> <span>[</span><span>FILE_INFO_SIZE</span> <span>+</span> <span>512</span><span>]</span><span>u8</span> <span>=</span> <span>[</span><span>0.</span><span>..];</span>
+</code></pre></div><p>This comment exists to explain the use of the magic constant of 512. The
+audience of this comment is someone reading the <em>implementation</em> of this
+function. This audience has access to a different context than the user of the
+function, for instance they are expected to have a more comprehensive knowledge
+of EFI and are <em>definitely</em> expected to be reading the specification to a much
+greater degree of detail. We can and should lean on that context to make our
+comments more concise and useful.</p>
+<p>An alternative writing which does not rely on this context, and which in
+my view is strictly worse, may look like the following:</p>
+<div><pre><code><span>// The FILE_INFO structure includes the file details plus a variable length
+</span><span>// array for the filename. The underlying filesystem is always FAT32 per the
+</span><span>// EFI specification, which has a maximum filename length of 256 characters. The
+</span><span>// filename is encoded as a wide-string (UCS-2), which encodes two bytes per
+</span><span>// character, and is not NUL-terminated, so we need to reserve up to 512 bytes
+</span><span>// for the filename.
+</span><span></span><span>static</span> <span>let</span> <span>buf</span><span>:</span> <span>[</span><span>FILE_INFO_SIZE</span> <span>+</span> <span>512</span><span>]</span><span>u8</span> <span>=</span> <span>[</span><span>0.</span><span>..];</span>
+</code></pre></div><p>The target audience of this comment should have a reasonable understanding of
+EFI. We simply need to clarify that this constant is the FAT32 max filename
+length, times two to account for the wstr encoding, and our magic constant is
+sufficiently explained.</p>
+<p>Let’s move on to another kind of comment I occasionally write: medium-length
+prose. These often appear at the start of a function or the start of a file and
+serve to add context to the implementation, to justify the code’s existence or
+explain why it works. Another sample:</p>
+<div><pre><code><span>fn</span> <span>init_pagetables</span><span>()</span> <span>void</span> <span>=</span> <span>{</span>
+	<span>// 0xFFFF0000xxxxxxxx - 0xFFFF0200xxxxxxxx: identity map
+</span><span></span>	<span>// 0xFFFF0200xxxxxxxx - 0xFFFF0400xxxxxxxx: identity map (dev)
+</span><span></span>	<span>// 0xFFFF8000xxxxxxxx - 0xFFFF8000xxxxxxxx: kernel image
+</span><span></span>	<span>//
+</span><span></span>	<span>// L0[0x000]    =&gt; L1_ident
+</span><span></span>	<span>// L0[0x004]    =&gt; L1_devident
+</span><span></span>	<span>// L1_ident[*]  =&gt; 1 GiB identity mappings
+</span><span></span>	<span>// L0[0x100]    =&gt; L1_kernel
+</span><span></span>	<span>// L1_kernel[0] =&gt; L2_kernel
+</span><span></span>	<span>// L2_kernel[0] =&gt; L3_kernel
+</span><span></span>	<span>// L3_kernel[0] =&gt; 4 KiB kernel pages
+</span><span></span>	<span>L0</span><span>[</span><span>0x000</span><span>]</span> <span>=</span> <span>PT_TABLE</span> <span>|</span> <span>&amp;</span><span>L1_ident</span><span>:</span> <span>uintptr</span> <span>|</span> <span>PT_AF</span><span>;</span>
+	<span>L0</span><span>[</span><span>0x004</span><span>]</span> <span>=</span> <span>PT_TABLE</span> <span>|</span> <span>&amp;</span><span>L1_devident</span><span>:</span> <span>uintptr</span> <span>|</span> <span>PT_AF</span><span>;</span>
+	<span>L0</span><span>[</span><span>0x100</span><span>]</span> <span>=</span> <span>PT_TABLE</span> <span>|</span> <span>&amp;</span><span>L1_kernel</span><span>:</span> <span>uintptr</span> <span>|</span> <span>PT_AF</span><span>;</span>
+	<span>L1_kernel</span><span>[</span><span>0</span><span>]</span> <span>=</span> <span>PT_TABLE</span> <span>|</span> <span>&amp;</span><span>L2_kernel</span><span>:</span> <span>uintptr</span> <span>|</span> <span>PT_AF</span><span>;</span>
+	<span>L2_kernel</span><span>[</span><span>0</span><span>]</span> <span>=</span> <span>PT_TABLE</span> <span>|</span> <span>&amp;</span><span>L3_kernel</span><span>:</span> <span>uintptr</span> <span>|</span> <span>PT_AF</span><span>;</span>
+	<span>for</span> <span>(</span><span>let</span> <span>i</span> <span>=</span> <span>0u64</span><span>;</span> <span>i</span> <span>&lt;</span> <span>len</span><span>(</span><span>L1_ident</span><span>)</span><span>:</span> <span>u64</span><span>;</span> <span>i</span> <span>+=</span> <span>1</span><span>)</span> <span>{</span>
+		<span>L1_ident</span><span>[</span><span>i</span><span>]</span> <span>=</span> <span>PT_BLOCK</span> <span>|</span> <span>(</span><span>i</span> <span>*</span> <span>0x40000000</span><span>)</span><span>:</span> <span>uintptr</span> <span>|</span>
+			<span>PT_NORMAL</span> <span>|</span> <span>PT_AF</span> <span>|</span> <span>PT_ISM</span> <span>|</span> <span>PT_RW</span><span>;</span>
+	<span>};</span>
+	<span>for</span> <span>(</span><span>let</span> <span>i</span> <span>=</span> <span>0u64</span><span>;</span> <span>i</span> <span>&lt;</span> <span>len</span><span>(</span><span>L1_devident</span><span>)</span><span>:</span> <span>u64</span><span>;</span> <span>i</span> <span>+=</span> <span>1</span><span>)</span> <span>{</span>
+		<span>L1_devident</span><span>[</span><span>i</span><span>]</span> <span>=</span> <span>PT_BLOCK</span> <span>|</span> <span>(</span><span>i</span> <span>*</span> <span>0x40000000</span><span>)</span><span>:</span> <span>uintptr</span> <span>|</span>
+			<span>PT_DEVICE</span> <span>|</span> <span>PT_AF</span> <span>|</span> <span>PT_ISM</span> <span>|</span> <span>PT_RW</span><span>;</span>
+	<span>};</span>
+<span>};</span>
+</code></pre></div><p>This comment shares a trait with the previous example: its purpose, in part, is
+to justify magic constants. It explains the indices of the arrays by way of the
+desired address space, and a perceptive reader will notice that 1 GiB =
+1073741824 bytes = 0x40000000 bytes.</p>
+<p>To fully understand this, we must again consider the intended audience. This
+is an implementation comment, so the reader is an <em>implementer</em>. They will need
+to possess some familiarity with the behavior of page tables to be productive in
+this code, and they likely have the ARM manual up on their second monitor. This
+comment simply fills in the blanks for an informed reader.</p>
+<p>There are two additional kinds of comments I often write: TODO and XXX.</p>
+<p>A TODO comment indicates some important implementation deficiency; it <em>must</em> be
+addressed at some point in the future and generally indicates that the function
+does not meet its stated interface and is often accompanied by an assertion, or
+a link to a ticket on the bug tracker, or both.</p>
+<div><pre><code><span>as</span><span>sert</span><span>(</span><span>ep</span><span>.</span><span>send</span> <span>==</span> <span>null</span><span>);</span> <span>// TODO: support multiple senders
+</span></code></pre></div><p>This function should support multiple senders, but does not; an assertion here
+prevents the code from running under conditions it does not yet support and the
+TODO comment indicates that this should be addressed in the future. The target
+audience for this comment is someone who brings about these conditions and runs
+into the assertion failure.</p>
+<div><pre><code><span>fn</span> <span>memory_empty</span><span>(</span><span>mem</span><span>:</span> <span>*</span><span>memory</span><span>)</span> <span>bool</span> <span>=</span> <span>{</span>
+	<span>// XXX: This O(n) linked list traversal is bad
+</span><span></span>	<span>let</span> <span>next</span> <span>=</span> <span>mem</span><span>.</span><span>next</span><span>;</span>
+	<span>let</span> <span>pages</span> <span>=</span> <span>0u</span><span>;</span>
+	<span>for</span> <span>(</span><span>next</span> <span>!=</span> <span>FREELIST_END</span><span>;</span> <span>pages</span> <span>+=</span> <span>1</span><span>)</span> <span>{</span>
+		<span>const</span> <span>addr</span> <span>=</span> <span>mem</span><span>.</span><span>phys</span> <span>+</span> <span>(</span><span>next</span> <span>*</span> <span>mem</span><span>::</span><span>PAGESIZE</span><span>)</span><span>:</span> <span>uintptr</span><span>;</span>
+		<span>const</span> <span>ptr</span> <span>=</span> <span>mem</span><span>::</span><span>phys_tokernel</span><span>(</span><span>addr</span><span>)</span><span>:</span> <span>*</span><span>uint</span><span>;</span>
+		<span>next</span> <span>=</span> <span>*</span><span>ptr</span><span>;</span>
+	<span>};</span>
+	<span>return</span> <span>pages</span> <span>==</span> <span>mem</span><span>.</span><span>pages</span><span>;</span>
+<span>};</span>
+</code></pre></div><p>Here we find an example of an XXX comment. This code is correct: it implements
+the function’s interface perfectly. However, given its expected usage, a
+performance of O(n) is not great: this function is expected to be used in hot
+paths. This comment documents the deficiency, and provides a hint to a reader
+that might be profiling this code in regards to a possible improvement.</p>
+<p>One final example:</p>
+<div><pre><code><span>// Invalidates the TLB for a virtual address.
+</span><span></span><span>export</span> <span>fn</span> <span>invalidate</span><span>(</span><span>virt</span><span>:</span> <span>uintptr</span><span>)</span> <span>void</span> <span>=</span> <span>{</span>
+	<span>// TODO: Notify other cores (XXX SMP)
+</span><span></span>	<span>invlpg</span><span>(</span><span>virt</span><span>);</span>
+<span>};</span>
+</code></pre></div><p>This is an atypical usage of XXX, but one which I still occasionally reach for.
+Here we have a TODO comment which indicates a case which this code does not
+consider, but which must be addressed in the future: it will have to raise an
+IPI to get other cores to invalidate the affected virtual address. However, this
+is one of many changes which fall under a broader milestone of SMP support, and
+the “XXX SMP” comment is here to make it easy to grep through the codebase for
+any places which are known to require attention while implementing SMP support.
+An XXX comment is often written for the purpose of being easily found with grep.</p>
+<p>That sums up most of the common reasons I will write a comment in my software.
+Each comment is written considering a target audience and the context provided
+by the code in which it resides, and aims to avoid stating redundant information
+within these conditions. It’s for this reason that my code is sparse on
+comments: I find the information outside of the comments equally important and
+aim to be concise such that a comment is not redundant with information found
+elsewhere.</p>
+<p>Hopefully this post inspired some thought in you, to consider your comments
+deliberately and to be more aware of your ability to communicate information in
+other ways. Even if you chose to write your comments more densely than I do, I
+hope you will take care to communicate well through other mediums in your code
+as well.</p>
+
+<hr>
+<ol>
+<li>
+<p>O. Arafat and D. Riehle, “The comment density of open source software code,” 2009 31st International Conference on Software Engineering - Companion Volume, Vancouver, BC, Canada, 2009, pp. 195-198, doi: 10.1109/ICSE-COMPANION.2009.5070980. <a rel="noopener noreferrer">↩︎</a></p>
+</li>
+<li>
+<p>I hold this view weakly, but reverse of the norm: I consider a high
+comment density a sign that the code quality may be poor. <a rel="noopener noreferrer">↩︎</a></p>
+</li>
+<li>
+<p>Which states that all exported functions that the module consumer is
+expected to use should have a comment, and that exported but undocumented
+symbols are exported to fulfill an implementation detail and not to provide a
+useful interface. <a rel="noopener noreferrer">↩︎</a></p>
+</li>
+</ol>
+
+
+  </article>
+
+  <h2>
+    Articles from blogs I read
+    <small>
+      Generated by
+      <a href="https://git.sr.ht/~sircmpwn/openring" rel="noopener noreferrer">openring</a>
+    </small>
+  </h2>
+  
+    
+    <div>
+      <h4>
+        <a href="https://emersion.fr/blog/2023/status-update-52/" rel="noopener noreferrer">Status update, April 2023</a>
+      </h4>
+      <p>Hi!
+In the last month I’ve continued working on go-imap v2. I’ve written the
+server side, implemented an in-memory server backend, and spent quite a bit of
+time fixing issues reported by imaptest. I only have a handful of test
+failures, most of which due to \…</p>
+      <small>
+        via <a href="https://emersion.fr/blog/" rel="noopener noreferrer">emersion</a>
+      </small>
+      <small>April 17, 2023</small>
+    </div>
+    
+    <div>
+      <h4>
+        <a href="https://100r.co/site/log.html#mar2023" rel="noopener noreferrer">Summary of changes for March 2023</a>
+      </h4>
+      <p>
+Hey everyone! This is the list of all the changes we've done to our projects and apps during the month of March. We'll also be reporting in our on position in the world, and on our future plans.
+
+Summary Of Changes
+
+    Donsol, added 100r logo to spla…</p>
+      <small>
+        via <a href="https://100r.co" rel="noopener noreferrer">Hundred Rabbits</a>
+      </small>
+      <small>March 31, 2023</small>
+    </div>
+    
+    <div>
+      <h4>
+        <a href="https://sourcehut.org/blog/2023-03-27-2022-financial-report/" rel="noopener noreferrer">SourceHut's 2022 Financial report</a>
+      </h4>
+      <p>In summary, SourceHut continues to be sustainable, profitable, and growing. We
+continued to grow YoY between 2021 and 2022. We were able to make some
+significant investments, particularly in establishing a new datacenter presence
+in Europe, and we intend to …</p>
+      <small>
+        via <a href="https://sourcehut.org/blog/" rel="noopener noreferrer">Blogs on Sourcehut</a>
+      </small>
+      <small>March 27, 2023</small>
+    </div>
+    
+  

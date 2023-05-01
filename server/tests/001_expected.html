@@ -1,0 +1,73 @@
+<div><div><div><p><img src="https://storage.googleapis.com/zenn-user-upload/29qvvrq9ajxlycwh0ls7b13jkd6g" alt=""></p>
+<p>Hi everyone!<br>My name is Yasuhiro Inami (<a href="https://twitter.com/inamiy" rel="noopener noreferrer">@inamiy</a>), and it's great to meet you in this book 😄</p>
+<p>This book is a compilation of the slides and speaker notes presented at <a href="https://iosdc.jp/2020/" rel="noopener noreferrer">iOSDC Japan 2020 Conference</a> under the title: <strong>"Functional iOS Architecture for SwiftUI"</strong> on Sep 21, 2020.</p>
+<ul>
+<li>Original (Japanese): <a href="https://zenn.dev/inamiy/books/795a2d9e6954abb46878" rel="noopener noreferrer">https://zenn.dev/inamiy/books/795a2d9e6954abb46878</a>
+</li>
+</ul>
+<p>By using ubiquitous techniques derived from Functional Programming and Category Theory, one can develop various UI Architectures using SwiftUI, or even for other frontend development.</p>
+<p>... But wait!</p>
+<p><strong>The whole topic in this book could be very theoretic and difficult for the first timer, even if you are an expert iOS developer.</strong></p>
+<p>So, don't rush to learn everything new at once.<br>Take some time reading other references too, and then come back here again to understand deeper, just like reading a college textbook 📚</p>
+<p>I hope you will enjoy the world of <strong>Functional iOS Architecture</strong> 🚀</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/3wgd3855t87gr203xccyugxrmu5z" alt=""></p>
+<p>Let me start with a short history.</p>
+<p>The whole topic of today's presentation started when I gave the very first talk at iOSDC Japan 2016 and iOS Conf SG (Singapore), almost 4 years ago.</p>
+<p>The talk title is called "Reactive State Machine".</p>
+<ul>
+<li><a href="https://speakerdeck.com/inamiy/reactive-state-machine-1" rel="noopener noreferrer">Reactive State Machine - Speaker Deck</a></li>
+<li><a href="https://www.youtube.com/watch?v=Oau4JjJP3nA" rel="noopener noreferrer">Reactive State Machine - iOS Conf SG 2016 - YouTube</a></li>
+</ul>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/127px5zv6c8mrth08zl4eu0sa68m" alt=""></p>
+<p>In this old talk, I talked about the mechanisms of how React, Redux, and Elm Architecture work, and how we can get inspiration from them to develop our own UI architecture in Swift.</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/koe3c11hdoozw2onyb9r3dm94snr" alt=""></p>
+<ul>
+<li>Proof of Concept
+<ul>
+<li>
+<a href="https://github.com/inamiy/ReactiveAutomaton" rel="noopener noreferrer">ReactiveAutomaton</a> (ReactiveSwift)</li>
+<li>
+<a href="https://github.com/inamiy/RxAutomaton" rel="noopener noreferrer">RxAutomaton</a> (RxSwift)</li>
+</ul>
+</li>
+<li>Others
+<ul>
+<li>cf. <a href="https://gist.github.com/inamiy/bd257c60e670de8a144b1f97a07bacec" rel="noopener noreferrer">React &amp; Elm inspired frameworks in Swift</a>
+</li>
+<li>
+<a href="https://github.com/inamiy/SwiftElm" rel="noopener noreferrer">SwiftElm</a>：Virtual UIKit-View framework</li>
+</ul>
+</li>
+</ul>
+<p>To summarize that, I mentioned about the future of iOS Architecture which is to migrate from MVVM to Elm Architecture for better state management, testability, and side-effect handling.</p>
+<p>And instead of having a reducer type <code>Reducer = (Action, State) -&gt; (State, Cmd)</code> in Elm, we can replace <code>Cmd</code> with Functional Reactive Programming (FRP) e.g. RxSwift's <code>Observable</code> to express the side-effects instead, so that we can use both good parts of Elm and FRP.</p>
+<p>Unfortunately, this hybrid approach wasn't quite successful at that time, just because we didn't have a nice declarative virtual-view framework like React yet in 2016.</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/8n2ckonb5jmn5pjvdzzh1ypcaytu" alt=""></p>
+<p>But time has passed, and Swift has evolved a lot.<br>Now we have a new power.</p>
+<p>Yes, you know this blue logo.</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/z0ykj581iq6nfjwgu6dao98t4s0n" alt=""></p>
+<p>It's <strong>SwiftUI</strong> !</p>
+<p>(You just heard the voice of Craig Federighi)</p>
+<p>In 2019, Apple announced SwiftUI for the next-generation view framework so that we could finally use the declarative UI with easy syntax compared to UIKit.<br>Even better, Apple also announced the companion FRP framework called <strong>Combine</strong> with a nicer type-safe interfaces.<br>As we all know, this year's WWDC was a phenomenal event for Swift developers.</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/3jk4igql2ranelzy0yt5ilwvcv7a" alt=""></p>
+<p>At that time, I was staying at home watching Keynote like a Zen monk because I didn't have a WWDC ticket.<br>But then, SwiftUI and Combine suddenly came out, and I was so freaking surprised to yell out:</p>
+<p><strong>I WAS WAITING FOR THISSSSSSSSSSS!!!!!</strong></p>
+<p>...Yes, the time has come, and I could finally try my Reactive State Machine with a full leverage of SwiftUI and Combine.</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/95uz1ouwle4kd68v6mo0a2vjbs1w" alt=""></p>
+<p>And during WWDC 2019 period, I created a new framework called <strong>Harvest</strong>, which runs on top of SwiftUI and Combine.<br>I will talk about this shortly.</p>
+<hr>
+<p><img src="https://storage.googleapis.com/zenn-user-upload/dpcrnt9znqif5ipf6ds4e7bl8t4d" alt=""></p>
+<ul>
+<li><a href="https://github.com/inamiy/Harvest" rel="noopener noreferrer">inamiy/Harvest</a></li>
+<li><a href="https://github.com/pointfreeco/swift-composable-architecture" rel="noopener noreferrer">pointfreeco/swift-composable-architecture</a></li>
+<li><a href="https://github.com/bow-swift/bow-arch" rel="noopener noreferrer">bow-swift/bow-arch</a></li>
+</ul>
+<p>So, here is the agenda of today's talk.<br>Not only about Harvest, but I will also talk about <strong>Composable Architecture</strong> which is getting popular among Swift community nowadays, and also <strong>Bow-Arch</strong> which is also the noteworthy functional framework.<br>Then, I will talk about the similarities and differences in these 3 frameworks, and also make a comparison with  <strong>React</strong> and <strong>Elm</strong> from web development.</p>
+</div></div></div>
