@@ -120,7 +120,8 @@ WEB_API_TOKEN=test
 And in the root directory:
 
 ```
-make -i dev
+cd client && yarn install
+cd .. && make -i dev
 ```
 
 Then you can see the page on `localhost:3000`.
