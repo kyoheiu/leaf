@@ -948,6 +948,16 @@ mod tests {
         assert_eq!(result, expected);
     }
 
+    #[test]
+    fn test_readability_004_short() {
+        // Short version of https://zenn.dev/msakuta/articles/fdea72a964dd08
+        let source = read_to_string("tests/004_source_short.html").unwrap();
+        let result = readability(&source).unwrap().html;
+        let expected = read_to_string("tests/004_expected.html").unwrap();
+        difft(result.clone(), expected.clone());
+        assert_eq!(result, expected);
+    }
+
    // #[test]
    // fn test_readability_005() {
    //     // https://deno.com/blog/you-dont-need-a-build-step
