@@ -33,7 +33,7 @@ lazy_static! {
     em|embed|i|img|input|kbd|label|mark|math|meter|noscript|object|output|progress|q|ruby|samp|script|select|small|span|strong|sub|sup|textarea|time|var|wbr)$"#).unwrap();
 }
 
-const DATA_TABLE_ATTR: &'static str = "XXX-DATA-TABLE";
+const DATA_TABLE_ATTR: &str = "XXX-DATA-TABLE";
 
 macro_rules! is_valid_by_line {
     ($text: expr) => {
@@ -452,7 +452,7 @@ fn has_ancestor_tag(sel: &Selection, tag_name: &str) -> bool {
     false
 }
 
-fn grab_article<'a>(doc: &'a Document, title: &str) -> String {
+fn grab_article(doc: &Document, title: &str) -> String {
     let mut elements_to_score = vec![];
 
     // Remove unrelated-ish nodes
