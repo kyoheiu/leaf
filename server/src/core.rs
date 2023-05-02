@@ -107,9 +107,9 @@ impl Core {
                     "beginning" => article.beginning = value.unwrap().to_owned(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
                     "archived" => {
-                        article.archived = if value.unwrap() == "0" { false } else { true }
+                        article.archived = value.unwrap() != "0"
                     }
-                    "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
+                    "liked" => article.liked = value.unwrap() != "0",
                     "timestamp" => article.timestamp = value.unwrap().to_owned(),
                     "tag" => article.tags.push(value.unwrap().to_owned()),
                     _ => {}
@@ -123,7 +123,7 @@ impl Core {
         for mut article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
-            self.db.iterate(state_list_tags(&id), |pairs| {
+            self.db.iterate(state_list_tags(id), |pairs| {
                 for &(column, value) in pairs.iter() {
                     match column {
                         "tag" => tags.push(value.unwrap().to_owned()),
@@ -159,7 +159,7 @@ impl Core {
             .args(
                 CHROME_ARGS
                     .iter()
-                    .map(|x| std::ffi::OsStr::new(x))
+                    .map(std::ffi::OsStr::new)
                     .collect(),
             )
             .build()
@@ -180,7 +180,7 @@ impl Core {
         info!("{}: {} ({})", ulid, title, url);
 
         self.db
-            .execute(state_add(&ulid, &url, &title, &html, &cover, &beginning))?;
+            .execute(state_add(&ulid, url, &title, &html, &cover, &beginning))?;
 
         //add to schema
         self.add_to_index(&ulid, &title, &parse_result.plain)?;
@@ -207,9 +207,9 @@ impl Core {
                     "position" => article.position = value.unwrap().parse().unwrap(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
                     "archived" => {
-                        article.archived = if value.unwrap() == "0" { false } else { true }
+                        article.archived = value.unwrap() != "0"
                     }
-                    "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
+                    "liked" => article.liked = value.unwrap() != "0",
                     "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
                     _ => {}
                 }
@@ -219,7 +219,7 @@ impl Core {
 
         //get tags
         let mut tags = vec![];
-        self.db.iterate(state_list_tags(&id), |pairs| {
+        self.db.iterate(state_list_tags(id), |pairs| {
             for &(column, value) in pairs.iter() {
                 match column {
                     "tag" => tags.push(value.unwrap().to_owned()),
@@ -285,9 +285,9 @@ impl Core {
                         "cover" => article.cover = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
                         "archived" => {
-                            article.archived = if value.unwrap() == "0" { false } else { true }
+                            article.archived = value.unwrap() != "0"
                         }
-                        "liked" => article.liked = if value.unwrap() == "0" { false } else { true },
+                        "liked" => article.liked = value.unwrap() != "0",
                         "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
                         _ => {}
                     }
@@ -301,7 +301,7 @@ impl Core {
         for mut article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
-            self.db.iterate(state_list_tags(&id), |pairs| {
+            self.db.iterate(state_list_tags(id), |pairs| {
                 for &(column, value) in pairs.iter() {
                     match column {
                         "tag" => tags.push(value.unwrap().to_owned()),

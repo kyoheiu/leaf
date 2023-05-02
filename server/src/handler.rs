@@ -95,7 +95,7 @@ pub async fn update_article(
 ) -> Result<(), Error> {
     if param.contains_key("toggle") {
         let to_toggle = param.get("toggle").unwrap();
-        core.toggle_state(&id, &to_toggle).await
+        core.toggle_state(&id, to_toggle).await
     } else if param.contains_key("pos") && param.contains_key("prog") {
         let pos = param.get("pos").unwrap().parse::<u16>().unwrap();
         let prog = param.get("prog").unwrap().parse::<u16>().unwrap();

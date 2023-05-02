@@ -123,7 +123,7 @@ fn remove_style(doc: &Document) {
 
 fn is_element_without_content(sel: &Selection) -> bool {
     let children = sel.children();
-    sel.text().trim().len() == 0
+    sel.text().trim().is_empty()
         && (children.length() == 0
             || children.length() == sel.select("br").length() + sel.select("hr").length())
 }
@@ -270,7 +270,7 @@ fn get_link_density(sel: &Selection) -> f32 {
         let href = a.attr("href");
         let co_efficient: f32 = match href {
             Some(h) => {
-                if RE_HASHURL.is_match(&h.to_string()) {
+                if RE_HASHURL.is_match(&h) {
                     0.3
                 } else {
                     1.0
@@ -304,7 +304,7 @@ fn replace_brs(doc: &Document) {
     let mut body = doc.select("body");
 
     let mut html: &str = &body.html();
-    let r = RE_REPLACE_BRS.replace_all(&html, "<p></p>");
+    let r = RE_REPLACE_BRS.replace_all(html, "<p></p>");
     html = &r;
     body.set_html(html);
 
@@ -317,8 +317,8 @@ fn replace_brs(doc: &Document) {
 }
 
 fn prep_document(doc: &Document) {
-    remove_style(&doc);
-    replace_brs(&doc);
+    remove_style(doc);
+    replace_brs(doc);
 
     doc.select("font").iter().for_each(|mut font| {
         let html: &str = &font.html();
@@ -391,7 +391,7 @@ fn is_whitespace(sel: &Selection) -> bool {
 
 // Initialize a node with the readability object. Also checks the
 // className/id for special names to add to its score.
-fn initialize_candidate_item<'a>(sel: Selection<'a>) -> CandidateItem<'a> {
+fn initialize_candidate_item(sel: Selection<'_>) -> CandidateItem<'_> {
     let mut content_score = 0.0;
     let tag_name = sel.get(0).unwrap().node_name().unwrap_or(StrTendril::new());
     match tag_name.to_lowercase().as_str() {
@@ -652,7 +652,7 @@ fn grab_article(doc: &Document, title: &str) -> String {
         .children()
         .iter()
         .for_each(|sibling| {
-            let append_sibling = if sibling.is_selection(&top_selection) {
+            let append_sibling = if sibling.is_selection(top_selection) {
                 true
             } else {
                 let bonus = if sibling.attr("class") == top_selection.attr("class")
@@ -675,15 +675,9 @@ fn grab_article(doc: &Document, title: &str) -> String {
 
                             if node_length > 80 && link_density < 0.25 {
                                 true
-                            } else if node_length < 80
+                            } else { node_length < 80
                                 && node_length > 0
-                                && link_density == 0.0
-                                && RE_P_IS_SENTENCE.is_match(&node_content)
-                            {
-                                true
-                            } else {
-                                false
-                            }
+                                && link_density == 0.0 && RE_P_IS_SENTENCE.is_match(&node_content) }
                         } else {
                             false
                         }
@@ -703,7 +697,7 @@ fn grab_article(doc: &Document, title: &str) -> String {
 }
 
 fn prep_article(content: &Selection, title: &str) {
-    mark_data_tables(&content);
+    mark_data_tables(content);
 
     // do not have to do this because we have ammonia.
     // remove_attrs(&content);
@@ -712,9 +706,9 @@ fn prep_article(content: &Selection, title: &str) {
     // remove_conditionally(&content, "fieldset");
     // remove_tag(&content, "object");
     // remove_tag(&content, "embed");
-    remove_tag(&content, "footer");
+    remove_tag(content, "footer");
     // remove_tag(&content, "link");
-    remove_tag(&content, "aside");
+    remove_tag(content, "aside");
 
     content.select("*").iter().for_each(|mut s| {
         let id = s.attr_or("id", "");
@@ -734,12 +728,12 @@ fn prep_article(content: &Selection, title: &str) {
 
     // Do these last as the previous stuff may have removed junk
     // that will affect these
-    remove_conditionally(&content, "table");
-    remove_conditionally(&content, "ul");
-    remove_conditionally(&content, "div");
+    remove_conditionally(content, "table");
+    remove_conditionally(content, "ul");
+    remove_conditionally(content, "div");
 
     content.select("h1").iter().for_each(|mut h1| {
-        if jaccard_distance(&h1.text().to_string(), title) < 0.75 {
+        if jaccard_distance(&h1.text(), title) < 0.75 {
             let html: &str = &h1.html();
             let mut h2 = "<h2>".to_string();
             h2.push_str(html);
@@ -820,7 +814,6 @@ fn mark_data_tables(s: &Selection) {
 
         if rows * colums > 10 {
             table.set_attr(DATA_TABLE_ATTR, "1");
-            return;
         }
     })
 }

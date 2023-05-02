@@ -41,7 +41,7 @@ pub fn state_list_up() -> String {
      ",
         CHUNK
     )
-    .to_owned()
+    
 }
 
 pub fn state_list_up_archived() -> String {
@@ -55,7 +55,7 @@ pub fn state_list_up_archived() -> String {
      ",
         CHUNK
     )
-    .to_owned()
+    
 }
 
 pub fn state_list_up_liked() -> String {
@@ -69,7 +69,7 @@ pub fn state_list_up_liked() -> String {
      ",
         CHUNK
     )
-    .to_owned()
+    
 }
 
 pub fn state_list_tags(id: &str) -> String {
