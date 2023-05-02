@@ -509,14 +509,16 @@ fn grab_article(doc: &Document, title: &str) -> String {
         } else if sel.is("div") {
             let mut children_of_p = vec![];
             for child in sel.children().iter() {
-                if is_phrasing_content(&child) && is_whitespace(&child) {
+                if is_phrasing_content(&child)
+                    && (!children_of_p.is_empty() || !is_whitespace(&child))
+                {
                     children_of_p.push(child);
                 }
             }
             if !children_of_p.is_empty() {
                 let mut p = String::new();
                 for child in children_of_p {
-                    p.push_str(&child.html().to_string());
+                    p.push_str(&child.html());
                 }
                 p = format!("<p>{}</p>", p);
                 sel.replace_with_html(p.as_str());
