@@ -545,12 +545,6 @@ fn grab_article(doc: &Document, title: &str) -> String {
         let mut parent = e.parent();
         let mut depth = 0;
         while parent.exists() {
-            if parent.has_class("markdown-body") {
-                println!("Here is markdown-body.");
-                if parent.parent().exists() {
-                    println!("Parent exists.");
-                }
-            }
             ancestors.push(parent.clone());
             depth += 1;
             if depth == 5 {
