@@ -386,7 +386,7 @@ fn is_phrasing_content(sel: &Selection) -> bool {
 }
 
 fn is_whitespace(sel: &Selection) -> bool {
-    sel.text().len() == 0 || sel.is("br")
+    (sel.get(0).unwrap().is_text() && sel.text().len() == 0) || sel.is("br")
 }
 
 // Initialize a node with the readability object. Also checks the
