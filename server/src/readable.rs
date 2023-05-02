@@ -560,7 +560,7 @@ fn grab_article(doc: &Document, title: &str) -> String {
         }
 
         // Exclude nodes with no ancestor.
-        if ancestors.len() == 0 {
+        if ancestors.is_empty() {
             continue;
         }
 
