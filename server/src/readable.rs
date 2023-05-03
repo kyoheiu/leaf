@@ -1,7 +1,7 @@
 // Blatantly imported from https://github.com/importcjj/nipper/blob/master/examples/readability.rs
 // Modified according to https://github.com/mozilla/readability v.0.4.3
 
-use colored::Colorize;
+
 use html5ever::tendril;
 use html5ever::tendril::StrTendril;
 use nipper::Document;
