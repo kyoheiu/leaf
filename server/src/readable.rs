@@ -1,37 +1,60 @@
 // Blatantly imported from https://github.com/importcjj/nipper/blob/master/examples/readability.rs
 // Modified according to https://github.com/mozilla/readability v.0.4.3
 
+use colored::Colorize;
 use html5ever::tendril;
 use html5ever::tendril::StrTendril;
 use nipper::Document;
+use nipper::NodeData;
+use nipper::NodeId;
+use nipper::NodeRef;
 use nipper::Selection;
+use once_cell::sync::Lazy;
 use regex::Regex;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::ops::Deref;
-use once_cell::sync::Lazy;
-use colored::Colorize;
 
 use crate::error::Error;
 
-    static RE_REPLACE_BRS: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i)(<br[^>]*>[ \n\r\t]*){2,}"#).unwrap());
-    static RE_TITLE_SEPARATOR: Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i) [\|\-\\/>»] "#).unwrap());
-    static RE_TITLE_HIERARCHY_SEP:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)[\\/>»]"#).unwrap());
-    static RE_BYLINE:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)byline|author|dateline|writtenby|p-author"#).unwrap());
-    static RE_UNLIKELY_CANDIDATES:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap());
-    static RE_OK_MAYBE_CANDIDATE:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)and|article|body|column|content|main|shadow"#).unwrap());
-    static RE_UNLIKELY_ROLES:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap());
-    static RE_POSITIVE:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap());
-    static RE_NEGATIVE:Lazy<Regex> =Lazy::new(||  Regex::new(r#"-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap());
-    static RE_DIV_TO_P_ELEMENTS:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)<(a|blockquote|dl|div|img|ol|p|pre|table|ul)"#).unwrap());
-    static RE_VIDEOS:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)//(www\.)?(dailymotion|youtube|youtube-nocookie|player\.vimeo)\.com"#).unwrap());
-    static RE_P_IS_SENTENCE:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)\.( |$)"#).unwrap());
-    static RE_COMMENTS:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)<!--[^>]+-->"#).unwrap());
-    static RE_KILL_BREAKS:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)(<br\s*/?>(\s|&nbsp;?)*)+"#).unwrap());
-    static RE_SPACES:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)\s{2,}|\n+"#).unwrap());
-    static RE_HASHURL:Lazy<Regex> =Lazy::new(||  Regex::new(r#"^#.+"#).unwrap());
-    static RE_SHARE_ELEMENT:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)(\b|_)(share|sharedaddy)(\b|_)"#).unwrap());
-    static RE_PHRASING_ELEMS:Lazy<Regex> =Lazy::new(||  Regex::new(r#"(?i)^(abbr|audio|b|bdo|br|button|cite|code|data|datalist|dfn
-    em|embed|i|img|input|kbd|label|mark|math|meter|noscript|object|output|progress|q|ruby|samp|script|select|small|span|strong|sub|sup|textarea|time|var|wbr)$"#).unwrap());
+static RE_REPLACE_BRS: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"(?i)(<br[^>]*>[ \n\r\t]*){2,}"#).unwrap());
+static RE_TITLE_SEPARATOR: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i) [\|\-\\/>»] "#).unwrap());
+static RE_TITLE_HIERARCHY_SEP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i)[\\/>»]"#).unwrap());
+static RE_BYLINE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"(?i)byline|author|dateline|writtenby|p-author"#).unwrap());
+static RE_UNLIKELY_CANDIDATES: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"(?i)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap()
+});
+static RE_OK_MAYBE_CANDIDATE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"(?i)and|article|body|column|content|main|shadow"#).unwrap());
+static RE_UNLIKELY_ROLES: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"(?i)menu|menubar|complementary|navigation|alert|alertdialog|dialog"#).unwrap()
+});
+static RE_POSITIVE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"(?i)article|body|content|entry|hentry|h-entry|main|page|pagination|post|text|blog|story"#).unwrap()
+});
+static RE_NEGATIVE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"-ad-|hidden|^hid$| hid$| hid |^hid |banner|combx|comment|com-|contact|foot|footer|footnote|gdpr|masthead|media|meta|outbrain|promo|related|scroll|share|shoutbox|sidebar|skyscraper|sponsor|shopping|tags|tool|widget"#).unwrap()
+});
+static RE_DIV_TO_P_ELEMENTS: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"(?i)<(a|blockquote|dl|div|img|ol|p|pre|table|ul)"#).unwrap());
+static RE_VIDEOS: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"(?i)//(www\.)?(dailymotion|youtube|youtube-nocookie|player\.vimeo)\.com"#)
+        .unwrap()
+});
+static RE_P_IS_SENTENCE: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i)\.( |$)"#).unwrap());
+static RE_COMMENTS: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i)<!--[^>]+-->"#).unwrap());
+static RE_KILL_BREAKS: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"(?i)(<br\s*/?>(\s|&nbsp;?)*)+"#).unwrap());
+static RE_SPACES: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i)\s{2,}|\n+"#).unwrap());
+static RE_HASHURL: Lazy<Regex> = Lazy::new(|| Regex::new(r#"^#.+"#).unwrap());
+static RE_SHARE_ELEMENT: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r#"(?i)(\b|_)(share|sharedaddy)(\b|_)"#).unwrap());
+static RE_PHRASING_ELEMS: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"(?i)^(abbr|audio|b|bdo|br|button|cite|code|data|datalist|dfn
+    em|embed|i|img|input|kbd|label|mark|math|meter|noscript|object|output|progress|q|ruby|samp|script|select|small|span|strong|sub|sup|textarea|time|var|wbr)$"#).unwrap()
+});
 
 const DATA_TABLE_ATTR: &str = "XXX-DATA-TABLE";
 
