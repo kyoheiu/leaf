@@ -38,14 +38,14 @@
  四分木メッシュの動的更新</h1>
 <p>四分木の構築は比較的低コストなので、毎フレーム行うこともできます。<br>これによって動的な障害物を回避するようなグローバルな経路探索も可能になります。<sup><a rel="noopener noreferrer">[1]</a></sup></p>
 <p>まず、セルの取りうる状態を、占有と非占有の二通りだけではなく、動的な障害物がある場合も状態に加えます。<br>swarm-rs では下記のような列挙型にしています。</p>
-<div><pre><code><span>#[derive(Debug, Clone, Copy, PartialEq, Eq)]</span>
+<div><div><pre><code><span>#[derive(Debug, Clone, Copy, PartialEq, Eq)]</span>
 <span>pub</span> <span>enum</span> <span>CellState</span> <span>{</span>
     <span>Obstacle</span><span>,</span>
     <span>Occupied</span><span>(</span><span>usize</span><span>)</span><span>,</span>
     <span>Free</span><span>,</span>
     <span>Mixed</span><span>,</span>
 <span>}</span>
-</code></pre></div><p><code>Occupied(usize)</code> がエージェントが占有しているセルの状態です。ペイロードの <code>usize</code> はエージェントの id を示しています。これは経路探索で自分自身でブロックされてしまうのを回避するためです。</p>
+</code></pre></div></div><p><code>Occupied(usize)</code> がエージェントが占有しているセルの状態です。ペイロードの <code>usize</code> はエージェントの id を示しています。これは経路探索で自分自身でブロックされてしまうのを回避するためです。</p>
 <p><code>Mixed</code> はノードが混ざった状態ピクセルを持ち、子ノードを持つ(非葉ノードである)ということを示します。</p>
 <p>下の図では、緑の正方形は空いている葉で、赤い正方形は静的な障害物で占有された葉で、紫は動的な障害物(エージェント)で占有された葉です。<br>それぞれのエージェントは別々の経路を取る傾向が見て取れると思います。<br>これはお互いを障害物として経路探索から除外しているからです。</p>
 <p><img src="https://user-images.githubusercontent.com/2798715/214132497-8cad42db-3a47-43c8-8651-a36cfb30e030.png" alt="image"></p>
@@ -55,7 +55,7 @@
 <p>さらに大きなマップに対応するために、最適化をもっと進めることを考えます。</p>
 <p>占有グリッドのほとんどのピクセルは変化しません。<br>エージェントがいるセルだけが変化します。<br>従って、変化があった部分だけを更新するようにアルゴリズムを最適化すれば、さらに高速になると考えられます。</p>
 <p>まず、準備するのは2つのキャッシュマップです。<br>キャッシュマップとは、占有グリッドと同じ大きさを持つ2次元配列で、要素は前に述べた <code>CellState</code> です。<br>一つ目のキャッシュマップは現在のマップの状態を表し、二つ目のキャッシュマップは一つ前のマップの状態を表します。<br>これはコード中では次のような構造体で <code>map</code> および <code>prev_map</code> としてモデル化されています。</p>
-<div><pre><code><span>pub</span> <span>struct</span> <span>CacheMap</span> <span>{</span>
+<div><div><pre><code><span>pub</span> <span>struct</span> <span>CacheMap</span> <span>{</span>
     <span>/// An internal map having the size (2 ^ toplevel) ^ 2, indicating index into [`cache_buf`]</span>
     map<span>:</span> <span>Vec</span><span>&lt;</span><span>u32</span><span>&gt;</span><span>,</span>
     <span>/// An array of actual values in [`cache_map`], extracted to reduce the pixel size.</span>
@@ -66,7 +66,7 @@
     <span>pub</span> fresh_cells<span>:</span> <span>HashMap</span><span>&lt;</span><span>[</span><span>i32</span><span>;</span> <span>2</span><span>]</span><span>,</span> <span>usize</span><span>&gt;</span><span>,</span>
     prev_map<span>:</span> <span>Option</span><span>&lt;</span><span>Vec</span><span>&lt;</span><span>u32</span><span>&gt;&gt;</span><span>,</span>
 <span>}</span>
-</code></pre></div><p>ちょっとした最適化を施してあり、キャッシュマップは <code>CellState</code> そのものの二次元配列ではなく、 <code>buf: Vec&lt;CellState&gt;</code> へのインデックスを <code>u32</code> で表しています。これは <code>CellState</code> のサイズは 64bit コンピュータでは 16 バイトと大きくなりがちなので、大きな配列を避けるための indirection です。 <sup><a rel="noopener noreferrer">[2]</a></sup><br>例えば、 512 x 512 ピクセルのマップでは、 16 バイトの要素の配列は 4MB になります。<br>u32 であれば要素は 4 バイトなので 1MB で済みます。<br>エージェントの id が 42億を超えるような値にならない限りは、オーバーフローの心配もないでしょう。<br>メモリ上のマップのサイズを抑えることで、 CPU のキャッシュのヒット率を上げることを期待しています。</p>
+</code></pre></div></div><p>ちょっとした最適化を施してあり、キャッシュマップは <code>CellState</code> そのものの二次元配列ではなく、 <code>buf: Vec&lt;CellState&gt;</code> へのインデックスを <code>u32</code> で表しています。これは <code>CellState</code> のサイズは 64bit コンピュータでは 16 バイトと大きくなりがちなので、大きな配列を避けるための indirection です。 <sup><a rel="noopener noreferrer">[2]</a></sup><br>例えば、 512 x 512 ピクセルのマップでは、 16 バイトの要素の配列は 4MB になります。<br>u32 であれば要素は 4 バイトなので 1MB で済みます。<br>エージェントの id が 42億を超えるような値にならない限りは、オーバーフローの心配もないでしょう。<br>メモリ上のマップのサイズを抑えることで、 CPU のキャッシュのヒット率を上げることを期待しています。</p>
 <p>さて、差分の検出には、単純に現在のキャッシュマップと前のキャッシュマップを比較して、違いを見つけるということをします。<br>このためには全てのピクセルを比較しながらスキャンしないといけないので、マップのピクセル数に比例した計算量ですが<sup><a rel="noopener noreferrer">[3]</a></sup>、四分木の更新は次に述べるアルゴリズムで変更のあった部分だけに絞られます。</p>
 <ol>
 <li>現在のキャッシュマップにエージェントの位置を反映した状態ラベルを書き込む</li>
