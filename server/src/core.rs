@@ -106,9 +106,7 @@ impl Core {
                     "cover" => article.cover = value.unwrap().to_owned(),
                     "beginning" => article.beginning = value.unwrap().to_owned(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
-                    "archived" => {
-                        article.archived = value.unwrap() != "0"
-                    }
+                    "archived" => article.archived = value.unwrap() != "0",
                     "liked" => article.liked = value.unwrap() != "0",
                     "timestamp" => article.timestamp = value.unwrap().to_owned(),
                     "tag" => article.tags.push(value.unwrap().to_owned()),
@@ -156,12 +154,7 @@ impl Core {
         let option = LaunchOptionsBuilder::default()
             .sandbox(false)
             .path(Some(PathBuf::from("/usr/bin/chromium")))
-            .args(
-                CHROME_ARGS
-                    .iter()
-                    .map(std::ffi::OsStr::new)
-                    .collect(),
-            )
+            .args(CHROME_ARGS.iter().map(std::ffi::OsStr::new).collect())
             .build()
             .unwrap();
         let browser = Browser::new(option)?;
@@ -206,9 +199,7 @@ impl Core {
                     "html" => article.html = value.unwrap().to_owned(),
                     "position" => article.position = value.unwrap().parse().unwrap(),
                     "progress" => article.progress = value.unwrap().parse().unwrap(),
-                    "archived" => {
-                        article.archived = value.unwrap() != "0"
-                    }
+                    "archived" => article.archived = value.unwrap() != "0",
                     "liked" => article.liked = value.unwrap() != "0",
                     "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
                     _ => {}
@@ -284,9 +275,7 @@ impl Core {
                         "beginning" => article.beginning = value.unwrap().to_owned(),
                         "cover" => article.cover = value.unwrap().to_owned(),
                         "progress" => article.progress = value.unwrap().parse().unwrap(),
-                        "archived" => {
-                            article.archived = value.unwrap() != "0"
-                        }
+                        "archived" => article.archived = value.unwrap() != "0",
                         "liked" => article.liked = value.unwrap() != "0",
                         "timestamp" => article.timestamp = value.unwrap().parse().unwrap(),
                         _ => {}
