@@ -64,13 +64,6 @@ macro_rules! is_valid_by_line {
     };
 }
 
-macro_rules! has_single_p_inside_element {
-    ($sel: expr) => {{
-        let children = $sel.children();
-        children.length() == 1 && children.is("p")
-    }};
-}
-
 macro_rules! set_node_tag {
     ($sel: expr, $tag: expr) => {{
         let html = $sel.html();
@@ -142,6 +135,11 @@ fn remove_script(doc: &Document) {
 
 fn remove_style(doc: &Document) {
     doc.select("style").remove();
+}
+
+fn has_single_p_inside_element(sel: &Selection) -> bool {
+    let children = sel.children();
+    children.length() == 1 && children.is("p")
 }
 
 fn is_element_without_content(sel: &Selection) -> bool {
