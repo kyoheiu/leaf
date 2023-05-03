@@ -5,13 +5,9 @@ use colored::Colorize;
 use html5ever::tendril;
 use html5ever::tendril::StrTendril;
 use nipper::Document;
-use nipper::NodeData;
-use nipper::NodeId;
-use nipper::NodeRef;
 use nipper::Selection;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::ops::Deref;
 
@@ -514,6 +510,11 @@ fn grab_article(doc: &Document, title: &str) -> String {
             && !sel.is("body")
             && !sel.is("a")
         {
+            sel.remove();
+            continue;
+        }
+
+        if RE_UNLIKELY_ROLES.is_match(&sel.attr_or("role", "")) {
             sel.remove();
             continue;
         }
