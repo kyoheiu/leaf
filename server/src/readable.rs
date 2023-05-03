@@ -694,49 +694,56 @@ fn grab_article(doc: &Document, title: &str) -> String {
     // that might also be related. Things like preambles, content split by ads
     // that we removed, etc.
     let top_selection = &top_candidate.sel;
-    top_selection
-        .parent()
-        .children()
-        .iter()
-        .for_each(|sibling| {
-            let append_sibling = if sibling.is_selection(top_selection) {
-                true
-            } else {
-                let bonus = if sibling.attr("class") == top_selection.attr("class")
-                    && top_selection.attr("class").is_some()
-                {
-                    top_candidate.score * 0.2
+    if !top_selection.parent().exists() {
+        content.append_html(top_selection.html());
+    } else {
+        top_selection
+            .parent()
+            .children()
+            .iter()
+            .for_each(|sibling| {
+                let append_sibling = if sibling.is_selection(top_selection) {
+                    true
                 } else {
-                    0.0
-                };
+                    let bonus = if sibling.attr("class") == top_selection.attr("class")
+                        && top_selection.attr("class").is_some()
+                    {
+                        top_candidate.score * 0.2
+                    } else {
+                        0.0
+                    };
 
-                let id = sibling.get(0).unwrap().id;
-                let score_threshold = f32::max(10.0, top_candidate.score * 0.2);
-                match candidates.get(&id) {
-                    Some(candidate) if candidate.score + bonus > score_threshold => true,
-                    _ => {
-                        if sibling.is("p") {
-                            let link_density = get_link_density(&sibling);
-                            let node_content = sibling.text();
-                            let node_length = node_content.len();
+                    let id = sibling.get(0).unwrap().id;
+                    let score_threshold = f32::max(10.0, top_candidate.score * 0.2);
+                    match candidates.get(&id) {
+                        Some(candidate) if candidate.score + bonus > score_threshold => true,
+                        _ => {
+                            if sibling.is("p") {
+                                let link_density = get_link_density(&sibling);
+                                let node_content = sibling.text();
+                                let node_length = node_content.len();
 
-                            if node_length > 80 && link_density < 0.25 {
-                                true
-                            } else { node_length < 80
-                                && node_length > 0
-                                && link_density == 0.0 && RE_P_IS_SENTENCE.is_match(&node_content) }
-                        } else {
-                            false
+                                if node_length > 80 && link_density < 0.25 {
+                                    true
+                                } else {
+                                    node_length < 80
+                                        && node_length > 0
+                                        && link_density == 0.0
+                                        && RE_P_IS_SENTENCE.is_match(&node_content)
+                                }
+                            } else {
+                                false
+                            }
                         }
                     }
-                }
-            };
+                };
 
-            if append_sibling {
-                let html = sibling.html();
-                content.append_html(html);
-            }
-        });
+                if append_sibling {
+                    let html = sibling.html();
+                    content.append_html(html);
+                }
+            });
+    }
 
     prep_article(&content, title);
 
