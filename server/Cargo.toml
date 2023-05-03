@@ -18,7 +18,7 @@ ammonia = "3.3.0"
 tracing-subscriber = "0.3.16"
 tracing = "0.1.37"
 unicode-width = "0.1.10"
-nipper = {git = "https://github.com/kyoheiu/nipper"}
+nipper = {git = "https://github.com/kyoheiu/nipper", rev = "f6e56776c9a6d7075916aa2f8ec06429823f319b"}
 regex = "1.7.2"
 html5ever = "0.26.0"
 headless_chrome = "1.0.5"

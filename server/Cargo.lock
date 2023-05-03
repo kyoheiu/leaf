@@ -1147,7 +1147,7 @@ checksum = "e4a24736216ec316047a1fc4252e27dabb04218aa4a3f37c6e7ddbf1f9782b54"
 [[package]]
 name = "nipper"
 version = "0.1.9"
-source = "git+https://github.com/kyoheiu/nipper#54e044eaac2c7533414afa9f2e4f807cf67f21b3"
+source = "git+https://github.com/kyoheiu/nipper?rev=f6e56776c9a6d7075916aa2f8ec06429823f319b#f6e56776c9a6d7075916aa2f8ec06429823f319b"
 dependencies = [
  "cssparser",
  "html5ever 0.25.2",
