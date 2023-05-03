@@ -20,7 +20,7 @@ static RE_TITLE_HIERARCHY_SEP: Lazy<Regex> = Lazy::new(|| Regex::new(r#"(?i)[\\/
 static RE_BYLINE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r#"(?i)byline|author|dateline|writtenby|p-author"#).unwrap());
 static RE_UNLIKELY_CANDIDATES: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r#"(?i)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote"#).unwrap()
+    Regex::new(r#"(?i)-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|extra|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote|copy.*icon"#).unwrap()
 });
 static RE_OK_MAYBE_CANDIDATE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r#"(?i)and|article|body|column|content|main|shadow"#).unwrap());
