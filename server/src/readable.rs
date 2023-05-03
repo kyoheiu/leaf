@@ -528,24 +528,47 @@ fn grab_article(doc: &Document, title: &str) -> String {
         if sel.is("section,h2,h3,h4,h5,h6,p,td,pre") {
             elements_to_score.push(sel);
         } else if sel.is("div") {
-            let mut children_of_p = vec![];
-            for child in sel.children().iter() {
-                if is_phrasing_content(&child)
-                    && (!children_of_p.is_empty() || !is_whitespace(&child))
-                {
-                    children_of_p.push(child);
+            let mut p_children = vec![];
+            let len = sel.children().length();
+            for (i, mut child) in sel.children().iter().enumerate() {
+                if i + 1 == len {
+                    if is_phrasing_content(&child) {
+                        if !p_children.is_empty() || !is_whitespace(&child) {
+                            p_children.push(child.html());
+                        }
+                        let mut p = String::new();
+                        for c in p_children.clone() {
+                            p.push_str(&c);
+                        }
+                        p = format!("<p>{}</p>", p);
+                        child.replace_with_html(p);
+                    } else if !p_children.is_empty() {
+                        let mut p = String::new();
+                        for c in p_children {
+                            p.push_str(&c);
+                        }
+                        p = format!("<p>{}</p>", p);
+                        child.replace_with_html(p);
+                        p_children = vec![];
+                    }
                 }
-            }
-            if !children_of_p.is_empty() {
-                let mut p = String::new();
-                for child in children_of_p {
-                    p.push_str(&child.html());
+                if is_phrasing_content(&child) {
+                    if !p_children.is_empty() || !is_whitespace(&child) {
+                        p_children.push(child.html());
+                        child.remove();
+                    }
+                } else if !p_children.is_empty() {
+                    let mut p = String::new();
+                    for c in p_children {
+                        p.push_str(&c);
+                    }
+                    p = format!("<p>{}</p>", p);
+                    child.replace_with_html(p);
+                    p_children = vec![];
                 }
-                p = format!("<p>{}</p>", p);
-                sel.replace_with_html(p.as_str());
             }
 
-            if has_single_p_inside_element!(&sel) && get_link_density(&sel) < 0.25 {
+            if has_single_p_inside_element(&sel) && get_link_density(&sel) < 0.25 {
                 let node = sel.children();
                 sel.replace_with_selection(&node);
                 elements_to_score.push(sel);
