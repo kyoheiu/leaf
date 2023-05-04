@@ -32,6 +32,11 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
   [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
   you can easily add new articles.
 
+## New release
+
+### v0.3.11 (2023-05-04)
+- Fix the content-extractor.
+
 ## Deploy
 
 1. You just need 2 files: `docker-compose.yml` and `.env.production`.
@@ -41,7 +46,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.3.10
+    image: docker.io/kyoheiudev/leaf-server:0.3.11
     container_name: leaf-server
     volumes:
       - ./server/databases:/var/leaf/databases
@@ -49,7 +54,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.3.10
+    image: docker.io/kyoheiudev/leaf-client:0.3.11
     container_name: leaf-client
     volumes:
       - ./path/to/.env.production:/app/.env.production
