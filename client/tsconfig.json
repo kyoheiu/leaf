@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "paths": {
       "@": ["./*"],
-      "@components": ["/components"]
+      "@/components/*": ["components/*"],
+      "@/auth": ["pages/api/auth/[...nextauth].js"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
