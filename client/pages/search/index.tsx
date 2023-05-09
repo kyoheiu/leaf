@@ -1,11 +1,11 @@
 import { WrappedData, ElementKind, ArticleData } from "../../types/types";
-import { Header } from "../../components/Header";
-import ArticleElement from "../../components/ArticleElement";
+import { Header } from "@/components/Header";
+import ArticleElement from "@/components/ArticleElement";
+import { footerImage } from "@/components/Footer";
+import { PageInfo } from "@/components/PageInfo";
 import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";
 import Stack from "@mui/material/Stack";
-import { footerImage } from "../../components/Footer";
-import { PageInfo } from "../../components/PageInfo";
 
 type Data = {
 	query: string | string[];

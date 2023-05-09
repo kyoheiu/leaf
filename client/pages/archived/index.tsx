@@ -4,15 +4,15 @@ import {
 	WrappedData,
 	PaginationKind
 } from "../../types/types";
-import ArticleElement from "../../components/ArticleElement";
-import { Header } from "../../components/Header";
+import ArticleElement from "@/components/ArticleElement";
+import { Header } from "@/components/Header";
+import { PageInfo } from "@/components/PageInfo";
+import { Pagination } from "@/components/Pagination";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import Stack from "@mui/material/Stack";
 import { getArchivedArticles, reloadArchivedArticles } from "../api/articles/archived";
-import { PageInfo } from "../../components/PageInfo";
 import { useRouter } from "next/router";
-import { Pagination } from "../../components/Pagination";
 
 type Data = Articles;
 

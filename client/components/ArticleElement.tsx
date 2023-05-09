@@ -9,7 +9,7 @@ import Grid from "@mui/material/Grid";
 import LinearProgress from "@mui/material/LinearProgress";
 import Avatar from "@mui/material/Avatar";
 import { RiHeart2Line, RiHeart2Fill, RiInboxArchiveLine, RiInboxUnarchiveFill, RiDeleteBin2Line } from "react-icons/ri";
-import LinkButton from "../components/LinkButton";
+import LinkButton from "@/components/LinkButton";
 
 export default function ArticleElement(props: ElementProps) {
 	const [article, setArticle] = useState(props.element);

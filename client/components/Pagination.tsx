@@ -1,4 +1,4 @@
-import { footerImage } from "../components/Footer";
+import { footerImage } from "@/components/Footer";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl"
 import { Typography } from "@mui/material";
 import Link from "next/link";

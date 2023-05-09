@@ -9,11 +9,11 @@ import Link from "@mui/material/Link";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
 import Image from "next/image";
-import { LOGO_SIZE } from "../../components/Header";
+import { LOGO_SIZE } from "@/components/Header";
+import Tags from "@/components/Tags";
+import LinkButton from "@/components/LinkButton";
 import AppBar from "@mui/material/AppBar";
 import { ColorMode } from "../../context/ColorMode";
-import Tags from "../../components/Tags";
-import LinkButton from "../../components/LinkButton";
 
 type Data = ArticleContent;
 

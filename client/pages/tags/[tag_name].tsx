@@ -4,15 +4,15 @@ import {
 	ElementKind,
 	Articles,
 } from "../../types/types";
-import { Header } from "../../components/Header";
-import ArticleElement from "../../components/ArticleElement";
+import { Header } from "@/components/Header";
+import ArticleElement from "@/components/ArticleElement";
+import { PageInfo } from "@/components/PageInfo";
+import { Pagination } from "@/components/Pagination";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { getTagList, reloadTagList } from "../api/tags/[tag_name]";
 import Stack from "@mui/material/Stack";
-import { PageInfo } from "../../components/PageInfo";
 import { useRouter } from "next/router";
-import { Pagination } from "../../components/Pagination";
 
 type Data = Articles;
 
