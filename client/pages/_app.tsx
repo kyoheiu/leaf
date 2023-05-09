@@ -4,6 +4,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect, useState } from "react";
 import React from "react";
 import { ColorMode } from "../context/ColorMode";
+import { Protected } from "../context/isProtected";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { JetBrains_Mono, Lora, Open_Sans } from 'next/font/google';
@@ -15,6 +16,13 @@ const openSans = Open_Sans({ subsets: ['latin'] });
 
 function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
 	const [isLight, setIsLight] = useState<boolean>(true);
+	let p = false;
+
+	if (process.env.CREDENTIALS_ID && process.env.GITHUB_ID) {
+		p = true;
+	}
+	const [isProtected, setIsProtected] = useState<boolean>(p
+	);
 
 	useEffect(() => {
 		const session = globalThis.sessionStorage.getItem("leafTheme");
@@ -126,14 +134,17 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
           --opensans-font: ${openSans.style.fontFamily};
         }
       `}</style>
-		<ColorMode.Provider value={{ isLight, setIsLight }}>
-			<ThemeProvider theme={isLight ? light : dark}>
-				<CssBaseline />
-				<SessionProvider session={pageProps.session}>
-					<Component {...pageProps} />
-				</SessionProvider>
-			</ThemeProvider>
-		</ColorMode.Provider></>
+		<Protected.Provider value={{ isProtected, setIsProtected }}>
+			<ColorMode.Provider value={{ isLight, setIsLight }}>
+				<ThemeProvider theme={isLight ? light : dark}>
+					<CssBaseline />
+					<SessionProvider session={pageProps.session}>
+						<Component {...pageProps} />
+					</SessionProvider>
+				</ThemeProvider>
+			</ColorMode.Provider>
+		</Protected.Provider>
+	</>
 	);
 }
 
