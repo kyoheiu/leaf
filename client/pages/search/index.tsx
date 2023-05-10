@@ -15,7 +15,6 @@ type Data = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  console.error(process.env.GITHUB_CLIENT_ID);
   if (process.env.GITHUB_CLIENT_ID) {
     const session = await getServerSession(
       context.req,
