@@ -27,7 +27,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
   - full-text search (works only with languages based on the Latin script for
     now)
   - light/dark theme
-  - built-in auth (requires GitHub account)
+  - built-in auth (Optional: Requires GitHub account)
 - With the
   [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
   you can easily add new articles.
