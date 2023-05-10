@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/auth";
 
 export const getArticleContent = async (id: string) => {
   const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}`;
@@ -10,7 +12,7 @@ export const getArticleContent = async (id: string) => {
 const toggleStatus = async (id: string, toggle: string) => {
   return await fetch(
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?toggle=${toggle}`,
-    { method: "POST" },
+    { method: "POST" }
   );
 };
 
@@ -20,7 +22,7 @@ const manageTag = async (id: string, kind: string, tag: string) => {
     {
       method: "POST",
       body: tag,
-    },
+    }
   );
 };
 
@@ -29,20 +31,27 @@ const deleteArticle = async (id: string) => {
     `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}`,
     {
       method: "DELETE",
-    },
+    }
   );
 };
 
 const updateProgress = async (id: string, pos: string, prog: string) => {
-  const target =
-    `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?pos=${pos}&prog=${prog}`;
+  const target = `http://${process.env.NEXT_PUBLIC_HOST}:8000/articles/${id}?pos=${pos}&prog=${prog}`;
   return await fetch(target, { method: "POST" });
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
+  //Check the cookie if env variable is set
+  if (process.env.GITHUB_CLIENT_ID) {
+    const session = await getServerSession(req, res, authOptions);
+    if (!session) {
+      res.status(303).setHeader("Location", "/").end();
+    }
+  }
+
   const query = req.query;
   if (req.method === "GET") {
     const data = await getArticleContent(query.id as string);
@@ -52,7 +61,7 @@ export default async function handler(
       const response = await updateProgress(
         query.id as string,
         query.pos as string,
-        query.prog as string,
+        query.prog as string
       );
       if (!response.ok) {
         res.status(404).end();
@@ -62,7 +71,7 @@ export default async function handler(
     } else if (query.toggle) {
       const response = await toggleStatus(
         query.id as string,
-        query.toggle as string,
+        query.toggle as string
       );
       if (!response.ok) {
         return res.status(404).end();
@@ -74,7 +83,7 @@ export default async function handler(
       const response = await manageTag(
         query.id as string,
         query.kind as string,
-        tag,
+        tag
       );
       if (!response.ok) {
         res.status(500).send(response.status);
