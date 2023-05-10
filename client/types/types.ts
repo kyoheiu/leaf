@@ -1,6 +1,6 @@
 export interface Articles {
   data: ArticleData[];
-  is_last: boolean
+  is_last: boolean;
 }
 
 export interface ArticleData {
@@ -45,7 +45,7 @@ export enum PaginationKind {
   Top,
   Archived,
   Liked,
-  Tags
+  Tags,
 }
 
 export interface ElementProps {
@@ -54,6 +54,6 @@ export interface ElementProps {
 }
 
 export interface TagsProps {
-  id: string,
+  id: string;
   tags: string[];
 }

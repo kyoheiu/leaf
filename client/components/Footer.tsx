@@ -4,10 +4,20 @@ import { useContext } from "react";
 import { ColorMode } from "../context/ColorMode";
 
 export const footerImage = () => {
-	const { isLight } = useContext(ColorMode);
-	return (
-		isLight ?
-			<Image src="/logo_light.png" alt="leaf" height={LOGO_SIZE} width={LOGO_SIZE} /> :
-			<Image src="/logo_dark.png" alt="leaf" height={LOGO_SIZE} width={LOGO_SIZE} />
-	);
+  const { isLight } = useContext(ColorMode);
+  return isLight ? (
+    <Image
+      src="/logo_light.png"
+      alt="leaf"
+      height={LOGO_SIZE}
+      width={LOGO_SIZE}
+    />
+  ) : (
+    <Image
+      src="/logo_dark.png"
+      alt="leaf"
+      height={LOGO_SIZE}
+      width={LOGO_SIZE}
+    />
+  );
 };
