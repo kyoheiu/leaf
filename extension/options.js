@@ -1,9 +1,9 @@
 const ok = () => {
-	console.log("ok");
+	console.debug("ok");
 };
 
 const err = () => {
-	console.log("error");
+	console.debug("error");
 };
 
 function saveOptions(e) {

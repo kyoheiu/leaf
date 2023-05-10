@@ -77,7 +77,7 @@ export const Header = () => {
   const createNew = async (e: React.FormEvent) => {
     e.preventDefault();
     setProgress(true);
-    console.log(url);
+    console.debug(url);
     const res = await fetch("/api/articles", {
       method: "POST",
       body: url,

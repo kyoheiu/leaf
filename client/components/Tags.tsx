@@ -33,7 +33,7 @@ export default function Tags(data: TagsProps) {
       body: tag,
     });
     if (!res.ok) {
-      console.log("Cannot add tag.");
+      console.error("Cannot add tag.");
       setOpen(false);
     } else {
       setTags((x) => [...x, tag.toLowerCase()]);
@@ -51,7 +51,7 @@ export default function Tags(data: TagsProps) {
       body: tag,
     });
     if (!res.ok) {
-      console.log("Cannot delete tag.");
+      console.error("Cannot delete tag.");
     } else {
       const updated = tags.filter((x) => x !== tag);
       setTags(() => updated);

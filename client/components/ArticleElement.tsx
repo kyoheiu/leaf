@@ -30,7 +30,7 @@ export default function ArticleElement(props: ElementProps) {
       method: "POST",
     });
     if (!res.ok) {
-      console.log("Cannot toggle like.");
+      console.error("Cannot toggle like.");
     } else {
       if (kind === ElementKind.Liked) {
         setArticle((x) => ({
@@ -57,7 +57,7 @@ export default function ArticleElement(props: ElementProps) {
       method: "POST",
     });
     if (!res.ok) {
-      console.log("Cannot archive article.");
+      console.error("Cannot archive article.");
     } else {
       if (kind === ElementKind.Archived) {
         setArticle((x) => ({
@@ -84,7 +84,7 @@ export default function ArticleElement(props: ElementProps) {
       method: "DELETE",
     });
     if (!res.ok) {
-      console.log("Cannot delete article.");
+      console.error("Cannot delete article.");
     } else {
       setArticle((x) => ({
         ...x,

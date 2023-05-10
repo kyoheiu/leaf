@@ -2,7 +2,7 @@ const addNewOne = (tab) => {
 	const gettingItem = browser.storage.local.get(["leafBase", "leafToken"]);
 	gettingItem.then((res) => {
 		const target = `${res.leafBase}/api/create`;
-		console.log(`Add new article: ${tab.url}`);
+		console.debug(`Add new article: ${tab.url}`);
 
 		fetch(target, {
 			method: "POST",
@@ -12,7 +12,6 @@ const addNewOne = (tab) => {
 			},
 			body: JSON.stringify({ url: tab.url }),
 		}).then((res) => {
-			console.log(res.statusText);
 			browser.notifications
 				.create("leafResult", {
 					type: "basic",
