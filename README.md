@@ -27,15 +27,15 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
   - full-text search (works only with languages based on the Latin script for
     now)
   - light/dark theme
-  - built-in auth
+  - built-in auth (requires GitHub account)
 - With the
   [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
   you can easily add new articles.
 
 ## New release
 
-### v0.3.11 (2023-05-04)
-- Fix the content-extractor.
+### v0.4.0 (2023-05-10)
+- Remove credential provider: Please use your own auth process, or built-in GitHub OAuth by adding `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to `.env.production`.
 
 ## Deploy
 
@@ -46,7 +46,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.3.11
+    image: docker.io/kyoheiudev/leaf-server:latest
     container_name: leaf-server
     volumes:
       - ./server/databases:/var/leaf/databases
@@ -54,7 +54,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.3.11
+    image: docker.io/kyoheiudev/leaf-client:latest
     container_name: leaf-client
     volumes:
       - ./path/to/.env.production:/app/.env.production
@@ -64,20 +64,17 @@ services:
 
 `.env.production` example
 ```
-NEXTAUTH_URL=https://your-site.url
 NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=leaf-server
+NEXTAUTH_URL=https://your-site.url
 NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
-CREDENTIALS_ID=YOUR_ID
-CREDENTIALS_PASSWORD=SO_STRONG_PASSWORD
 WEB_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
 ```
 
-You should edit `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, `CREDENTIALS_ID`, `CREDENTIALS_PASSWORD` and
+You should edit `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, and
 `WEB_API_TOKEN`.
 
-_You can add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to this file to make
-it more secured with 2FA._
+By default this app is not protected by any means so that you can use your own auth process like SSO. If you want the built-in authentication, add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to this file. For more details, please see [this GitHub document](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)._
 
 2. `docker compose up -d` and the app will start listening on port 3000.
    (The SQLite database and search index are created in the directory described in your `docker-compose.yml`)
@@ -106,19 +103,15 @@ it more secured with 2FA._
 
 - docker
 - nodejs, cargo, make
-- (optional) GitHub Account and its auth secret
+- (optional) GitHub Account
 
 Add `.env.development.local` to the `client` directory with the following:
 
 ```
-NEXTAUTH_URL=http://localhost:3000
 NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=127.0.0.1
+NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
-CREDENTIALS_ID=test
-CREDENTIALS_PASSWORD=test
-GITHUB_CLIENT_ID=GITHUB_AUTH_CLIENT_ID
-GITHUB_CLIENT_SECRET=GITHUB_AUTH_CLIENT_SECRET
 WEB_API_TOKEN=test
 ```
 
