@@ -656,7 +656,7 @@ fn grab_article(doc: &Document, title: &str) -> String {
     let mut parent_of_top = top_candidate.sel.parent();
     let mut last_score = top_candidate.score;
     let score_threshold = last_score / 3.0;
-    while !parent_of_top.is("body") {
+    while parent_of_top.exists() && !parent_of_top.is("body") {
         match candidates.get(&parent_of_top.get(0).unwrap().id) {
             None => {
                 parent_of_top = parent_of_top.parent();
@@ -680,7 +680,7 @@ fn grab_article(doc: &Document, title: &str) -> String {
     // If the top candidate is the only child, use parent instead. This will help sibling
     // joining logic when adjacent content is actually located in parent's sibling node.
     let mut parent_of_top = top_candidate.sel.parent();
-    while !parent_of_top.is("body") && parent_of_top.children().length() == 1 {
+    while parent_of_top.exists() && !parent_of_top.is("body") && parent_of_top.children().length() == 1 {
         top_candidate = match candidates.get(&parent_of_top.get(0).unwrap().id) {
             Some(c) => c.clone(),
             None => initialize_candidate_item(parent_of_top),
