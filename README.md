@@ -34,6 +34,9 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 
 ## New release
 
+### v0.4.1 (2023-05-16)
+- Fix content extractor bug: Check if top_candidate's parent exists.
+
 ### v0.4.0 (2023-05-10)
 - Remove credential provider: Please use your own auth process, or built-in GitHub OAuth by adding `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to `.env.production`.
 
@@ -46,7 +49,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:latest
+    image: docker.io/kyoheiudev/leaf-server:0.4.1
     container_name: leaf-server
     volumes:
       - ./server/databases:/var/leaf/databases
@@ -54,7 +57,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:latest
+    image: docker.io/kyoheiudev/leaf-client:0.4.1
     container_name: leaf-client
     volumes:
       - ./path/to/.env.production:/app/.env.production
