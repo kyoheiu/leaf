@@ -1001,4 +1001,14 @@ mod tests {
         difft(result.clone(), expected.clone());
         assert_eq!(result, expected);
     }
+
+    #[test]
+    fn test_readability_006() {
+        // https://developer.okta.com/blog/2018/08/28/nginx-auth-request
+        let source = read_to_string("tests/006_source.html").unwrap();
+        let result = readability(&source).unwrap().html;
+        let expected = read_to_string("tests/006_expected.html").unwrap();
+        difft(result.clone(), expected.clone());
+        assert_eq!(result, expected);
+    }
 }
