@@ -1,7 +1,6 @@
 // Blatantly imported from https://github.com/importcjj/nipper/blob/master/examples/readability.rs
 // Modified according to https://github.com/mozilla/readability v.0.4.3
 
-
 use html5ever::tendril;
 use html5ever::tendril::StrTendril;
 use nipper::Document;
@@ -680,7 +679,10 @@ fn grab_article(doc: &Document, title: &str) -> String {
     // If the top candidate is the only child, use parent instead. This will help sibling
     // joining logic when adjacent content is actually located in parent's sibling node.
     let mut parent_of_top = top_candidate.sel.parent();
-    while parent_of_top.exists() && !parent_of_top.is("body") && parent_of_top.children().length() == 1 {
+    while parent_of_top.exists()
+        && !parent_of_top.is("body")
+        && parent_of_top.children().length() == 1
+    {
         top_candidate = match candidates.get(&parent_of_top.get(0).unwrap().id) {
             Some(c) => c.clone(),
             None => initialize_candidate_item(parent_of_top),
