@@ -54,6 +54,7 @@ pub fn router(core: Core) -> axum::Router {
         )
         .route("/search", get(search))
         .route("/tags/:name", get(list_up_tag))
+        .route("/export", get(export))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -331,6 +332,7 @@ impl Core {
         info!("Delete tag {} of ID {}", tag, id);
         Ok(())
     }
+
     //add to schema
     fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), Error> {
         let mut index_writer = self.index.writer(50_000_000)?;
@@ -355,6 +357,47 @@ impl Core {
         index_writer.commit()?;
         drop(index_writer);
         Ok(())
+    }
+
+    pub async fn export(&self) -> Result<Json<Vec<ArticleData>>, Error> {
+        let mut articles = vec![];
+        self.db.iterate(state_list_all(), |pairs| {
+            let mut article = ArticleData::new();
+            for &(column, value) in pairs.iter() {
+                match column {
+                    "id" => article.id = value.unwrap().to_owned(),
+                    "title" => article.title = value.unwrap().to_owned(),
+                    "url" => article.url = value.unwrap().to_owned(),
+                    "cover" => article.cover = value.unwrap().to_owned(),
+                    "beginning" => article.beginning = value.unwrap().to_owned(),
+                    "progress" => article.progress = value.unwrap().parse().unwrap(),
+                    "archived" => article.archived = value.unwrap() != "0",
+                    "liked" => article.liked = value.unwrap() != "0",
+                    "timestamp" => article.timestamp = value.unwrap().to_owned(),
+                    "tag" => article.tags.push(value.unwrap().to_owned()),
+                    _ => {}
+                }
+            }
+            articles.push(article);
+            true
+        })?;
+
+        //get tags
+        for mut article in articles.iter_mut() {
+            let mut tags = vec![];
+            let id = &article.id;
+            self.db.iterate(state_list_tags(id), |pairs| {
+                for &(column, value) in pairs.iter() {
+                    match column {
+                        "tag" => tags.push(value.unwrap().to_owned()),
+                        _ => {}
+                    }
+                }
+                true
+            })?;
+            article.tags = tags;
+        }
+        Ok(Json(articles))
     }
 
     pub async fn health(&self) -> String {

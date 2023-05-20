@@ -30,6 +30,15 @@ pub fn state_create_tags_table() -> String {
     .to_owned()
 }
 
+pub fn state_list_all() -> String {
+    "
+     SELECT *
+     FROM articles
+     ORDER BY id DESC
+     "
+    .to_string()
+}
+
 pub fn state_list_up() -> String {
     format!(
         "

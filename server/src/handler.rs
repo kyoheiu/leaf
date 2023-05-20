@@ -146,3 +146,9 @@ pub async fn list_up_tag(
         core.list_up(&state_list_tag(&name.to_lowercase())).await
     }
 }
+
+#[debug_handler]
+pub async fn export(State(core): State<Arc<Core>>) -> Result<Json<Vec<ArticleData>>, Error> {
+    let json = core.export().await?;
+    Ok(json)
+}

@@ -21,6 +21,7 @@ import {
   RiMoonLine,
   RiLogoutBoxLine,
   RiMenuLine,
+  RiDownload2Fill,
 } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
@@ -200,6 +201,11 @@ export const Header = () => {
               <MenuItem>
                 <MuiLink underline="none" href="#" onClick={toggleTheme}>
                   {isLight ? <RiMoonLine /> : <RiSunLine />} Change theme
+                </MuiLink>
+              </MenuItem>
+              <MenuItem>
+                <MuiLink underline="none" component={Link} href="/api/download">
+                  <RiDownload2Fill /> Download data
                 </MuiLink>
               </MenuItem>
               <MenuItem>
