@@ -49,7 +49,7 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.4.1
+    image: docker.io/kyoheiudev/leaf-server:0.4.2
     container_name: leaf-server
     volumes:
       - ./server/databases:/var/leaf/databases
@@ -57,7 +57,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.4.1
+    image: docker.io/kyoheiudev/leaf-client:0.4.2
     container_name: leaf-client
     volumes:
       - ./path/to/.env.production:/app/.env.production
