@@ -34,11 +34,11 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 
 ## New release
 
+### v0.4.2 (2023-05-20)
+- Add link to download data as JSON file.
+
 ### v0.4.1 (2023-05-16)
 - Fix content extractor bug: Check if top_candidate's parent exists.
-
-### v0.4.0 (2023-05-10)
-- Remove credential provider: Please use your own auth process, or built-in GitHub OAuth by adding `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to `.env.production`.
 
 ## Deploy
 
@@ -133,5 +133,4 @@ Contact me via email: ~kyoheiu/leaf@lists.sr.ht
 
 ## TODO
 
-- Chrome extension
-- Import & Export
+- Import?
