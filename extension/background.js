@@ -27,7 +27,7 @@ const addNewOne = (url) => {
 	});
 };
 
-browser.browserAction.onClicked.addListener((tab) => addNewOne(tab));
+browser.browserAction.onClicked.addListener((tab) => addNewOne(tab.url));
 
 browser.contextMenus.create({
   id: "leaf",

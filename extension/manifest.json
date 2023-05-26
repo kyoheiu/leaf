@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "author": "Kyohei Uto",
   "name": "leaf",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Add new article to your leaf app.",
   "icons": {
     "48": "icons/48.png"
