@@ -1,4 +1,3 @@
-import Button from "@mui/material/Button";
 import toast from "react-simple-toasts";
 import { RiLink } from "react-icons/ri";
 
@@ -14,9 +13,9 @@ const copyToClipboard = async (url: string) => {
 export default function Login(data: urlProp) {
   return (
     <>
-      <Button onClick={() => copyToClipboard(data.url)} title="copy URL">
+      <button onClick={() => copyToClipboard(data.url)} title="copy URL">
         <RiLink />
-      </Button>
+      </button>
     </>
   );
 }

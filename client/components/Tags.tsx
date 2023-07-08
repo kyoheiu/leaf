@@ -1,11 +1,3 @@
-import {
-  Chip,
-  Dialog,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-} from "@mui/material";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { TagsProps } from "../types/types";
@@ -65,11 +57,9 @@ export default function Tags(data: TagsProps) {
           {
             return (
               <span key={`tag-element${index.toString()}`}>
-                <Chip
-                  label={x}
+                <div
                   id={`${data.id}_delete_tag`}
                   onClick={() => navigateToTag(x)}
-                  onDelete={() => deleteTag(data.id, x)}
                 />
                 &nbsp;
               </span>
@@ -77,12 +67,11 @@ export default function Tags(data: TagsProps) {
           }
         })}
       &nbsp;
-      <Chip
-        label={tags.length ? "+" : "Add new tag"}
+      <div
         onClick={handleClickOpen}
       />
-      <Dialog open={open} onClose={handleClose}>
-        <DialogContent>
+      <div>
+        {/* <DialogContent>
           <TextField
             autoFocus
             margin="dense"
@@ -100,8 +89,8 @@ export default function Tags(data: TagsProps) {
           <Button onClick={() => submitAndClose(data.id)}>
             <RiAddLine />
           </Button>
-        </DialogActions>
-      </Dialog>
+        </DialogActions> */}
+      </div>
     </>
   );
 }

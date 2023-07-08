@@ -1,16 +1,5 @@
 import Link from "next/link";
 import { useContext, useState } from "react";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import { Link as MuiLink, Toolbar } from "@mui/material";
-import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import {
   RiHeart2Line,
   RiInboxArchiveLine,
@@ -94,32 +83,9 @@ export const Header = () => {
   const BarSearch = () => {
     return (
       <>
-        <Button onClick={handleClickSearchOpen} title="search">
+        <button onClick={handleClickSearchOpen} title="search">
           <RiSearch2Line />
-        </Button>
-        <Dialog open={searchOpen} onClose={handleSearchClose}>
-          <DialogContent>
-            <form action="/search" method="get">
-              <TextField
-                autoFocus
-                id="search"
-                name="q"
-                label=""
-                type="text"
-                placeholder="Search"
-                variant="standard"
-              />
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleSearchClose}>
-              <RiCloseLine />
-            </Button>
-            <Button onClick={searchAndClose}>
-              <RiSearch2Line />
-            </Button>
-          </DialogActions>
-        </Dialog>
+        </button>
       </>
     );
   };
@@ -129,15 +95,9 @@ export const Header = () => {
       <Head>
         <title>{process.env.NEXT_PUBLIC_TITLE}</title>
       </Head>
-      <Backdrop open={progress}>
-        <CircularProgress />
-      </Backdrop>
-      <AppBar elevation={0} position="fixed" color="default">
-        <Toolbar variant="dense" sx={{ display: "flex", textAlign: "center" }}>
-          <MuiLink
+      <div>
+          <a
             className="site-title"
-            component={Link}
-            underline="none"
             href="/"
           >
             <Image
@@ -146,25 +106,23 @@ export const Header = () => {
               height={LOGO_SIZE}
               width={LOGO_SIZE}
             />
-          </MuiLink>
+          </a>
           <form onSubmit={createNew}>
             &nbsp;
             <div>
-              <TextField
+              <input
                 className="form-to-add"
                 id={"add_new"}
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(() => e.target.value)}
                 placeholder="Add URL"
-                size="small"
-                variant="standard"
               />
             </div>
           </form>
           <div className="header-buttons">
             <BarSearch />
-            <Button
+            <button
               id="basic-button"
               aria-controls={open ? "basic-menu" : undefined}
               aria-haspopup="true"
@@ -173,8 +131,8 @@ export const Header = () => {
               title="menu"
             >
               <RiMenuLine />
-            </Button>
-            <Menu
+            </button>
+            {/* <Menu
               id="basic-menu"
               anchorEl={anchorEl}
               open={open}
@@ -213,10 +171,9 @@ export const Header = () => {
                   <RiLogoutBoxLine /> Log out
                 </MuiLink>
               </MenuItem>
-            </Menu>
+            </Menu> */}
           </div>
-        </Toolbar>
-      </AppBar>
+        </div>
     </>
   );
 };

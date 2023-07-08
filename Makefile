@@ -1,13 +1,13 @@
 dev:
 	cd client && sudo rm -rf .next
 	cd server && sudo chown -R ${USER}:${GROUP} databases
-	cd client && yarn run dev & cd server && RUST_LOG=info cargo run -r && fg
+	cd client && npm run dev & cd server && RUST_LOG=info cargo run -r && fg
 
 test:
 	hurl --test test.hurl
 
 stop:
-	killall node && killall laef-server
+	killall node && killall leaf-server
 
 build:
 	sudo docker build --tag=kyoheiudev/leaf-server:$(VER) server 

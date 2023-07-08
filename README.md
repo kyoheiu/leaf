@@ -121,7 +121,7 @@ WEB_API_TOKEN=test
 And in the root directory:
 
 ```
-cd client && yarn install
+cd client && npm install
 cd .. && make -i dev
 ```
 
