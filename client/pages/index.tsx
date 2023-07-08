@@ -9,7 +9,6 @@ import { Header } from "@/components/Header";
 import { Pagination } from "@/components/Pagination";
 import { footerImage } from "@/components/Footer";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Stack from "@mui/material/Stack";
 import { getArticles, reloadArticles } from "./api/articles";
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
@@ -57,10 +56,10 @@ export default function Home({
     return (
       <>
         <Header />
-        <Stack className="articles-list" spacing={6}>
+        <div className="articles-list">
           <div>Add new articles from the form in the top bar.</div>
           {footerImage()}
-        </Stack>
+        </div>
       </>
     );
   }
@@ -73,7 +72,7 @@ export default function Home({
   return (
     <>
       <Header />
-      <Stack className="articles-list" spacing={6}>
+      <ul className="pt-16">
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
@@ -84,7 +83,7 @@ export default function Home({
           );
         })}
         {Pagination(page, isLast, PaginationKind.Top)}
-      </Stack>
+      </ul>
     </>
   );
 }

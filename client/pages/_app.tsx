@@ -1,6 +1,4 @@
 import type { AppProps } from "next/app";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import { useEffect, useState } from "react";
 import React from "react";
 import { ColorMode } from "../context/ColorMode";
@@ -25,99 +23,6 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
     }
   }, []);
 
-  const light = createTheme({
-    palette: {
-      mode: "light",
-      primary: {
-        main: "#444",
-      },
-      secondary: {
-        main: "#777",
-      },
-    },
-    components: {
-      MuiAppBar: {
-        styleOverrides: {
-          root: {
-            background: "#fff",
-            borderBottom: "solid #ccc 1px",
-          },
-        },
-      },
-      MuiToolbar: {
-        styleOverrides: {
-          dense: {
-            height: 45,
-            minHeight: 45,
-          },
-        },
-      },
-      MuiInput: {
-        styleOverrides: {
-          root: {
-            fontSize: "0.8em",
-            height: 20,
-          },
-        },
-      },
-    },
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 768,
-        lg: 1025,
-        xl: 1536,
-      },
-    },
-  });
-
-  const dark = createTheme({
-    palette: {
-      mode: "dark",
-      primary: {
-        main: "#ddd",
-      },
-      secondary: {
-        main: "#888",
-      },
-      text: {
-        primary: "#ddd",
-      },
-      background: {
-        default: "#041124",
-      },
-    },
-    components: {
-      MuiToolbar: {
-        styleOverrides: {
-          dense: {
-            height: 45,
-            minHeight: 45,
-            background: "#041124",
-          },
-        },
-      },
-      MuiInput: {
-        styleOverrides: {
-          root: {
-            fontSize: "0.8em",
-            height: 20,
-          },
-        },
-      },
-    },
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 768,
-        lg: 1025,
-        xl: 1536,
-      },
-    },
-  });
-
   return (
     <>
       <style jsx global>{`
@@ -128,12 +33,9 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
         }
       `}</style>
       <ColorMode.Provider value={{ isLight, setIsLight }}>
-        <ThemeProvider theme={isLight ? light : dark}>
-          <CssBaseline />
           <SessionProvider session={pageProps.session}>
             <Component {...pageProps} />
           </SessionProvider>
-        </ThemeProvider>
       </ColorMode.Provider>
     </>
   );

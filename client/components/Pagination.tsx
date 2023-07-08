@@ -1,6 +1,5 @@
 import { footerImage } from "@/components/Footer";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import { Typography } from "@mui/material";
 import Link from "next/link";
 import { PaginationKind } from "../types/types";
 
@@ -75,25 +74,25 @@ export const Pagination = (
   if (!page && isLast) {
     return (
       <>
-        <Typography className="pagination">
+        <div className="pagination">
           {!page && isLast && footerImage()}
-        </Typography>
+        </div>
       </>
     );
   } else if ((!page && !isLast) || page === "1") {
     return (
       <>
-        <Typography className="pagination">
+        <div className="pagination">
           <a href={secondPage(kind, tag_name)}>
             <SlArrowRight />
           </a>
-        </Typography>
+        </div>
       </>
     );
   } else if (page && !isLast) {
     return (
       <>
-        <Typography className="pagination">
+        <div className="pagination">
           <a href={pageDown(page as string, kind, tag_name)}>
             <SlArrowLeft />
           </a>
@@ -101,17 +100,17 @@ export const Pagination = (
           <Link href={pageUp(page as string, kind, tag_name)}>
             <SlArrowRight />
           </Link>
-        </Typography>
+        </div>
       </>
     );
   } else {
     return (
       <>
-        <Typography className="pagination">
+        <div className="pagination">
           <a href={pageDown(page as string, kind, tag_name)}>
             <SlArrowLeft />
           </a>
-        </Typography>
+        </div>
       </>
     );
   }
