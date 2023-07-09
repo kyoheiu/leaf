@@ -209,7 +209,7 @@ export default function Article({
           {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
         </title>
       </Head>
-      <div className="flex items-center bg-slate-900 sticky top-0 my-3">
+      <div className="flex items-center bg-zinc-900 sticky top-0 my-3">
         <Link href="/">
           <Image src={"/logo_dark.png"} alt="leaf" height={30} width={30} />
         </Link>
@@ -220,7 +220,7 @@ export default function Article({
       <div className="text-lg text-center w-2/3 m-auto">
         {articleContent.title}
       </div>
-      <div className="text-sm text-slate-300 line-clamp-1 my-3 w-2/3 m-auto">
+      <div className="text-sm text-zinc-400 line-clamp-1 my-3 w-2/3 m-auto">
         <Link href={articleContent.url}>{articleContent.url}</Link>
       </div>
       <hr className="border-2 rounded-md my-5" />

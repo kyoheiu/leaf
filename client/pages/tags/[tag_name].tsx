@@ -1,20 +1,18 @@
 import {
   PaginationKind,
   WrappedData,
-  ElementKind,
   Articles,
+  Category,
 } from "../../types/types";
 import { Header } from "@/components/Header";
-import ArticleElement from "@/components/ArticleElement";
-import { PageInfo } from "@/components/PageInfo";
 import { Pagination } from "@/components/Pagination";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
 import { getTagList, reloadTagList } from "../api/tags/[tag_name]";
-import Stack from "@mui/material/Stack";
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
+import { Main } from "@/components/Main";
 
 type Data = Articles;
 
@@ -56,7 +54,7 @@ export default function Tagged({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const page = router.query.page;
-  const { tag_name } = router.query;
+  const { tag_name: tagName } = router.query;
 
   const list = data.data;
   const isLast = data.is_last;
@@ -68,19 +66,12 @@ export default function Tagged({
   return (
     <>
       <Header />
-      <Stack className="articles-list" spacing={6}>
-        {PageInfo(`TAG: ${tag_name}`)}
-        {wrapped.map((e, index) => {
-          return (
-            <ArticleElement
-              key={`tagged-element${index}`}
-              element={e}
-              kind={ElementKind.Searched}
-            />
-          );
-        })}
-        {Pagination(page, isLast, PaginationKind.Tags, tag_name as string)}
-      </Stack>
+      {Main(
+        Category.Tagged,
+        wrapped,
+        Pagination(page, isLast, PaginationKind.Tags),
+        tagName as string
+      )}
     </>
   );
 }

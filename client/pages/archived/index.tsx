@@ -1,16 +1,13 @@
 import {
   Articles,
-  ElementKind,
   WrappedData,
   PaginationKind,
+  Category,
 } from "../../types/types";
-import ArticleElement from "@/components/ArticleElement";
 import { Header } from "@/components/Header";
-import { PageInfo } from "@/components/PageInfo";
 import { Pagination } from "@/components/Pagination";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import Stack from "@mui/material/Stack";
 import {
   getArchivedArticles,
   reloadArchivedArticles,
@@ -18,6 +15,7 @@ import {
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
+import { Main } from "@/components/Main";
 
 type Data = Articles;
 
@@ -65,23 +63,11 @@ export default function Archived({
   return (
     <>
       <Header />
-      <div className="flex justify-center">
-          <a className="px-2" href="/">All</a>
-          <a className="px-2" href="/liked">liked</a>
-          <div className="border-b px-2">Archived</div>
-      </div>
-      <div className="mt-3">
-        {wrapped.map((e, index) => {
-          return (
-            <ArticleElement
-              key={`archived-element${index}`}
-              element={e}
-              kind={ElementKind.Archived}
-            />
-          );
-        })}
-        {Pagination(page, isLast, PaginationKind.Archived)}
-      </div>
+      {Main(
+        Category.Archived,
+        wrapped,
+        Pagination(page, isLast, PaginationKind.Archived)
+      )}
     </>
   );
 }
