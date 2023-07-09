@@ -6,8 +6,9 @@
   body {
     @apply w-5/6 sm:w-3/4 max-w-xl
            mx-auto
-         text-slate-200 bg-slate-900
-           leading-6;
+           text-lg
+         text-zinc-200 bg-zinc-900
+           leading-7;
   }
   a {
     @apply hover:underline;
