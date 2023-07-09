@@ -61,8 +61,12 @@ export default function Liked({
   return (
     <>
       <Header />
-      <ul className="articles-list">
-        {PageInfo("/liked")}
+      <div className="flex justify-center">
+          <a className="px-2" href="/">All</a>
+          <div className="border-b px-2">Liked</div>
+          <a className="px-2" href="/archived">Archived</a>
+      </div>
+      <div className="mt-3">
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
@@ -73,7 +77,7 @@ export default function Liked({
           );
         })}
         {Pagination(page, isLast, PaginationKind.Liked)}
-      </ul>
+      </div>
     </>
   );
 }

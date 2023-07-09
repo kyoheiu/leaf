@@ -56,7 +56,7 @@ export default function Home({
     return (
       <>
         <Header />
-        <div className="articles-list">
+        <div className="">
           <div>Add new articles from the form in the top bar.</div>
           {footerImage()}
         </div>
@@ -72,15 +72,20 @@ export default function Home({
   return (
     <>
       <Header />
+      <div className="flex justify-center">
+          <div className="border-b px-2">All</div>
+          <a className="px-2" href="/liked">Liked</a>
+          <a className="px-2" href="/archived">Archived</a>
+      </div>
       <div className="mt-3">
         {wrapped.map((e, index) => {
-          return (
-            <ArticleElement
-              key={`index-element${index.toString()}`}
-              element={e}
-              kind={ElementKind.Top}
-            />
-          );
+            return (
+              <ArticleElement
+                key={`index-element${index.toString()}`}
+                element={e}
+                kind={ElementKind.Top}
+              />
+            );
         })}
         {Pagination(page, isLast, PaginationKind.Top)}
       </div>

@@ -14,8 +14,10 @@ export default function Login(data: urlProp) {
   return (
     <>
       <button
-      className="px-2"
-      onClick={() => copyToClipboard(data.url)} title="copy URL">
+        className="px-2"
+        onClick={() => copyToClipboard(data.url)}
+        title="copy URL"
+      >
         <RiLink />
       </button>
     </>

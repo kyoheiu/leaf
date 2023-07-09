@@ -184,21 +184,18 @@ export default function Article({
   const Buttons = ({ data }: { data: ArticleContent }) => {
     return (
       <div className="flex">
-        <LinkButton
-        url={articleContent.url} />
-        <button
-        className="px-2"
-        onClick={toggleLiked} title="toggle liked">
+        <LinkButton url={articleContent.url} />
+        <button className="px-2" onClick={toggleLiked} title="toggle liked">
           {data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
         </button>
         <button
-        className="px-2"
-        onClick={toggleArchived} title="toggle archived">
+          className="px-2"
+          onClick={toggleArchived}
+          title="toggle archived"
+        >
           {data.archived ? <RiInboxUnarchiveFill /> : <RiInboxArchiveLine />}
         </button>
-        <button
-        className="px-2"
-        onClick={deleteArticleItself} title="delete">
+        <button className="px-2" onClick={deleteArticleItself} title="delete">
           <RiDeleteBin2Line />
         </button>
       </div>
@@ -213,21 +210,16 @@ export default function Article({
         </title>
       </Head>
       <div className="flex items-center bg-slate-900 sticky top-0 my-3">
-          <Link
-            href="/"
-          >
-            <Image
-              src={"/logo_dark.png"}
-              alt="leaf"
-              height={30}
-              width={30}
-            />
-          </Link>
-          <div className="ml-auto">
-            <Buttons data={articleContent} />
-          </div>
+        <Link href="/">
+          <Image src={"/logo_dark.png"} alt="leaf" height={30} width={30} />
+        </Link>
+        <div className="ml-auto">
+          <Buttons data={articleContent} />
+        </div>
       </div>
-      <div className="text-lg text-center w-2/3 m-auto">{articleContent.title}</div>
+      <div className="text-lg text-center w-2/3 m-auto">
+        {articleContent.title}
+      </div>
       <div className="text-sm text-slate-300 line-clamp-1 my-3 w-2/3 m-auto">
         <Link href={articleContent.url}>{articleContent.url}</Link>
       </div>
@@ -239,20 +231,11 @@ export default function Article({
       <div className="article-tags">
         <Tags tags={articleContent.tags} id={articleContent.id} />
       </div>
-      <div
-      className="flex justify-center"
-      >
-      <Link
-        href="/"
-      >
-        <Image
-          src={"/logo_dark.png"}
-          alt="leaf"
-          height={30}
-          width={30}
-        />
-      </Link>
-</div>
+      <div className="flex justify-center">
+        <Link href="/">
+          <Image src={"/logo_dark.png"} alt="leaf" height={30} width={30} />
+        </Link>
+      </div>
     </>
   );
 }

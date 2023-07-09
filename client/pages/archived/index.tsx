@@ -65,8 +65,12 @@ export default function Archived({
   return (
     <>
       <Header />
-      <Stack className="articles-list" spacing={6}>
-        {PageInfo("/archived")}
+      <div className="flex justify-center">
+          <a className="px-2" href="/">All</a>
+          <a className="px-2" href="/liked">liked</a>
+          <div className="border-b px-2">Archived</div>
+      </div>
+      <div className="mt-3">
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
@@ -77,7 +81,7 @@ export default function Archived({
           );
         })}
         {Pagination(page, isLast, PaginationKind.Archived)}
-      </Stack>
+      </div>
     </>
   );
 }

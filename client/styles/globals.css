@@ -12,7 +12,8 @@
   a {
     @apply hover:underline;
   }
-  img, video {
+  img,
+  video {
     @apply max-w-full h-auto table m-auto;
   }
   h1 {
@@ -57,7 +58,8 @@
   table th {
     @apply p-1;
   }
-  table th, td {
+  table th,
+  td {
     @apply border;
   }
   table td {
