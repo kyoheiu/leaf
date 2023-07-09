@@ -6,211 +6,66 @@
   body {
     @apply w-5/6 sm:w-3/4 max-w-xl
            mx-auto
-         text-slate-200 bg-slate-900;
+         text-slate-200 bg-slate-900
+           leading-6;
+  }
+  a {
+    @apply hover:underline;
+  }
+  img, video {
+    @apply max-w-full h-auto table m-auto;
+  }
+  h1 {
+    @apply text-2xl font-bold mt-6 mb-3 border-b border-dashed;
+  }
+  h2 {
+    @apply text-xl font-bold mt-6 mb-3 border-b border-dashed;
+  }
+  h3 {
+    @apply text-lg  font-bold mt-6 mb-3;
+  }
+  h4 {
+    @apply font-bold mt-6 mb-3;
+  }
+  h5 {
+    @apply font-bold mt-6 mb-3;
+  }
+  h6 {
+    @apply font-bold mt-6 mb-3;
+  }
+  :not(pre) > code {
+    @apply text-sm font-mono rounded-md text-slate-800 bg-slate-200 px-1;
+  }
+  pre {
+    @apply overflow-x-scroll p-1 border border-slate-200 m-2;
+  }
+  pre > code {
+    @apply font-mono;
+  }
+  blockquote {
+    @apply border-l-2 border-slate-200 italic pl-2 m-2;
+  }
+  ul {
+    @apply m-2 p-2 list-disc;
+  }
+  ol {
+    @apply m-2 p-2 list-decimal;
+  }
+  table {
+    @apply border-collapse max-w-full;
+  }
+  table th {
+    @apply p-1;
+  }
+  table th, td {
+    @apply border;
+  }
+  table td {
+    @apply p-1;
   }
 }
 
 /* 
-a {
-  text-decoration: hover;
-}
-
-img,
-video {
-  max-width: 90%;
-  height: auto;
-  display: table;
-  margin: auto;
-}
-
-/* .header-buttons {
-  margin-left: auto;
-  display: flex;
-  margin-top: auto;
-}
-
-.articles-list {
-  padding-top: 60px;
-}
-
-.article-element {
-  margin-bottom: 1em;
-}
-
-.element-timestamp {
-  font-size: 0.8em;
-}
-
-.element-title {
-  font-size: 1.4em;
-  font-family: var(--lora-font), serif;
-  font-weight: 500;
-  line-height: 1.3;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-.element-url {
-  font-size: 0.8em;
-  margin: 3px 0;
-}
-
-.element-beginning {
-  font-size: 0.9em;
-  font-family: --var(--opensans-font);
-  font-weight: 300;
-  margin: 5px 0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  overflow: hidden;
-}
-
-.pagination {
-  text-align: center;
-  padding-bottom: 50px;
-}
-
-.article-title {
-  font-size: 1.7em;
-  font-family: var(--lora-font);
-  font-weight: bold;
-  line-height: 1.2;
-  margin: auto;
-  margin-top: 80px;
-  text-align: center;
-}
-
-.article-url {
-  font-size: 0.9em;
-  margin: 1em auto;
-  text-align: center;
-  width: 75%;
-}
-
-.article-content {
-  margin: auto;
-}
-
-.article-divider {
-  margin: 1.5em !important;
-}
-
-.article-tags {
-  margin: 1.5em !important;
-}
-
-h1 {
-  font-size: 1.5em;
-  font-weight: bold;
-}
-
-h2 {
-  font-size: 1.4em;
-  font-weight: bold;
-  border-bottom: thin solid #666;
-}
-
-h3 {
-  font-size: 1.3em;
-  font-weight: bold;
-}
-
-h4 {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-h5 {
-  font-size: 1.1em;
-  font-weight: bold;
-}
-
-h6 {
-  font-size: 1.05em;
-  font-weight: bold;
-}
-
-:not(pre) > code {
-  font-size: 0.9em;
-  font-family: var(--jetbrains-font);
-  color: #111;
-  background-color: #ddd;
-  padding: 3px;
-  border-radius: 8px;
-}
-
-pre {
-  overflow-x: scroll;
-  padding: 1em;
-  border: 1px solid #666;
-}
-
-pre > code {
-  font-family: var(--jetbrains-font);
-}
-
-blockquote {
-  border-left: 3px solid #666;
-  font-style: italic;
-  padding: 0.2rem;
-  margin: 0.2rem;
-}
-
-ul,
-ol {
-  margin-left: 0.6rem;
-  padding-left: 0.6rem;
-}
-
-table {
-  border-collapse: collapse;
-  max-width: 90%;
-}
-
-table th {
-  padding: 10px;
-}
-
-table th,
-td {
-  border: 1px #666;
-  border-style: solid none;
-}
-
-table td {
-  padding: 10px;
-}
-
-a {
-  color: inherit;
-}
-
-.article-buttons {
-  text-align: right;
-}
-
-.article-button {
-  display: inline;
-}
-
-.ending {
-  text-align: center;
-}
-
-footer {
-  margin: 30px 0;
-  text-align: center;
-}
-
-.extra {
-  margin: 30px 0;
-}
-
 .login {
   width: 50%;
   max-width: 400px;
@@ -225,9 +80,4 @@ footer {
 .login-button {
   margin: 10px;
 }
-
-.page-info {
-  font-size: 1.2em;
-  text-align: center;
-  font-family: var(--jetbrains-font);
-} */
+*/

@@ -67,8 +67,9 @@ export default function Tags(data: TagsProps) {
           }
         })}
       &nbsp;
-      <div onClick={handleClickOpen} />
-      <div>
+      <button className="text-xs border rounded-full px-2">{tags.length ? "+" : "Add new tag"}</button>
+      {/* <div onClick={handleClickOpen} />
+      <div> */}
         {/* <DialogContent>
           <TextField
             autoFocus
@@ -88,7 +89,7 @@ export default function Tags(data: TagsProps) {
             <RiAddLine />
           </Button>
         </DialogActions> */}
-      </div>
+      {/* </div> */}
     </>
   );
 }

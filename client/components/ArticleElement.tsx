@@ -1,8 +1,6 @@
 import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
-import Link from "next/link";
-import Image from "next/image";
 import {
   RiHeart2Line,
   RiHeart2Fill,
@@ -102,20 +100,23 @@ export default function ArticleElement(props: ElementProps) {
   }
 
   return (
-    <li key={article.data.id} id={article.data.id} className="">
-      <div className="text-sm text-slate-300 py-1">
+    <div key={article.data.id} id={article.data.id}
+      className="mb-8"
+    >
+      <div className="text-sm text-slate-400 py-1">
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
-      <div className="text-lg">
+      <div className="text-lg text-clamp-3">
         <a href={`/articles/${article.data.id}`}>{article.data.title}</a>
       </div>
-      <div className="text-sm text-slate-300 py-1">
-        {trimUrl(article.data.url)}
+      <div className="flex items-center text-sm text-slate-400 py-1">
+        <a href={article.data.url} target="_blank">{trimUrl(article.data.url)}</a>
+        &nbsp;
         <LinkButton url={article.data.url} />
       </div>
-      <div className="flex">
+      <div className="flex mt-1 mb-2">
         <div className="">
-          <div className="text-sm line-clamp-3">{article.data.beginning}</div>
+          <div className="text-sm line-clamp-3 pr-2">{article.data.beginning}</div>
         </div>
         <div className="flex-auto w-64">
           {article.data.cover !== "" && (
@@ -131,8 +132,8 @@ export default function ArticleElement(props: ElementProps) {
       <div className="flex items-center">
         <div className="h-1 w-full bg-neutral-600 rounded-md">
           <div
-            className="h-1 bg-neutral-200"
-            style={{ width: article.data.progress }}
+            className="h-1 bg-neutral-200 rounded-md"
+            style={{ width: `${article.data.progress}%` }}
           ></div>
         </div>
         <button
@@ -161,6 +162,6 @@ export default function ArticleElement(props: ElementProps) {
           <RiDeleteBin2Line />
         </button>
       </div>
-    </li>
+    </div>
   );
 }

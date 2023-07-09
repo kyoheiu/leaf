@@ -10,7 +10,6 @@ import { PageInfo } from "@/components/PageInfo";
 import { Pagination } from "@/components/Pagination";
 import { GetServerSideProps } from "next";
 import { InferGetServerSidePropsType } from "next";
-import Stack from "@mui/material/Stack";
 import { getLikedArticles, reloadLikedArticles } from "../api/articles/liked";
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
@@ -62,7 +61,7 @@ export default function Liked({
   return (
     <>
       <Header />
-      <Stack className="articles-list" spacing={6}>
+      <ul className="articles-list">
         {PageInfo("/liked")}
         {wrapped.map((e, index) => {
           return (
@@ -74,7 +73,7 @@ export default function Liked({
           );
         })}
         {Pagination(page, isLast, PaginationKind.Liked)}
-      </Stack>
+      </ul>
     </>
   );
 }

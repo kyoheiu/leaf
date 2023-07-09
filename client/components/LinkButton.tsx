@@ -13,7 +13,9 @@ const copyToClipboard = async (url: string) => {
 export default function Login(data: urlProp) {
   return (
     <>
-      <button onClick={() => copyToClipboard(data.url)} title="copy URL">
+      <button
+      className="px-2"
+      onClick={() => copyToClipboard(data.url)} title="copy URL">
         <RiLink />
       </button>
     </>

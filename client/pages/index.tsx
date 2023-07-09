@@ -72,7 +72,7 @@ export default function Home({
   return (
     <>
       <Header />
-      <ul className="mt-4">
+      <div className="mt-3">
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
@@ -83,7 +83,7 @@ export default function Home({
           );
         })}
         {Pagination(page, isLast, PaginationKind.Top)}
-      </ul>
+      </div>
     </>
   );
 }

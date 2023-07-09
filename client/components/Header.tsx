@@ -100,7 +100,7 @@ export const Header = () => {
         <title>{process.env.NEXT_PUBLIC_TITLE}</title>
       </Head>
       <div className="flex flex-nowrap items-center justify-between">
-        <a href="/">
+        <a className="pr-1" href="/">
           <Image
             src="/logo_dark.png"
             alt="leaf"
@@ -112,12 +112,12 @@ export const Header = () => {
           &nbsp;
           <div>
             <input
-              className="flex-auto rounded-md p-1 w-3/4 mb-5"
+              className="flex-auto rounded-md p-1 w-5/6 mb-5"
               id={"add_new"}
               type="url"
               value={url}
               onChange={(e) => setUrl(() => e.target.value)}
-              placeholder="Add URL"
+              placeholder="+"
             />
           </div>
         </form>
