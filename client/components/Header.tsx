@@ -1,8 +1,5 @@
 import { useContext, useState } from "react";
-import {
-  RiSearch2Line,
-  RiLogoutBoxRLine,
-} from "react-icons/ri";
+import { RiSearch2Line, RiLogoutBoxRLine } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -94,7 +91,7 @@ export const Header = () => {
           &nbsp;
           <div>
             <input
-              className="flex-auto rounded-md p-1 w-5/6 mb-5"
+              className="flex-auto text-zinc-900 rounded-md p-1 w-5/6 mb-5"
               id={"add_new"}
               type="url"
               value={url}

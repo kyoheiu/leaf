@@ -3,6 +3,7 @@ import {
   ElementKind,
   WrappedData,
   PaginationKind,
+  Category,
 } from "../types/types";
 import ArticleElement from "@/components/ArticleElement";
 import { Header } from "@/components/Header";
@@ -13,6 +14,7 @@ import { getArticles, reloadArticles } from "./api/articles";
 import { useRouter } from "next/router";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
+import { Main } from "@/components/Main";
 
 type Data = Articles;
 
@@ -72,23 +74,11 @@ export default function Home({
   return (
     <>
       <Header />
-      <div className="flex justify-center">
-          <div className="border-b px-2">All</div>
-          <a className="px-2" href="/liked">Liked</a>
-          <a className="px-2" href="/archived">Archived</a>
-      </div>
-      <div className="mt-3">
-        {wrapped.map((e, index) => {
-            return (
-              <ArticleElement
-                key={`index-element${index.toString()}`}
-                element={e}
-                kind={ElementKind.Top}
-              />
-            );
-        })}
-        {Pagination(page, isLast, PaginationKind.Top)}
-      </div>
+      {Main(
+        Category.All,
+        wrapped,
+        Pagination(page, isLast, PaginationKind.Top)
+      )}
     </>
   );
 }

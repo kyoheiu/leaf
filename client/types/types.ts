@@ -1,3 +1,11 @@
+export enum Category {
+  All,
+  Liked,
+  Archived,
+  Tagged,
+  Searched,
+}
+
 export interface Articles {
   data: ArticleData[];
   is_last: boolean;

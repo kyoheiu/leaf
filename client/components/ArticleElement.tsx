@@ -9,6 +9,7 @@ import {
   RiDeleteBin2Line,
 } from "react-icons/ri";
 import LinkButton from "@/components/LinkButton";
+import Image from "next/image";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);
@@ -101,13 +102,13 @@ export default function ArticleElement(props: ElementProps) {
 
   return (
     <div key={article.data.id} id={article.data.id} className="mb-8">
-      <div className="text-sm text-slate-400 py-1">
+      <div className="text-sm text-zinc-400 py-1">
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
-      <div className="text-lg text-clamp-3">
+      <div className="text-sky-300 text-lg text-clamp-3">
         <a href={`/articles/${article.data.id}`}>{article.data.title}</a>
       </div>
-      <div className="flex items-center text-sm text-slate-400 py-1">
+      <div className="flex items-center text-sm text-zinc-400 py-1">
         <a href={article.data.url} target="_blank">
           {trimUrl(article.data.url)}
         </a>
@@ -122,7 +123,7 @@ export default function ArticleElement(props: ElementProps) {
         </div>
         <div className="flex-auto w-64">
           {article.data.cover !== "" && (
-            <img className="" src={article.data.cover} />
+            <img className="" alt="cover" src={article.data.cover} />
           )}
         </div>
       </div>

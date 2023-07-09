@@ -1,13 +1,10 @@
-import { WrappedData, ElementKind, ArticleData } from "../../types/types";
+import { WrappedData, ElementKind, ArticleData, Category } from "../../types/types";
 import { Header } from "@/components/Header";
-import ArticleElement from "@/components/ArticleElement";
-import { footerImage } from "@/components/Footer";
-import { PageInfo } from "@/components/PageInfo";
 import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";
-import Stack from "@mui/material/Stack";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
+import { Main } from "@/components/Main";
 
 type Data = {
   query: string | string[];
@@ -44,19 +41,13 @@ export default function Searched(props: Data) {
   return (
     <>
       <Header />
-      <Stack className="articles-list" spacing={6}>
-        {PageInfo(`QUERY: ${props.query} | RESULTS: ${props.data.length}`)}
-        {wrapped.map((e, index) => {
-          return (
-            <ArticleElement
-              key={`searched-element${{ index }}`}
-              element={e}
-              kind={ElementKind.Searched}
-            />
-          );
-        })}
-        <footer>{footerImage()}</footer>
-      </Stack>
+      {Main(
+        Category.Searched,
+        wrapped,
+        undefined,
+        undefined,
+        props.query
+      )}
     </>
   );
 }
