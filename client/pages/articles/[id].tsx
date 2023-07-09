@@ -1,9 +1,7 @@
-import { Link as MuiLink, Toolbar } from "@mui/material";
 import { ArticleContent } from "../../types/types";
+import Link from "next/link";
 import { useContext, useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
 import {
   RiHeart2Line,
   RiHeart2Fill,
@@ -11,14 +9,12 @@ import {
   RiInboxUnarchiveFill,
   RiDeleteBin2Line,
 } from "react-icons/ri";
-import Link from "@mui/material/Link";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
 import Image from "next/image";
 import { LOGO_SIZE } from "@/components/Header";
 import Tags from "@/components/Tags";
 import LinkButton from "@/components/LinkButton";
-import AppBar from "@mui/material/AppBar";
 import { ColorMode } from "../../context/ColorMode";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/auth";
@@ -61,7 +57,6 @@ export const getServerSideProps: GetServerSideProps<{
 export default function Article({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { isLight } = useContext(ColorMode);
   let currentPosition = 0;
 
   const [articleContent, setArticleContent] = useState<ArticleContent>(data);
@@ -188,18 +183,25 @@ export default function Article({
 
   const Buttons = ({ data }: { data: ArticleContent }) => {
     return (
-      <>
-        <LinkButton url={articleContent.url} />
-        <Button onClick={toggleLiked} title="toggle liked">
+      <div className="flex">
+        <LinkButton
+        url={articleContent.url} />
+        <button
+        className="px-2"
+        onClick={toggleLiked} title="toggle liked">
           {data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
-        </Button>
-        <Button onClick={toggleArchived} title="toggle archived">
+        </button>
+        <button
+        className="px-2"
+        onClick={toggleArchived} title="toggle archived">
           {data.archived ? <RiInboxUnarchiveFill /> : <RiInboxArchiveLine />}
-        </Button>
-        <Button onClick={deleteArticleItself} title="delete">
+        </button>
+        <button
+        className="px-2"
+        onClick={deleteArticleItself} title="delete">
           <RiDeleteBin2Line />
-        </Button>
-      </>
+        </button>
+      </div>
     );
   };
 
@@ -210,51 +212,47 @@ export default function Article({
           {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
         </title>
       </Head>
-      <AppBar elevation={0} position="fixed" color="default">
-        <Toolbar variant="dense" sx={{ display: "flex" }}>
-          <MuiLink
-            className="site-title"
-            component={Link}
-            underline="none"
+      <div className="flex items-center bg-slate-900 sticky top-0 my-3">
+          <Link
             href="/"
           >
             <Image
-              src={isLight ? "/logo_light.png" : "/logo_dark.png"}
+              src={"/logo_dark.png"}
               alt="leaf"
-              height={LOGO_SIZE}
-              width={LOGO_SIZE}
+              height={30}
+              width={30}
             />
-          </MuiLink>
-          <div style={{ marginLeft: "auto" }}>
+          </Link>
+          <div className="ml-auto">
             <Buttons data={articleContent} />
           </div>
-        </Toolbar>
-      </AppBar>
-      <div className="article-title">{articleContent.title}</div>
-      <div className="article-url">
+      </div>
+      <div className="text-lg text-center w-2/3 m-auto">{articleContent.title}</div>
+      <div className="text-sm text-slate-300 line-clamp-1 my-3 w-2/3 m-auto">
         <Link href={articleContent.url}>{articleContent.url}</Link>
       </div>
-      <Divider className="article-divider" />
-      <div className="article-content">
+      <hr className="border-2 rounded-md my-5" />
+      <div className="mb-6">
         <div dangerouslySetInnerHTML={create_markup()} />
       </div>
-      <Divider className="article-divider" />
+      <hr className="border-2 rounded-md my-5" />
       <div className="article-tags">
         <Tags tags={articleContent.tags} id={articleContent.id} />
       </div>
-      <MuiLink
-        className="site-title"
-        component={Link}
-        underline="none"
+      <div
+      className="flex justify-center"
+      >
+      <Link
         href="/"
       >
         <Image
-          src={isLight ? "/logo_light.png" : "/logo_dark.png"}
+          src={"/logo_dark.png"}
           alt="leaf"
-          height={LOGO_SIZE}
-          width={LOGO_SIZE}
+          height={30}
+          width={30}
         />
-      </MuiLink>
+      </Link>
+</div>
     </>
   );
 }
