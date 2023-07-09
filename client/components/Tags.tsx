@@ -67,10 +67,12 @@ export default function Tags(data: TagsProps) {
           }
         })}
       &nbsp;
-      <button className="text-xs border rounded-full px-2">{tags.length ? "+" : "Add new tag"}</button>
+      <button className="text-xs border rounded-full px-2">
+        {tags.length ? "+" : "Add new tag"}
+      </button>
       {/* <div onClick={handleClickOpen} />
       <div> */}
-        {/* <DialogContent>
+      {/* <DialogContent>
           <TextField
             autoFocus
             margin="dense"

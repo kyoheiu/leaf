@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "lint": "next lint",
+    "fmt": "npx prettier --write .",
     "build": "rm -rf .next && next build",
     "start": "next start"
   },

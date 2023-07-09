@@ -1,16 +1,7 @@
-import Link from "next/link";
 import { useContext, useState } from "react";
 import {
-  RiHeart2Line,
-  RiInboxArchiveLine,
   RiSearch2Line,
-  RiCloseLine,
-  RiHome2Line,
-  RiSunLine,
-  RiMoonLine,
-  RiLogoutBoxLine,
-  RiMenuLine,
-  RiDownload2Fill,
+  RiLogoutBoxRLine,
 } from "react-icons/ri";
 import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
@@ -23,15 +14,6 @@ export const LOGO_SIZE = 42;
 
 export const Header = () => {
   const router = useRouter();
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const [searchOpen, setSearchOpen] = useState(false);
   const handleClickSearchOpen = () => {
@@ -123,49 +105,9 @@ export const Header = () => {
         </form>
         <BarSearch />
         &nbsp; &nbsp;
-        <button className="" id="basic-button" onClick={(e) => handleClick(e)}>
-          <RiMenuLine />
+        <button className="" id="basic-button" onClick={() => signOut()}>
+          <RiLogoutBoxRLine />
         </button>
-        {/* <Menu
-              id="basic-menu"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "basic-button",
-              }}
-            >
-              <MenuItem>
-                <MuiLink underline="none" component={Link} href="/">
-                  <RiHome2Line /> Top
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink underline="none" component={Link} href="/liked">
-                  <RiHeart2Line /> Liked
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink underline="none" component={Link} href="/archived">
-                  <RiInboxArchiveLine /> Archived
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink underline="none" href="#" onClick={toggleTheme}>
-                  {isLight ? <RiMoonLine /> : <RiSunLine />} Change theme
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink underline="none" component={Link} href="/api/download">
-                  <RiDownload2Fill /> Download data
-                </MuiLink>
-              </MenuItem>
-              <MenuItem>
-                <MuiLink underline="none" href="#" onClick={() => signOut()}>
-                  <RiLogoutBoxLine /> Log out
-                </MuiLink>
-              </MenuItem>
-            </Menu> */}
       </div>
     </>
   );

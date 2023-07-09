@@ -100,9 +100,7 @@ export default function ArticleElement(props: ElementProps) {
   }
 
   return (
-    <div key={article.data.id} id={article.data.id}
-      className="mb-8"
-    >
+    <div key={article.data.id} id={article.data.id} className="mb-8">
       <div className="text-sm text-slate-400 py-1">
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
@@ -110,13 +108,17 @@ export default function ArticleElement(props: ElementProps) {
         <a href={`/articles/${article.data.id}`}>{article.data.title}</a>
       </div>
       <div className="flex items-center text-sm text-slate-400 py-1">
-        <a href={article.data.url} target="_blank">{trimUrl(article.data.url)}</a>
+        <a href={article.data.url} target="_blank">
+          {trimUrl(article.data.url)}
+        </a>
         &nbsp;
         <LinkButton url={article.data.url} />
       </div>
       <div className="flex mt-1 mb-2">
         <div className="">
-          <div className="text-sm line-clamp-3 pr-2">{article.data.beginning}</div>
+          <div className="text-sm line-clamp-3 pr-2">
+            {article.data.beginning}
+          </div>
         </div>
         <div className="flex-auto w-64">
           {article.data.cover !== "" && (
