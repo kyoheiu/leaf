@@ -83,7 +83,11 @@ export const Header = () => {
   const BarSearch = () => {
     return (
       <>
-        <button onClick={handleClickSearchOpen} title="search">
+        <button
+          className="ml-auto"
+          onClick={handleClickSearchOpen}
+          title="search"
+        >
           <RiSearch2Line />
         </button>
       </>
@@ -95,44 +99,34 @@ export const Header = () => {
       <Head>
         <title>{process.env.NEXT_PUBLIC_TITLE}</title>
       </Head>
-      <div>
-          <a
-            className="site-title"
-            href="/"
-          >
-            <Image
-              src={isLight ? "/logo_light.png" : "/logo_dark.png"}
-              alt="leaf"
-              height={LOGO_SIZE}
-              width={LOGO_SIZE}
+      <div className="flex flex-nowrap items-center justify-between">
+        <a href="/">
+          <Image
+            src="/logo_dark.png"
+            alt="leaf"
+            height={LOGO_SIZE}
+            width={LOGO_SIZE}
+          />
+        </a>
+        <form onSubmit={createNew}>
+          &nbsp;
+          <div>
+            <input
+              className="flex-auto rounded-md p-1 w-3/4 mb-5"
+              id={"add_new"}
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(() => e.target.value)}
+              placeholder="Add URL"
             />
-          </a>
-          <form onSubmit={createNew}>
-            &nbsp;
-            <div>
-              <input
-                className="form-to-add"
-                id={"add_new"}
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(() => e.target.value)}
-                placeholder="Add URL"
-              />
-            </div>
-          </form>
-          <div className="header-buttons">
-            <BarSearch />
-            <button
-              id="basic-button"
-              aria-controls={open ? "basic-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
-              onClick={(e) => handleClick(e)}
-              title="menu"
-            >
-              <RiMenuLine />
-            </button>
-            {/* <Menu
+          </div>
+        </form>
+        <BarSearch />
+        &nbsp; &nbsp;
+        <button className="" id="basic-button" onClick={(e) => handleClick(e)}>
+          <RiMenuLine />
+        </button>
+        {/* <Menu
               id="basic-menu"
               anchorEl={anchorEl}
               open={open}
@@ -172,8 +166,7 @@ export const Header = () => {
                 </MuiLink>
               </MenuItem>
             </Menu> */}
-          </div>
-        </div>
+      </div>
     </>
   );
 };

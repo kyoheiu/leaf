@@ -33,9 +33,9 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
         }
       `}</style>
       <ColorMode.Provider value={{ isLight, setIsLight }}>
-          <SessionProvider session={pageProps.session}>
-            <Component {...pageProps} />
-          </SessionProvider>
+        <SessionProvider session={pageProps.session}>
+          <Component {...pageProps} />
+        </SessionProvider>
       </ColorMode.Provider>
     </>
   );

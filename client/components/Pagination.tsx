@@ -74,9 +74,7 @@ export const Pagination = (
   if (!page && isLast) {
     return (
       <>
-        <div className="pagination">
-          {!page && isLast && footerImage()}
-        </div>
+        <div className="pagination">{!page && isLast && footerImage()}</div>
       </>
     );
   } else if ((!page && !isLast) || page === "1") {

@@ -72,7 +72,7 @@ export default function Home({
   return (
     <>
       <Header />
-      <ul className="pt-16">
+      <ul className="mt-4">
         {wrapped.map((e, index) => {
           return (
             <ArticleElement
