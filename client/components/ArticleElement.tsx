@@ -2,6 +2,7 @@ import { ElementProps, ElementKind } from "../types/types";
 import { useState } from "react";
 import Tags from "./Tags";
 import Link from "next/link";
+import Image from "next/image";
 import {
   RiHeart2Line,
   RiHeart2Fill,
@@ -101,24 +102,24 @@ export default function ArticleElement(props: ElementProps) {
   }
 
   return (
-    <div key={article.data.id} id={article.data.id}>
-      <div className="text-slate-200">
+    <li key={article.data.id} id={article.data.id} className="">
+      <div className="text-sm text-slate-300 py-1">
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
-      <div className="text-xl">
+      <div className="text-lg">
         <a href={`/articles/${article.data.id}`}>{article.data.title}</a>
       </div>
-      <div className="element-url">
+      <div className="text-sm text-slate-300 py-1">
         {trimUrl(article.data.url)}
         <LinkButton url={article.data.url} />
       </div>
-      <div>
-        <div>
-          <div className="element-beginning">{article.data.beginning}</div>
+      <div className="flex">
+        <div className="">
+          <div className="text-sm line-clamp-3">{article.data.beginning}</div>
         </div>
-        <div>
+        <div className="flex-auto w-64">
           {article.data.cover !== "" && (
-            <img className="og" src={article.data.cover} />
+            <img className="" src={article.data.cover} />
           )}
         </div>
       </div>
@@ -127,25 +128,39 @@ export default function ArticleElement(props: ElementProps) {
           <Tags tags={article.data.tags} id={article.data.id} />
         </div>
       </div>
-      <button onClick={() => toggleLiked(article.data.id)} title="toggle liked">
-        {article.data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
-      </button>
-      <button
-        onClick={() => toggleArchived(article.data.id)}
-        title="toggle archived"
-      >
-        {article.data.archived ? (
-          <RiInboxUnarchiveFill />
-        ) : (
-          <RiInboxArchiveLine />
-        )}
-      </button>
-      <button
-        onClick={() => deleteArticleContent(article.data.id)}
-        title="delete"
-      >
-        <RiDeleteBin2Line />
-      </button>
-    </div>
+      <div className="flex items-center">
+        <div className="h-1 w-full bg-neutral-600 rounded-md">
+          <div
+            className="h-1 bg-neutral-200"
+            style={{ width: article.data.progress }}
+          ></div>
+        </div>
+        <button
+          className="px-2"
+          onClick={() => toggleLiked(article.data.id)}
+          title="toggle liked"
+        >
+          {article.data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
+        </button>
+        <button
+          className="px-2"
+          onClick={() => toggleArchived(article.data.id)}
+          title="toggle archived"
+        >
+          {article.data.archived ? (
+            <RiInboxUnarchiveFill />
+          ) : (
+            <RiInboxArchiveLine />
+          )}
+        </button>
+        <button
+          className="px-2"
+          onClick={() => deleteArticleContent(article.data.id)}
+          title="delete"
+        >
+          <RiDeleteBin2Line />
+        </button>
+      </div>
+    </li>
   );
 }

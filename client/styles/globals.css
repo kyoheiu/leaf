@@ -2,20 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-a {
-  text-decoration: hover;
+@layer base {
+  body {
+    @apply w-5/6 sm:w-3/4 max-w-xl
+           mx-auto
+         text-slate-200 bg-slate-900;
+  }
 }
 
-body {
-  width: 80%;
-  min-width: 200px;
-  max-width: 720px;
-  margin: 1em auto !important;
-  font-family: --var(--opensans-font);
-
-  @media screen and(max-width: 480px) {
-    width: 90%;
-  }
+/* 
+a {
+  text-decoration: hover;
 }
 
 img,
@@ -105,7 +102,7 @@ video {
 
 .article-tags {
   margin: 1.5em !important;
-} */
+}
 
 h1 {
   font-size: 1.5em;
@@ -233,4 +230,4 @@ footer {
   font-size: 1.2em;
   text-align: center;
   font-family: var(--jetbrains-font);
-}
+} */

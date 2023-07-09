@@ -67,9 +67,7 @@ export default function Tags(data: TagsProps) {
           }
         })}
       &nbsp;
-      <div
-        onClick={handleClickOpen}
-      />
+      <div onClick={handleClickOpen} />
       <div>
         {/* <DialogContent>
           <TextField
