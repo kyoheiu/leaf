@@ -2,6 +2,13 @@ import ArticleElement from "./ArticleElement";
 import { Category, ElementKind, WrappedData } from "../types/types";
 import { footerImage } from "@/components/Footer";
 import Link from "next/link";
+import {
+  RiHome2Fill,
+  RiHeart2Fill,
+  RiInboxArchiveFill,
+  RiHashtag,
+  RiSearch2Fill,
+} from "react-icons/ri";
 
 export const Main = (
   c: Category,
@@ -10,19 +17,51 @@ export const Main = (
   tagName?: string,
   query?: string | string[]
 ) => {
+  const Menu = ({ children }) => {
+    return <div className="flex items-center justify-evenly border rounded-full py-2 mb-6">{children}</div>;
+  };
+
+  const LinkedHome = () => {
+    return (
+      <Link href="/" className="text-sm px-2">
+        <RiHome2Fill />
+      </Link>
+    );
+  };
+
+  const LinkedLiked = () => {
+    return (
+      <Link href="/liked" className="text-sm px-2">
+        <RiHeart2Fill />
+      </Link>
+    );
+  };
+
+  const LinkedArchived = () => {
+    return (
+      <Link href="/archived" className="text-sm px-2">
+        <RiInboxArchiveFill />
+      </Link>
+    );
+  };
+
+  const DivMenu = ({ children }) => {
+    return <div className="text-sm border-b px-2">{children}</div>;
+  };
+
   switch (c) {
     case Category.All:
       return (
         <>
-          <div className="flex justify-center">
-            <div className="border-b px-2">All</div>
-            <Link className="px-2" href="/liked">
-              Liked
-            </Link>
-            <Link className="px-2" href="/archived">
-              Archived
-            </Link>
-          </div>
+          <Menu
+            children={
+              <>
+                <DivMenu children={<RiHome2Fill />} />
+                <LinkedLiked />
+                <LinkedArchived />
+              </>
+            }
+          />
           <div className="mt-3">
             {wrapped.map((e, index) => {
               return (
@@ -40,15 +79,15 @@ export const Main = (
     case Category.Liked:
       return (
         <>
-          <div className="flex justify-center">
-            <Link className="px-2" href="/">
-              All
-            </Link>
-            <div className="border-b px-2">Liked</div>
-            <Link className="px-2" href="/archived">
-              Archived
-            </Link>
-          </div>
+          <Menu
+            children={
+              <>
+                <LinkedHome />
+                <DivMenu children={<RiHeart2Fill />} />
+                <LinkedArchived />
+              </>
+            }
+          />
           <div className="mt-3">
             {wrapped.map((e, index) => {
               return (
@@ -66,15 +105,15 @@ export const Main = (
     case Category.Archived:
       return (
         <>
-          <div className="flex justify-center">
-            <Link className="px-2" href="/">
-              All
-            </Link>
-            <Link className="px-2" href="/liked">
-              liked
-            </Link>
-            <div className="border-b px-2">Archived</div>
-          </div>
+          <Menu
+            children={
+              <>
+                <LinkedHome />
+                <LinkedLiked />
+                <DivMenu children={<RiInboxArchiveFill />} />
+              </>
+            }
+          />
           <div className="mt-3">
             {wrapped.map((e, index) => {
               return (
@@ -92,16 +131,20 @@ export const Main = (
     case Category.Tagged:
       return (
         <>
-          <div className="flex justify-center">
-            <Link className="px-2" href="/">
-              All
-            </Link>
-            <Link className="px-2" href="/liked">Liked</Link>
-            <Link className="px-2" href="/archived">
-              Archived
-            </Link>
-            <div className="border-b px-2">Tag: {tagName}</div>
-          </div>
+          <Menu
+            children={
+              <>
+                <LinkedHome />
+                <DivMenu
+                  children={
+                    <>
+                      <RiHashtag /> {tagName}
+                    </>
+                  }
+                />
+              </>
+            }
+          />
           <div className="mt-3">
             {wrapped.map((e, index) => {
               return (
@@ -119,16 +162,20 @@ export const Main = (
     case Category.Searched:
       return (
         <>
-          <div className="flex justify-center">
-            <Link className="px-2" href="/">
-              All
-            </Link>
-            <Link className="px-2" href="/liked">Liked</Link>
-            <Link className="px-2" href="/archived">
-              Archived
-            </Link>
-            <div className="border-b px-2">Query: {query}</div>
-          </div>
+          <Menu
+            children={
+              <>
+                <LinkedHome />
+                <DivMenu
+                  children={
+                    <>
+                      <RiSearch2Fill /> {query}
+                    </>
+                  }
+                />
+              </>
+            }
+          />
           <div className="mt-3">
             {wrapped.map((e, index) => {
               return (
