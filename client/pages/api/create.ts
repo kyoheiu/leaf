@@ -15,7 +15,7 @@ export default async function handler(
 
   if (
     req.method === "POST" &&
-    req.headers.authorization === process.env.WEB_API_TOKEN
+    req.headers.authorization === process.env.LEAF_API_TOKEN
   ) {
     const body = req.body;
     if (body.url) {
