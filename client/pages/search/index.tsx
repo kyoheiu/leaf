@@ -1,4 +1,9 @@
-import { WrappedData, ElementKind, ArticleData, Category } from "../../types/types";
+import {
+  WrappedData,
+  ElementKind,
+  ArticleData,
+  Category,
+} from "../../types/types";
 import { Header } from "@/components/Header";
 import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";
@@ -41,13 +46,7 @@ export default function Searched(props: Data) {
   return (
     <>
       <Header />
-      {Main(
-        Category.Searched,
-        wrapped,
-        undefined,
-        undefined,
-        props.query
-      )}
+      {Main(Category.Searched, wrapped, undefined, undefined, props.query)}
     </>
   );
 }

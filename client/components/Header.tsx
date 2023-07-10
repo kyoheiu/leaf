@@ -13,13 +13,12 @@ export const Header = () => {
   const router = useRouter();
 
   const [searchOpen, setSearchOpen] = useState(false);
+
   const handleClickSearchOpen = () => {
-    setSearchOpen(true);
+    setSearchOpen((b) => !b);
   };
-  const handleSearchClose = () => {
-    setSearchOpen(false);
-  };
-  const searchAndClose = async () => {
+
+  const execSearch = async () => {
     const queries = (document.getElementById("search") as HTMLInputElement)
       .value;
     const split = queries
@@ -30,18 +29,8 @@ export const Header = () => {
   };
 
   const [url, setUrl] = useState<string>("");
-  const [progress, setProgress] = useState(false);
-  const { isLight, setIsLight } = useContext(ColorMode);
 
-  const toggleTheme = () => {
-    setIsLight(() => {
-      globalThis.sessionStorage.setItem(
-        "leafTheme",
-        isLight ? "dark" : "light"
-      );
-      return !isLight;
-    });
-  };
+  const [progress, setProgress] = useState(false);
 
   const createNew = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,7 +80,7 @@ export const Header = () => {
           &nbsp;
           <div>
             <input
-              className="flex-auto text-zinc-900 rounded-md p-1 w-5/6 mb-5"
+              className="flex-auto text-sm text-zinc-900 rounded-md p-1 w-5/6 mb-5"
               id={"add_new"}
               type="url"
               value={url}
@@ -101,11 +90,22 @@ export const Header = () => {
           </div>
         </form>
         <BarSearch />
-        &nbsp; &nbsp;
+        &nbsp; &nbsp; &nbsp;
         <button className="" id="basic-button" onClick={() => signOut()}>
           <RiLogoutBoxRLine />
         </button>
       </div>
+      {searchOpen && (
+        <form onSubmit={execSearch} className="flex justify-end">
+          <input
+            id="search"
+            type="text"
+            placeholder="search"
+            className="text-sm text-zinc-900 rounded-md p-1 w-3/5 mb-2"
+            autoFocus
+          />
+        </form>
+      )}
     </>
   );
 };

@@ -65,6 +65,10 @@ const pageUp = (
   }
 };
 
+const Paginate = ({ children }) => {
+  return <div className="flex justify-center mb-6">{children}</div>;
+};
+
 export const Pagination = (
   page: string | string[] | undefined,
   isLast: boolean,
@@ -72,44 +76,42 @@ export const Pagination = (
   tag_name?: string | undefined
 ) => {
   if (!page && isLast) {
-    return (
-      <>
-        <div className="pagination">{!page && isLast && footerImage()}</div>
-      </>
-    );
+    return <Paginate children={footerImage()} />;
   } else if ((!page && !isLast) || page === "1") {
     return (
-      <>
-        <div className="pagination">
+      <Paginate
+        children={
           <a href={secondPage(kind, tag_name)}>
             <SlArrowRight />
           </a>
-        </div>
-      </>
+        }
+      />
     );
   } else if (page && !isLast) {
     return (
-      <>
-        <div className="pagination">
-          <a href={pageDown(page as string, kind, tag_name)}>
-            <SlArrowLeft />
-          </a>
-          &nbsp; &nbsp; &nbsp;
-          <Link href={pageUp(page as string, kind, tag_name)}>
-            <SlArrowRight />
-          </Link>
-        </div>
-      </>
+      <Paginate
+        children={
+          <>
+            <a href={pageDown(page as string, kind, tag_name)}>
+              <SlArrowLeft />
+            </a>
+            &nbsp; &nbsp; &nbsp;
+            <a href={pageUp(page as string, kind, tag_name)}>
+              <SlArrowRight />
+            </a>
+          </>
+        }
+      />
     );
   } else {
     return (
-      <>
-        <div className="pagination">
+      <Paginate
+        children={
           <a href={pageDown(page as string, kind, tag_name)}>
             <SlArrowLeft />
           </a>
-        </div>
-      </>
+        }
+      />
     );
   }
 };

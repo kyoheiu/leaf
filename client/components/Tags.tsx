@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { TagsProps } from "../types/types";
 import { RiCloseLine, RiAddLine } from "react-icons/ri";
+import Link from "next/link";
 
 export default function Tags(data: TagsProps) {
   const [tags, setTags] = useState(data.tags);
@@ -10,16 +11,18 @@ export default function Tags(data: TagsProps) {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
-    setOpen(true);
+    setOpen((b) => !b);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
 
-  const submitAndClose = async (id: string) => {
+  const submitTag = async (e, id: string) => {
+    e.preventDefault();
     const element = document.getElementById(`${id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
+    console.log(tag);
     const res = await fetch(`/api/articles/${id}?kind=add`, {
       method: "POST",
       body: tag,
@@ -52,46 +55,53 @@ export default function Tags(data: TagsProps) {
 
   return (
     <>
-      {tags.length !== 0 &&
-        tags.map((x, index) => {
-          {
-            return (
-              <span key={`tag-element${index.toString()}`}>
-                <div
-                  id={`${data.id}_delete_tag`}
-                  onClick={() => navigateToTag(x)}
-                />
-                &nbsp;
-              </span>
-            );
-          }
-        })}
+      <div className="flex items-center">
+        {tags.length !== 0 &&
+          tags.map((x, index) => {
+            {
+              return (
+                <>
+                  <div className="text-xs text-zinc-900 bg-zinc-200 border border-zinc-200 rounded-full px-2">
+                    <Link
+                      className="text-xs mr-2 px-2"
+                      href={`/tags/${x}`}
+                      key={`tag-element${index}`}
+                    >
+                      {x}
+                    </Link>
+                    <button
+                      id={`${data.id}_delete_tag`}
+                      onClick={() => deleteTag(data.id, x)}
+                    >
+                      <RiCloseLine />
+                    </button>
+                  </div>
+                  &nbsp;
+                </>
+              );
+            }
+          })}
+      </div>
       &nbsp;
-      <button className="text-xs border rounded-full px-2">
-        {tags.length ? "+" : "Add new tag"}
+      <button
+        className="text-xs border rounded-full px-2"
+        onClick={handleClickOpen}
+      >
+        {tags.length ? <RiAddLine /> : "Add new tag"}
       </button>
-      {/* <div onClick={handleClickOpen} />
-      <div> */}
-      {/* <DialogContent>
-          <TextField
+      {open && (
+        <form
+          onSubmit={(e) => submitTag(e, data.id)}
+          className="flex justify-start m-2"
+        >
+          <input
             autoFocus
-            margin="dense"
             id={`${data.id}_add_tag`}
-            type="text"
-            fullWidth
             placeholder="Add new tag"
-            variant="standard"
+            className="rounded-md p-1 w-3/4 text-zinc-900 text-sm"
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>
-            <RiCloseLine />
-          </Button>
-          <Button onClick={() => submitAndClose(data.id)}>
-            <RiAddLine />
-          </Button>
-        </DialogActions> */}
-      {/* </div> */}
+        </form>
+      )}
     </>
   );
 }
