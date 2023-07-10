@@ -9,7 +9,6 @@ import {
   RiDeleteBin2Line,
 } from "react-icons/ri";
 import LinkButton from "@/components/LinkButton";
-import Image from "next/image";
 
 export default function ArticleElement(props: ElementProps) {
   const [article, setArticle] = useState(props.element);

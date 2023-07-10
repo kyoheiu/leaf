@@ -1,6 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
 
 export const getArchivedArticles = async () => {
   const response = await fetch(
@@ -22,14 +20,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  //Check the cookie if env variable is set
-  if (process.env.GITHUB_CLIENT_ID) {
-    const session = await getServerSession(req, res, authOptions);
-    if (!session) {
-      res.status(303).setHeader("Location", "/").end();
-    }
-  }
-
   if (req.method === "GET") {
     const query = req.query;
     if (!query.reload) {

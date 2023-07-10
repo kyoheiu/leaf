@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { TagsProps } from "../types/types";
 import { RiCloseLine, RiAddLine } from "react-icons/ri";
@@ -6,7 +5,6 @@ import Link from "next/link";
 
 export default function Tags(data: TagsProps) {
   const [tags, setTags] = useState(data.tags);
-  const router = useRouter();
 
   const [open, setOpen] = useState(false);
 
@@ -14,11 +12,7 @@ export default function Tags(data: TagsProps) {
     setOpen((b) => !b);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const submitTag = async (e, id: string) => {
+  const submitTag = async (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
     const element = document.getElementById(`${id}_add_tag`);
     const tag = (element as HTMLInputElement).value;
@@ -34,10 +28,6 @@ export default function Tags(data: TagsProps) {
       setTags((x) => [...x, tag.toLowerCase()]);
       setOpen(false);
     }
-  };
-
-  const navigateToTag = (tag: string) => {
-    router.push(`/tags/${tag}`);
   };
 
   const deleteTag = async (id: string, tag: string) => {

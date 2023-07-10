@@ -1,6 +1,6 @@
 import { ArticleContent } from "../../types/types";
 import Link from "next/link";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import {
   RiHeart2Line,
@@ -12,12 +12,8 @@ import {
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
 import Image from "next/image";
-import { LOGO_SIZE } from "@/components/Header";
 import Tags from "@/components/Tags";
 import LinkButton from "@/components/LinkButton";
-import { ColorMode } from "../../context/ColorMode";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
 
 type Data = ArticleContent;
 
@@ -30,21 +26,6 @@ interface Update {
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  if (process.env.GITHUB_CLIENT_ID) {
-    const session = await getServerSession(
-      context.req,
-      context.res,
-      authOptions
-    );
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/api/auth/signin",
-          permanent: false,
-        },
-      };
-    }
-  }
   if (context.params) {
     const id = context.params.id;
     const data = await getArticleContent(id as string);

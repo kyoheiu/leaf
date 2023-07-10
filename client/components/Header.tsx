@@ -1,11 +1,11 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { RiSearch2Line, RiLogoutBoxRLine } from "react-icons/ri";
-import { ColorMode } from "../context/ColorMode";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { signOut } from "next-auth/react";
 import Head from "next/head";
 import toast from "react-simple-toasts";
+import Link from "next/link";
 
 export const LOGO_SIZE = 42;
 
@@ -30,17 +30,14 @@ export const Header = () => {
 
   const [url, setUrl] = useState<string>("");
 
-  const [progress, setProgress] = useState(false);
 
   const createNew = async (e: React.FormEvent) => {
     e.preventDefault();
-    setProgress(true);
     console.debug(url);
     const res = await fetch("/api/articles", {
       method: "POST",
       body: url,
     });
-    setProgress(false);
     if (!res.ok) {
       toast(res.statusText);
     } else {
@@ -68,14 +65,14 @@ export const Header = () => {
         <title>{process.env.NEXT_PUBLIC_TITLE}</title>
       </Head>
       <div className="flex flex-nowrap items-center justify-between">
-        <a className="pr-1" href="/">
+        <Link className="pr-1" href="/">
           <Image
             src="/logo_dark.png"
             alt="leaf"
             height={LOGO_SIZE}
             width={LOGO_SIZE}
           />
-        </a>
+        </Link>
         <form onSubmit={createNew}>
           &nbsp;
           <div>

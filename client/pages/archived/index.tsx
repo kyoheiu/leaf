@@ -13,8 +13,6 @@ import {
   reloadArchivedArticles,
 } from "../api/articles/archived";
 import { useRouter } from "next/router";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
 import { Main } from "@/components/Main";
 
 type Data = Articles;
@@ -22,21 +20,6 @@ type Data = Articles;
 export const getServerSideProps: GetServerSideProps<{
   data: Data;
 }> = async (context) => {
-  if (process.env.GITHUB_CLIENT_ID) {
-    const session = await getServerSession(
-      context.req,
-      context.res,
-      authOptions
-    );
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/api/auth/signin",
-          permanent: false,
-        },
-      };
-    }
-  }
   if (context.query.page) {
     const data = await reloadArchivedArticles(context.query.page as string);
     return { props: { data } };

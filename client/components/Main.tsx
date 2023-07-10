@@ -9,6 +9,7 @@ import {
   RiHashtag,
   RiSearch2Fill,
 } from "react-icons/ri";
+import { ReactNode } from "react";
 
 export const Main = (
   c: Category,
@@ -17,7 +18,7 @@ export const Main = (
   tagName?: string,
   query?: string | string[]
 ) => {
-  const Menu = ({ children }) => {
+  const Menu = ({ children }: {children: ReactNode}) => {
     return <div className="flex items-center justify-evenly border rounded-full py-2 mb-6">{children}</div>;
   };
 
@@ -45,7 +46,7 @@ export const Main = (
     );
   };
 
-  const DivMenu = ({ children }) => {
+  const DivMenu = ({ children }: {children: ReactNode}) => {
     return <div className="text-sm border-b px-2">{children}</div>;
   };
 
