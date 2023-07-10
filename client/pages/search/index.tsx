@@ -1,14 +1,11 @@
 import {
   WrappedData,
-  ElementKind,
   ArticleData,
   Category,
 } from "../../types/types";
 import { Header } from "@/components/Header";
 import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/auth";
 import { Main } from "@/components/Main";
 
 type Data = {
@@ -17,21 +14,6 @@ type Data = {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  if (process.env.GITHUB_CLIENT_ID) {
-    const session = await getServerSession(
-      context.req,
-      context.res,
-      authOptions
-    );
-    if (!session) {
-      return {
-        redirect: {
-          destination: "/api/auth/signin",
-          permanent: false,
-        },
-      };
-    }
-  }
   const q = context.query.q ?? [];
   const result = await searchArticles(q);
   return { props: { query: q, data: result } };

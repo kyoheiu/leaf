@@ -1,7 +1,7 @@
 import { footerImage } from "@/components/Footer";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
-import Link from "next/link";
 import { PaginationKind } from "../types/types";
+import { ReactNode } from "react";
 
 const secondPage = (
   kind: PaginationKind,
@@ -65,7 +65,7 @@ const pageUp = (
   }
 };
 
-const Paginate = ({ children }) => {
+const Paginate = ({ children }: {children: ReactNode}) => {
   return <div className="flex justify-center mb-6">{children}</div>;
 };
 
