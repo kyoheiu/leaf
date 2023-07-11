@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TagsProps } from "../types/types";
 import { RiCloseLine, RiAddLine } from "react-icons/ri";
+import { PiTagChevronFill } from "react-icons/pi";
 import Link from "next/link";
 
 export default function Tags(data: TagsProps) {
@@ -45,29 +46,26 @@ export default function Tags(data: TagsProps) {
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex flex-wrap items-center">
         {tags.length !== 0 &&
           tags.map((x, index) => {
             {
               return (
-                <>
-                  <div className="text-xs text-zinc-900 bg-zinc-200 border border-zinc-200 rounded-full px-2">
-                    <Link
-                      className="text-xs mr-2 px-2"
-                      href={`/tags/${x}`}
-                      key={`tag-element${index}`}
-                    >
-                      {x}
-                    </Link>
-                    <button
-                      id={`${data.id}_delete_tag`}
-                      onClick={() => deleteTag(data.id, x)}
-                    >
-                      <RiCloseLine />
-                    </button>
-                  </div>
-                  &nbsp;
-                </>
+                <div
+                  key={`tag-element-${data.id}-${index.toString()}`}
+                  className="text-xs text-gray-900 bg-gray-200 border border-gray-200 rounded-full px-2 m-1"
+                >
+                  <Link className="text-xs mr-2 px-2" href={`/tags/${x}`}>
+                    <PiTagChevronFill className="inline" />
+                    &nbsp;{x}
+                  </Link>
+                  <button
+                    id={`${data.id}_delete_tag`}
+                    onClick={() => deleteTag(data.id, x)}
+                  >
+                    <RiCloseLine />
+                  </button>
+                </div>
               );
             }
           })}
@@ -76,8 +74,9 @@ export default function Tags(data: TagsProps) {
       <button
         className="text-xs border rounded-full px-2"
         onClick={handleClickOpen}
+        title="add new tag"
       >
-        {tags.length ? <RiAddLine /> : "Add new tag"}
+        <PiTagChevronFill className="inline" /> <RiAddLine className="inline" />
       </button>
       {open && (
         <form
@@ -88,7 +87,7 @@ export default function Tags(data: TagsProps) {
             autoFocus
             id={`${data.id}_add_tag`}
             placeholder="Add new tag"
-            className="rounded-md p-1 w-3/4 text-zinc-900 text-sm"
+            className="rounded-md p-1 w-3/4 text-gray-900 text-sm"
           />
         </form>
       )}

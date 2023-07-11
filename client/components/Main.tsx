@@ -1,6 +1,6 @@
 import ArticleElement from "./ArticleElement";
 import { Category, ElementKind, WrappedData } from "../types/types";
-import { footerImage } from "@/components/Footer";
+import { FooterImage } from "@/components/Footer";
 import Link from "next/link";
 import {
   RiHome2Fill,
@@ -18,13 +18,17 @@ export const Main = (
   tagName?: string,
   query?: string | string[]
 ) => {
-  const Menu = ({ children }: {children: ReactNode}) => {
-    return <div className="flex items-center justify-evenly border rounded-full py-2 mb-6">{children}</div>;
+  const Menu = ({ children }: { children: ReactNode }) => {
+    return (
+      <div className="flex items-center justify-evenly border rounded-full py-2 mb-6 h-8">
+        {children}
+      </div>
+    );
   };
 
   const LinkedHome = () => {
     return (
-      <Link href="/" className="text-sm px-2">
+      <Link href="/" className="text-sm">
         <RiHome2Fill />
       </Link>
     );
@@ -32,7 +36,7 @@ export const Main = (
 
   const LinkedLiked = () => {
     return (
-      <Link href="/liked" className="text-sm px-2">
+      <Link href="/liked" className="text-sm">
         <RiHeart2Fill />
       </Link>
     );
@@ -40,14 +44,14 @@ export const Main = (
 
   const LinkedArchived = () => {
     return (
-      <Link href="/archived" className="text-sm px-2">
+      <Link href="/archived" className="text-sm">
         <RiInboxArchiveFill />
       </Link>
     );
   };
 
-  const DivMenu = ({ children }: {children: ReactNode}) => {
-    return <div className="text-sm border-b px-2">{children}</div>;
+  const DivMenu = ({ children }: { children: ReactNode }) => {
+    return <div className="text-sm border-b">{children}</div>;
   };
 
   switch (c) {
@@ -139,7 +143,8 @@ export const Main = (
                 <DivMenu
                   children={
                     <>
-                      <RiHashtag /> {tagName}
+                      <RiHashtag className="inline-block" />
+                      &nbsp;{tagName}
                     </>
                   }
                 />
@@ -170,7 +175,8 @@ export const Main = (
                 <DivMenu
                   children={
                     <>
-                      <RiSearch2Fill /> {query}
+                      <RiSearch2Fill className="inline-block" />
+                      &nbsp;{query}
                     </>
                   }
                 />
@@ -187,7 +193,7 @@ export const Main = (
                 />
               );
             })}
-            <footer>{footerImage()}</footer>
+            {FooterImage()}
           </div>
         </>
       );

@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { RiSearch2Line, RiLogoutBoxRLine } from "react-icons/ri";
+import { RiSearch2Line } from "react-icons/ri";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { signOut } from "next-auth/react";
 import Head from "next/head";
 import toast from "react-simple-toasts";
 import Link from "next/link";
 
-export const LOGO_SIZE = 42;
+// h-10
+export const LOGO_SIZE = 40;
+// h-8
+export const MINI_LOGO_SIZE = 32;
 
 export const Header = () => {
   const router = useRouter();
@@ -29,7 +31,6 @@ export const Header = () => {
   };
 
   const [url, setUrl] = useState<string>("");
-
 
   const createNew = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +78,7 @@ export const Header = () => {
           &nbsp;
           <div>
             <input
-              className="flex-auto text-sm text-zinc-900 rounded-md p-1 w-5/6 mb-5"
+              className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6 mb-5"
               id={"add_new"}
               type="url"
               value={url}
@@ -87,10 +88,6 @@ export const Header = () => {
           </div>
         </form>
         <BarSearch />
-        &nbsp; &nbsp; &nbsp;
-        <button className="" id="basic-button" onClick={() => signOut()}>
-          <RiLogoutBoxRLine />
-        </button>
       </div>
       {searchOpen && (
         <form onSubmit={execSearch} className="flex justify-end">
@@ -98,7 +95,7 @@ export const Header = () => {
             id="search"
             type="text"
             placeholder="search"
-            className="text-sm text-zinc-900 rounded-md p-1 w-3/5 mb-2"
+            className="text-sm text-gray-900 rounded-md p-1 w-3/5 mb-2"
             autoFocus
           />
         </form>

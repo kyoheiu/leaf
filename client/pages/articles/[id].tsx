@@ -14,6 +14,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Tags from "@/components/Tags";
 import LinkButton from "@/components/LinkButton";
+import { MINI_LOGO_SIZE } from "@/components/Header";
 
 type Data = ArticleContent;
 
@@ -190,9 +191,14 @@ export default function Article({
           {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
         </title>
       </Head>
-      <div className="flex items-center bg-zinc-900 sticky top-0 my-3">
+      <div className="flex items-center bg-gray-900 sticky top-0 my-3">
         <Link href="/">
-          <Image src={"/logo_dark.png"} alt="leaf" height={30} width={30} />
+          <Image
+            src={"/logo_dark.png"}
+            alt="leaf"
+            height={MINI_LOGO_SIZE}
+            width={MINI_LOGO_SIZE}
+          />
         </Link>
         <div className="ml-auto">
           <Buttons data={articleContent} />
@@ -201,7 +207,7 @@ export default function Article({
       <div className="text-lg text-center w-2/3 m-auto">
         {articleContent.title}
       </div>
-      <div className="text-sm text-zinc-400 line-clamp-1 my-3 w-2/3 m-auto">
+      <div className="text-sm text-gray-400 line-clamp-1 my-3 w-2/3 m-auto">
         <Link href={articleContent.url}>{articleContent.url}</Link>
       </div>
       <hr className="border-2 rounded-md my-5" />
@@ -214,7 +220,12 @@ export default function Article({
       </div>
       <div className="flex justify-center">
         <Link href="/">
-          <Image src={"/logo_dark.png"} alt="leaf" height={30} width={30} />
+          <Image
+            src={"/logo_dark.png"}
+            alt="leaf"
+            height={MINI_LOGO_SIZE}
+            width={MINI_LOGO_SIZE}
+          />
         </Link>
       </div>
     </>

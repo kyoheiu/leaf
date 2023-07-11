@@ -1,8 +1,4 @@
-import {
-  WrappedData,
-  ArticleData,
-  Category,
-} from "../../types/types";
+import { WrappedData, ArticleData, Category } from "../../types/types";
 import { Header } from "@/components/Header";
 import { GetServerSideProps } from "next";
 import { searchArticles } from "../api/search";

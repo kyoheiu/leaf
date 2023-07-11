@@ -6,9 +6,12 @@
   body {
     @apply w-5/6 sm:w-3/4 max-w-xl
            mx-auto
-           text-lg
-         text-zinc-200 bg-zinc-900
-           leading-7;
+         text-gray-200 bg-gray-900
+           leading-7
+           break-words;
+  }
+  p {
+    @apply my-3;
   }
   a {
     @apply hover:underline;
@@ -18,10 +21,10 @@
     @apply max-w-full h-auto table m-auto;
   }
   h1 {
-    @apply text-2xl font-bold mt-6 mb-3 border-b border-dashed;
+    @apply text-2xl font-bold mt-6 mb-3 border-b;
   }
   h2 {
-    @apply text-xl font-bold mt-6 mb-3 border-b border-dashed;
+    @apply text-xl font-bold mt-6 mb-3 border-b;
   }
   h3 {
     @apply text-lg  font-bold mt-6 mb-3;
@@ -39,7 +42,7 @@
     @apply text-sm font-mono rounded-md text-slate-800 bg-slate-200 px-1;
   }
   pre {
-    @apply overflow-x-scroll p-1 border border-slate-200 m-2;
+    @apply overflow-x-scroll p-3 border border-slate-200 m-2;
   }
   pre > code {
     @apply font-mono;
@@ -48,13 +51,13 @@
     @apply border-l-2 border-slate-200 italic pl-2 m-2;
   }
   ul {
-    @apply m-2 p-2 list-disc;
+    @apply m-2 px-2 list-disc;
   }
   ol {
-    @apply m-2 p-2 list-decimal;
+    @apply m-2 px-2 list-decimal;
   }
   table {
-    @apply border-collapse max-w-full;
+    @apply border-collapse w-full max-w-full table-auto overflow-x-scroll;
   }
   table th {
     @apply p-1;
@@ -67,20 +70,3 @@
     @apply p-1;
   }
 }
-
-/* 
-.login {
-  width: 50%;
-  max-width: 400px;
-  margin: 200px auto;
-  padding: 50px;
-  text-align: center;
-  background-image: linear-gradient(to bottom right, #73c2fb, #b0e0e6);
-  color: #333;
-  font-family: monospace;
-}
-
-.login-button {
-  margin: 10px;
-}
-*/

@@ -10,7 +10,7 @@ const copyToClipboard = async (url: string) => {
   toast("URL copied to clipboard.");
 };
 
-export default function Login(data: urlProp) {
+export default function LinkButton(data: urlProp) {
   return (
     <>
       <button

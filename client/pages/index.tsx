@@ -6,7 +6,7 @@ import {
 } from "../types/types";
 import { Header } from "@/components/Header";
 import { Pagination } from "@/components/Pagination";
-import { footerImage } from "@/components/Footer";
+import { FooterImage } from "@/components/Footer";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getArticles, reloadArticles } from "./api/articles";
 import { useRouter } from "next/router";
@@ -41,7 +41,7 @@ export default function Home({
         <Header />
         <div className="">
           <div>Add new articles from the form in the top bar.</div>
-          {footerImage()}
+          {FooterImage()}
         </div>
       </>
     );

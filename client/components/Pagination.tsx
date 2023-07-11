@@ -1,4 +1,4 @@
-import { footerImage } from "@/components/Footer";
+import { FooterImage } from "@/components/Footer";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { PaginationKind } from "../types/types";
 import { ReactNode } from "react";
@@ -65,7 +65,7 @@ const pageUp = (
   }
 };
 
-const Paginate = ({ children }: {children: ReactNode}) => {
+const Paginate = ({ children }: { children: ReactNode }) => {
   return <div className="flex justify-center mb-6">{children}</div>;
 };
 
@@ -76,7 +76,7 @@ export const Pagination = (
   tag_name?: string | undefined
 ) => {
   if (!page && isLast) {
-    return <Paginate children={footerImage()} />;
+    return <Paginate children={FooterImage()} />;
   } else if ((!page && !isLast) || page === "1") {
     return (
       <Paginate
