@@ -205,13 +205,12 @@ export default function Article({
           <Buttons data={articleContent} />
         </div>
       </div>
-      <div className="text-lg text-center w-2/3 m-auto">
+      <div className="text-lg text-center leading-6 w-3/4 m-auto">
         {articleContent.title}
       </div>
       <div className="text-sm text-gray-400 line-clamp-1 my-3 w-2/3 m-auto">
-        <Link href={articleContent.url}>{articleContent.url}</Link>
+        <a href={articleContent.url}>{articleContent.url}</a>
       </div>
-      <hr className="border-2 rounded-md my-5" />
       <div className="mb-6">
         <div dangerouslySetInnerHTML={create_markup()} />
       </div>
