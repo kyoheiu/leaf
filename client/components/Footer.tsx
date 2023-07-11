@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export const FooterImage = () => {
   return (
-    <Link href="/">
+    <Link href="/" className="my-6">
       <Image
         src="/logo_dark.png"
         alt="leaf"

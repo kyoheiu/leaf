@@ -10,11 +10,11 @@
            leading-7
            break-words;
   }
+  a {
+    @apply underline;
+  }
   p {
     @apply my-3;
-  }
-  a {
-    @apply hover:underline;
   }
   img,
   video {
