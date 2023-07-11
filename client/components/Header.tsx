@@ -44,6 +44,7 @@ export const Header = () => {
     });
     if (!res.ok) {
       toast(res.statusText);
+      setLoading(b => !b);
     } else {
       router.reload();
     }
@@ -68,34 +69,31 @@ export const Header = () => {
       <Head>
         <title>{process.env.NEXT_PUBLIC_TITLE}</title>
       </Head>
-      <div className="flex flex-nowrap items-center justify-between">
+      <div className="flex flex-nowrap items-center justify-between mt-3 mb-6">
         <Link className="pr-1" href="/">
           <Image
             src="/logo_dark.png"
             alt="leaf"
-            height={LOGO_SIZE}
-            width={LOGO_SIZE}
+            height={MINI_LOGO_SIZE}
+            width={MINI_LOGO_SIZE}
           />
         </Link>
-        <form onSubmit={createNew}>
           &nbsp;
-          <div>
             {loading ? (
-              <div className="flex-auto text-sm rounded-md p-1 mb-5 animate-spin">
+              <div className="text-sm animate-spin">
                 <ImSpinner />
               </div>
             ) : (
+        <form onSubmit={createNew}>
               <input
-                className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6 mb-5"
+                className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6"
                 id={"add_new"}
                 type="url"
                 value={url}
                 onChange={(e) => setUrl(() => e.target.value)}
                 placeholder="+"
-              />
+              /></form>
             )}
-          </div>
-        </form>
         <BarSearch />
       </div>
       {searchOpen && (
