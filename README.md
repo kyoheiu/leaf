@@ -3,7 +3,9 @@
 Self-hostable "read-it-later" Web app.
 
 <hr />
+<p align="center">
 <img src="images/ss1.png" width="200" /> <img src="images/ss2.png" width="200" /> <img src="images/ss3.png" width="200" />
+</p>
 <hr />
 
 ## What is this exactly
