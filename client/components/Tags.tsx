@@ -55,7 +55,7 @@ export default function Tags(data: TagsProps) {
                   key={`tag-element-${data.id}-${index.toString()}`}
                   className="text-xs text-gray-900 bg-gray-200 border border-gray-200 rounded-full px-2 m-1"
                 >
-                  <Link className="text-xs mr-2 px-2" href={`/tags/${x}`}>
+                  <Link className="text-xs mr-2 px-2 no-underline" href={`/tags/${x}`}>
                     <PiTagChevronFill className="inline" />
                     &nbsp;{x}
                   </Link>
