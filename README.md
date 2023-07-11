@@ -3,6 +3,8 @@
 Self-hostable "read-it-later" Web app.
 
 <hr />
+<img src="images/ss1.png" width="200" /> <img src="images/ss2.png" width="200" /> <img src="images/ss3.png" width="200" />
+<hr />
 
 ## What is this exactly
 
@@ -63,6 +65,19 @@ By default this app is not protected by any means so that you can use your own a
 
 2. `docker compose up -d` and the app will start listening on port 3000.
    (The SQLite database and search index are created in the directory described in your `docker-compose.yml`)
+
+## API   
+Via API you can add new article:
+
+```http
+POST /api/create
+Content-Type: application/json
+Authorization: LEAF_API_TOKEN
+
+{
+  "url": "https://example.com"
+}
+```
 
 ## Architecture
 
