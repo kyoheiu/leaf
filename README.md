@@ -1,24 +1,12 @@
 <h1>leaf</h1>
 
-Instapaper is great, but you can self-host your own "read-later" Web app.
-
-![https://img.shields.io/docker/image-size/kyoheiudev/leaf-client?label=leaf-client](https://img.shields.io/docker/image-size/kyoheiudev/leaf-client?label=leaf-client)
-![https://img.shields.io/docker/image-size/kyoheiudev/leaf-server?label=leaf-server](https://img.shields.io/docker/image-size/kyoheiudev/leaf-server?label=leaf-server)
-
-<hr />
-
-![screenshot1.png](images/screenshot1.png)
-
-![screenshot2.png](images/screenshot2.png)
-
-![screenshot3.png](images/screenshot3.png)
+Self-hostable "read-it-later" Web app.
 
 <hr />
 
 ## What is this exactly
 
-- Save a web page by URL and read only its content later.
-- Specialized to "read": Use leaf to read text-based articles.
+- Save a web page by URL and read its content later.
 - Save your progress automatically.
 - Features:
   - like
@@ -26,19 +14,16 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
   - tagging
   - full-text search (works only with languages based on the Latin script for
     now)
-  - light/dark theme
-  - built-in auth (Optional: Requires GitHub account)
 - With the
   [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
   you can easily add new articles.
 
 ## New release
 
-### v0.4.2 (2023-05-20)
-- Add link to download data as JSON file.
-
-### v0.4.1 (2023-05-16)
-- Fix content extractor bug: Check if top_candidate's parent exists.
+### v0.5.0 (2023-07-11)
+- Use tailwindcss.
+- Remove built-in auth. Use your own!
+- Refactor frontend overall.
 
 ## Deploy
 
@@ -49,18 +34,18 @@ Instapaper is great, but you can self-host your own "read-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.4.2
+    image: docker.io/kyoheiudev/leaf-server:0.5.0
     container_name: leaf-server
     volumes:
-      - ./server/databases:/var/leaf/databases
+      - /path/to/databases:/var/leaf/databases
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.4.2
+    image: docker.io/kyoheiudev/leaf-client:0.5.0
     container_name: leaf-client
     volumes:
-      - ./path/to/.env.production:/app/.env.production
+      - /path/to/.env.production:/app/.env.production
     ports:
       - 3000:3000
 ```
@@ -69,15 +54,12 @@ services:
 ```
 NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=leaf-server
-NEXTAUTH_URL=https://your-site.url
-NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
-WEB_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
+LEAF_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
 ```
 
-You should edit `NEXTAUTH_URL`, `NEXTAUTH_SECRET`, and
-`WEB_API_TOKEN`.
+You should edit `LEAF_API_TOKEN`.
 
-By default this app is not protected by any means so that you can use your own auth process like SSO. If you want the built-in authentication, add `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` to this file. For more details, please see [this GitHub document](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)._
+By default this app is not protected by any means so that you can use your own auth process like SSO.
 
 2. `docker compose up -d` and the app will start listening on port 3000.
    (The SQLite database and search index are created in the directory described in your `docker-compose.yml`)
@@ -90,8 +72,7 @@ By default this app is not protected by any means so that you can use your own a
 
 - TypeScript as the frontend
   - Next.js
-  - Auth.js
-  - MUI
+  - tailwindcss
 - Rust as the backend
   - axum
   - headless-chrome to get contents
@@ -106,16 +87,13 @@ By default this app is not protected by any means so that you can use your own a
 
 - docker
 - nodejs, cargo, make
-- (optional) GitHub Account
 
 Add `.env.development.local` to the `client` directory with the following:
 
 ```
 NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=127.0.0.1
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=RANDOM_STRING_TO_BE_USED_WHEN_HASHING_THINGS
-WEB_API_TOKEN=test
+LEAF_API_TOKEN=test
 ```
 
 And in the root directory:
@@ -133,4 +111,5 @@ Contact me via email: ~kyoheiu/leaf@lists.sr.ht
 
 ## TODO
 
+- Revive export
 - Import?
