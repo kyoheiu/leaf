@@ -105,7 +105,7 @@ export default function ArticleElement(props: ElementProps) {
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
       <div className="text-sky-300 text-lg font-semibold line-clamp-3">
-        <a href={`/articles/${article.data.id}`}>{article.data.title}</a>
+        <a href={`/articles/${article.data.id}`} className="no-underline">{article.data.title}</a>
       </div>
       <div className="flex items-center text-sm text-gray-400 py-1">
         <a href={article.data.url} target="_blank">

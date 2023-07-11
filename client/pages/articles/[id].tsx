@@ -15,6 +15,7 @@ import Image from "next/image";
 import Tags from "@/components/Tags";
 import LinkButton from "@/components/LinkButton";
 import { MINI_LOGO_SIZE } from "@/components/Header";
+import { FooterImage } from "@/components/Footer";
 
 type Data = ArticleContent;
 
@@ -218,16 +219,7 @@ export default function Article({
       <div className="article-tags">
         <Tags tags={articleContent.tags} id={articleContent.id} />
       </div>
-      <div className="flex justify-center">
-        <Link href="/">
-          <Image
-            src={"/logo_dark.png"}
-            alt="leaf"
-            height={MINI_LOGO_SIZE}
-            width={MINI_LOGO_SIZE}
-          />
-        </Link>
-      </div>
+      <FooterImage />
     </>
   );
 }
