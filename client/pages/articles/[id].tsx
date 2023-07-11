@@ -208,17 +208,16 @@ export default function Article({
       <div className="text-lg text-center font-semibold leading-6 w-3/4 m-auto">
         {articleContent.title}
       </div>
-      <div className="text-sm text-gray-400 line-clamp-1 mt-3 mb-6 w-2/3 m-auto">
+      <div className="text-sm text-gray-400 text-center line-clamp-1 mt-3 mx-3 mb-6">
         <a href={articleContent.url}>{articleContent.url}</a>
       </div>
       <div className="mb-6">
         <div dangerouslySetInnerHTML={create_markup()} />
       </div>
-      <hr className="border-2 rounded-md my-5" />
-      <div className="article-tags">
+      <FooterImage />
+      <div className="mx-3 mb-6">
         <Tags tags={articleContent.tags} id={articleContent.id} />
       </div>
-      <FooterImage />
     </>
   );
 }
