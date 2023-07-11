@@ -1,7 +1,5 @@
 import type { AppProps } from "next/app";
 import React from "react";
-import { Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
 import { JetBrains_Mono, Lora, Open_Sans } from "next/font/google";
 import "../styles/globals.css";
 
@@ -9,8 +7,7 @@ const jetBrains = JetBrains_Mono({ subsets: ["latin"] });
 const lora = Lora({ subsets: ["latin"] });
 const openSans = Open_Sans({ subsets: ["latin"] });
 
-function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
-
+function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <style jsx global>{`
@@ -20,9 +17,7 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
           --opensans-font: ${openSans.style.fontFamily};
         }
       `}</style>
-        <SessionProvider session={pageProps.session}>
-          <Component {...pageProps} />
-        </SessionProvider>
+      <Component {...pageProps} />
     </>
   );
 }

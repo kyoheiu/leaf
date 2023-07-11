@@ -101,30 +101,37 @@ export default function ArticleElement(props: ElementProps) {
 
   return (
     <div key={article.data.id} id={article.data.id} className="mb-8">
-      <div className="text-sm text-zinc-400 py-1">
+      <div className="text-sm text-gray-400 py-1">
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
-      <div className="text-sky-300 text-lg font-semibold text-clamp-3">
+      <div className="text-sky-300 text-lg font-semibold line-clamp-3">
         <a href={`/articles/${article.data.id}`}>{article.data.title}</a>
       </div>
-      <div className="flex items-center text-sm text-zinc-400 py-1">
+      <div className="flex items-center text-sm text-gray-400 py-1">
         <a href={article.data.url} target="_blank">
           {trimUrl(article.data.url)}
         </a>
         &nbsp;
         <LinkButton url={article.data.url} />
       </div>
-      <div className="flex mt-1 mb-2">
-        <div className="">
-          <div className="text-sm line-clamp-3 pr-2">
-            {article.data.beginning}
-          </div>
-        </div>
-        <div className="flex-auto w-64">
-          {article.data.cover !== "" && (
-            <img className="" alt="cover" src={article.data.cover} />
-          )}
-        </div>
+      <div className="grid grid-cols-10 gap-3 mt-1 mb-2 mx-auto">
+        {article.data.cover !== "" ? (
+          <>
+            <div className="col-span-7 text-sm line-clamp-4">
+              {article.data.beginning}
+            </div>
+            <div className="col-span-3">
+              <img
+                loading="lazy"
+                className="object-contain h-16"
+                alt="cover"
+                src={article.data.cover}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="col-span-10 text-sm">{article.data.beginning}</div>
+        )}
       </div>
       <div>
         <div>
@@ -132,21 +139,21 @@ export default function ArticleElement(props: ElementProps) {
         </div>
       </div>
       <div className="flex items-center">
-        <div className="h-1 w-full bg-neutral-600 rounded-md">
+        <div className="h-1 w-full bg-gray-600 rounded-md">
           <div
-            className="h-1 bg-neutral-200 rounded-md"
+            className="h-1 bg-gray-200 rounded-md"
             style={{ width: `${article.data.progress}%` }}
           ></div>
         </div>
         <button
-          className="px-2"
+          className="text-sm px-2 border rounded-full mx-1"
           onClick={() => toggleLiked(article.data.id)}
           title="toggle liked"
         >
           {article.data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
         </button>
         <button
-          className="px-2"
+          className="text-sm px-2 border rounded-full mx-1"
           onClick={() => toggleArchived(article.data.id)}
           title="toggle archived"
         >
@@ -157,7 +164,7 @@ export default function ArticleElement(props: ElementProps) {
           )}
         </button>
         <button
-          className="px-2"
+          className="text-sm px-2 border rounded-full ml-1"
           onClick={() => deleteArticleContent(article.data.id)}
           title="delete"
         >
