@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { RiSearch2Line } from "react-icons/ri";
+import { ImSpinner } from "react-icons/im";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -15,6 +16,7 @@ export const Header = () => {
   const router = useRouter();
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClickSearchOpen = () => {
     setSearchOpen((b) => !b);
@@ -33,8 +35,9 @@ export const Header = () => {
   const [url, setUrl] = useState<string>("");
 
   const createNew = async (e: React.FormEvent) => {
+    setLoading(() => true);
+    setUrl(() => "");
     e.preventDefault();
-    console.debug(url);
     const res = await fetch("/api/articles", {
       method: "POST",
       body: url,
@@ -77,14 +80,20 @@ export const Header = () => {
         <form onSubmit={createNew}>
           &nbsp;
           <div>
-            <input
-              className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6 mb-5"
-              id={"add_new"}
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(() => e.target.value)}
-              placeholder="+"
-            />
+            {loading ? (
+              <div className="flex-auto text-sm rounded-md p-1 mb-5 animate-spin">
+                <ImSpinner />
+              </div>
+            ) : (
+              <input
+                className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6 mb-5"
+                id={"add_new"}
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(() => e.target.value)}
+                placeholder="+"
+              />
+            )}
           </div>
         </form>
         <BarSearch />

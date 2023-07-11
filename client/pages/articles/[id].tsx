@@ -205,10 +205,10 @@ export default function Article({
           <Buttons data={articleContent} />
         </div>
       </div>
-      <div className="text-lg text-center leading-6 w-3/4 m-auto">
+      <div className="text-lg text-center font-semibold leading-6 w-3/4 m-auto">
         {articleContent.title}
       </div>
-      <div className="text-sm text-gray-400 line-clamp-1 my-3 w-2/3 m-auto">
+      <div className="text-sm text-gray-400 line-clamp-1 mt-3 mb-6 w-2/3 m-auto">
         <a href={articleContent.url}>{articleContent.url}</a>
       </div>
       <div className="mb-6">
