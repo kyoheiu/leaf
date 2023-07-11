@@ -44,7 +44,7 @@ export const Header = () => {
     });
     if (!res.ok) {
       toast(res.statusText);
-      setLoading(b => !b);
+      setLoading((b) => !b);
     } else {
       router.reload();
     }
@@ -78,22 +78,23 @@ export const Header = () => {
             width={MINI_LOGO_SIZE}
           />
         </Link>
-          &nbsp;
-            {loading ? (
-              <div className="text-sm animate-spin">
-                <ImSpinner />
-              </div>
-            ) : (
-        <form onSubmit={createNew}>
-              <input
-                className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6"
-                id={"add_new"}
-                type="url"
-                value={url}
-                onChange={(e) => setUrl(() => e.target.value)}
-                placeholder="+"
-              /></form>
-            )}
+        &nbsp;
+        {loading ? (
+          <div className="text-sm animate-spin">
+            <ImSpinner />
+          </div>
+        ) : (
+          <form onSubmit={createNew}>
+            <input
+              className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6"
+              id={"add_new"}
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(() => e.target.value)}
+              placeholder="+"
+            />
+          </form>
+        )}
         <BarSearch />
       </div>
       {searchOpen && (
