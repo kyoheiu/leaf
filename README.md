@@ -3,9 +3,9 @@
 Self-hostable "read-it-later" Web app.
 
 <hr />
-<p align="center">
-<img src="images/ss1.png" width="200" /> <img src="images/ss2.png" width="200" /> <img src="images/ss3.png" width="200" />
-</p>
+
+![screenshot](images/ss.png)
+
 <hr />
 
 ## What is this exactly
@@ -24,6 +24,10 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v0.5.1 (2023-07-15)
+- Add link to source code.
+- Fix key for the list in `/searched`.
+
 ### v0.5.0 (2023-07-11)
 - Use tailwindcss.
 - Remove built-in auth. Use your own!
@@ -38,7 +42,7 @@ Self-hostable "read-it-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.5.0
+    image: docker.io/kyoheiudev/leaf-server:0.5.1
     container_name: leaf-server
     volumes:
       - /path/to/databases:/var/leaf/databases
@@ -46,7 +50,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.5.0
+    image: docker.io/kyoheiudev/leaf-client:0.5.1
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production
