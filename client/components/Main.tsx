@@ -187,7 +187,7 @@ export const Main = (
             {wrapped.map((e, index) => {
               return (
                 <ArticleElement
-                  key={`searched-element${{ index }}`}
+                  key={`searched-element${index}`}
                   element={e}
                   kind={ElementKind.Searched}
                 />
