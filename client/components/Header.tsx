@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RiSearch2Line } from "react-icons/ri";
+import { RiSearch2Line, RiCodeSSlashFill } from "react-icons/ri";
 import { ImSpinner } from "react-icons/im";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -50,7 +50,7 @@ export const Header = () => {
     }
   };
 
-  const BarSearch = () => {
+  const SearchButton = () => {
     return (
       <>
         <button
@@ -95,7 +95,11 @@ export const Header = () => {
             />
           </form>
         )}
-        <BarSearch />
+        <SearchButton />
+        <div className="ml-3">
+          <a href="https://git.sr.ht/~kyoheiu/leaf" target="_blank">
+        <RiCodeSSlashFill /></a>
+</div>
       </div>
       {searchOpen && (
         <form onSubmit={execSearch} className="flex justify-end">
