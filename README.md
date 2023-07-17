@@ -35,7 +35,8 @@ Self-hostable "read-it-later" Web app.
 
 ## Deploy
 
-1. You just need 2 files: `docker-compose.yml` and `.env.production`.
+1. Prepare 2 files and 1 empty directory: `docker-compose.yml`, `.env.production` and `databases`.  
+`databases` directory will have `.search` directory and `.sqlite` database, which will be automatically created.
 
 `docker-compose.yml` example
 ```
@@ -67,10 +68,9 @@ LEAF_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
 
 You should edit `LEAF_API_TOKEN`.
 
-By default this app is not protected by any means so that you can use your own auth process like SSO.
+By default this app is not protected by any means so that you can use your own auth process.
 
 2. `docker compose up -d` and the app will start listening on port 3000.
-   (The SQLite database and search index are created in the directory described in your `docker-compose.yml`)
 
 ## API   
 Via API you can add new article:
@@ -133,4 +133,5 @@ Contact me via email: ~kyoheiu/leaf@lists.sr.ht
 ## TODO
 
 - Revive export
+- Rewrite backend in Node.js?
 - Import?
