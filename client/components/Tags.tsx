@@ -53,10 +53,10 @@ export default function Tags(data: TagsProps) {
               return (
                 <div
                   key={`tag-element-${data.id}-${index.toString()}`}
-                  className="text-xs text-gray-900 bg-gray-200 border border-gray-200 rounded-full px-2 m-1"
+                  className="m-1 rounded-full border border-gray-200 bg-gray-200 px-2 text-xs text-gray-900"
                 >
                   <Link
-                    className="text-xs mr-2 px-2 no-underline"
+                    className="mr-2 px-2 text-xs no-underline"
                     href={`/tags/${x}`}
                   >
                     <PiTagChevronFill className="inline" />
@@ -75,7 +75,7 @@ export default function Tags(data: TagsProps) {
       </div>
       &nbsp;
       <button
-        className="text-xs border rounded-full px-2"
+        className="rounded-full border px-2 text-xs"
         onClick={handleClickOpen}
         title="add new tag"
       >
@@ -84,13 +84,13 @@ export default function Tags(data: TagsProps) {
       {open && (
         <form
           onSubmit={(e) => submitTag(e, data.id)}
-          className="flex justify-start m-2"
+          className="m-2 flex justify-start"
         >
           <input
             autoFocus
             id={`${data.id}_add_tag`}
             placeholder="Add new tag"
-            className="rounded-md p-1 w-3/4 text-gray-900 text-sm"
+            className="w-3/4 rounded-md p-1 text-sm text-gray-900"
           />
         </form>
       )}

@@ -20,7 +20,7 @@ export const Main = (
 ) => {
   const Menu = ({ children }: { children: ReactNode }) => {
     return (
-      <div className="flex items-center justify-evenly border rounded-full py-2 mb-6 h-8">
+      <div className="mb-6 flex h-8 items-center justify-evenly rounded-full border py-2">
         {children}
       </div>
     );
@@ -51,7 +51,7 @@ export const Main = (
   };
 
   const DivMenu = ({ children }: { children: ReactNode }) => {
-    return <div className="text-sm border-b">{children}</div>;
+    return <div className="border-b text-sm">{children}</div>;
   };
 
   switch (c) {

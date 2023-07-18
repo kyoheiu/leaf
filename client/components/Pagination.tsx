@@ -66,7 +66,7 @@ const pageUp = (
 };
 
 const Paginate = ({ children }: { children: ReactNode }) => {
-  return <div className="flex justify-center mb-6">{children}</div>;
+  return <div className="mb-6 flex justify-center">{children}</div>;
 };
 
 export const Pagination = (

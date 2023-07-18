@@ -4,11 +4,11 @@
 
 @layer base {
   body {
-    @apply w-5/6 sm:w-3/4 max-w-xl
-           mx-auto
-         text-gray-200 bg-gray-900
-           leading-7
-           break-words;
+    @apply mx-auto w-5/6 max-w-xl
+           break-words
+           bg-gray-900 leading-7
+           text-gray-200
+           sm:w-3/4;
   }
   a {
     @apply underline;
@@ -18,46 +18,46 @@
   }
   img,
   video {
-    @apply max-w-full h-auto table m-auto;
+    @apply m-auto table h-auto max-w-full;
   }
   h1 {
-    @apply text-2xl font-bold mt-6 mb-3 border-b;
+    @apply mb-3 mt-6 border-b text-2xl font-bold;
   }
   h2 {
-    @apply text-xl font-bold mt-6 mb-3 border-b;
+    @apply mb-3 mt-6 border-b text-xl font-bold;
   }
   h3 {
-    @apply text-lg  font-bold mt-6 mb-3;
+    @apply mb-3  mt-6 text-lg font-bold;
   }
   h4 {
-    @apply font-bold mt-6 mb-3;
+    @apply mb-3 mt-6 font-bold;
   }
   h5 {
-    @apply font-bold mt-6 mb-3;
+    @apply mb-3 mt-6 font-bold;
   }
   h6 {
-    @apply font-bold mt-6 mb-3;
+    @apply mb-3 mt-6 font-bold;
   }
   :not(pre) > code {
-    @apply text-sm font-mono rounded-md text-slate-800 bg-slate-200 px-1;
+    @apply rounded-md bg-slate-200 px-1 font-mono text-sm text-slate-800;
   }
   pre {
-    @apply overflow-x-scroll p-3 border border-slate-200 m-2;
+    @apply m-2 overflow-x-scroll border border-slate-200 p-3;
   }
   pre > code {
     @apply font-mono;
   }
   blockquote {
-    @apply border-l-2 border-slate-200 italic pl-2 m-2;
+    @apply m-2 border-l-2 border-slate-200 pl-2 italic;
   }
   ul {
-    @apply m-2 px-2 list-disc;
+    @apply m-2 list-disc px-2;
   }
   ol {
-    @apply m-2 px-2 list-decimal;
+    @apply m-2 list-decimal px-2;
   }
   table {
-    @apply border-collapse w-full max-w-full table-auto overflow-x-scroll;
+    @apply w-full max-w-full table-auto border-collapse overflow-x-scroll;
   }
   table th {
     @apply p-1;

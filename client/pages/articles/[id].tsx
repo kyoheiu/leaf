@@ -192,7 +192,7 @@ export default function Article({
           {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
         </title>
       </Head>
-      <div className="flex items-center bg-gray-900 sticky top-0 my-3">
+      <div className="sticky top-0 my-3 flex items-center bg-gray-900">
         <Link href="/">
           <Image
             src={"/logo_dark.png"}
@@ -205,10 +205,10 @@ export default function Article({
           <Buttons data={articleContent} />
         </div>
       </div>
-      <div className="text-lg text-center font-semibold leading-6 w-3/4 m-auto">
+      <div className="m-auto w-3/4 text-center text-lg font-semibold leading-6">
         {articleContent.title}
       </div>
-      <div className="text-sm text-gray-400 text-center line-clamp-1 mt-3 mx-3 mb-6">
+      <div className="mx-3 mb-6 mt-3 line-clamp-1 text-center text-sm text-gray-400">
         <a href={articleContent.url}>{articleContent.url}</a>
       </div>
       <div className="mb-6">

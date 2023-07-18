@@ -69,7 +69,7 @@ export const Header = () => {
       <Head>
         <title>{process.env.NEXT_PUBLIC_TITLE}</title>
       </Head>
-      <div className="flex flex-nowrap items-center justify-between mt-3 mb-6">
+      <div className="mb-6 mt-3 flex flex-nowrap items-center justify-between">
         <Link className="pr-1" href="/">
           <Image
             src="/logo_dark.png"
@@ -80,13 +80,13 @@ export const Header = () => {
         </Link>
         &nbsp;
         {loading ? (
-          <div className="text-sm animate-spin">
+          <div className="animate-spin text-sm">
             <ImSpinner />
           </div>
         ) : (
           <form onSubmit={createNew}>
             <input
-              className="flex-auto text-sm text-gray-900 rounded-md p-1 w-5/6"
+              className="w-5/6 flex-auto rounded-md p-1 text-sm text-gray-900"
               id={"add_new"}
               type="url"
               value={url}
@@ -108,7 +108,7 @@ export const Header = () => {
             id="search"
             type="text"
             placeholder="search"
-            className="text-sm text-gray-900 rounded-md p-1 w-3/5 mb-2"
+            className="mb-2 w-3/5 rounded-md p-1 text-sm text-gray-900"
             autoFocus
           />
         </form>
