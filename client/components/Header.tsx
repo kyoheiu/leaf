@@ -98,8 +98,9 @@ export const Header = () => {
         <SearchButton />
         <div className="ml-3">
           <a href="https://git.sr.ht/~kyoheiu/leaf" target="_blank">
-        <RiCodeSSlashFill /></a>
-</div>
+            <RiCodeSSlashFill />
+          </a>
+        </div>
       </div>
       {searchOpen && (
         <form onSubmit={execSearch} className="flex justify-end">
