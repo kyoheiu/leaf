@@ -53,21 +53,33 @@ export default function ArticleElement(props: ElementProps) {
       console.error("Cannot archive article.");
     } else {
       if (kind === ElementKind.Archived) {
-        setArticle((x) => ({
-          visible: false,
-          data: {
-            ...x.data,
-            archived: !x.data.archived,
-          },
-        }));
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add("animate-out", "zoom-out", "duration-200");
+        }
+        setTimeout(() => {
+          setArticle((x) => ({
+            visible: false,
+            data: {
+              ...x.data,
+              archived: !x.data.archived,
+            },
+          }));
+        }, 200);
       } else {
-        setArticle((x) => ({
-          visible: x.visible,
-          data: {
-            ...x.data,
-            archived: !x.data.archived,
-          },
-        }));
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add("animate-out", "zoom-out", "duration-200");
+        }
+        setTimeout(() => {
+          setArticle((x) => ({
+            visible: x.visible,
+            data: {
+              ...x.data,
+              archived: !x.data.archived,
+            },
+          }));
+        }, 200);
       }
     }
   };
@@ -79,10 +91,16 @@ export default function ArticleElement(props: ElementProps) {
     if (!res.ok) {
       console.error("Cannot delete article.");
     } else {
-      setArticle((x) => ({
-        ...x,
-        visible: false,
-      }));
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.add("animate-out", "zoom-out", "duration-200");
+      }
+      setTimeout(() => {
+        setArticle((x) => ({
+          ...x,
+          visible: false,
+        }));
+      }, 200);
     }
   };
 
@@ -148,11 +166,16 @@ export default function ArticleElement(props: ElementProps) {
           ></div>
         </div>
         <button
+          id={`like-button-${article.data.id}`}
           className="text-sm px-2 border rounded-full mx-1"
           onClick={() => toggleLiked(article.data.id)}
           title="toggle liked"
         >
-          {article.data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
+          {article.data.liked ? (
+            <RiHeart2Fill className="text-rose-400" />
+          ) : (
+            <RiHeart2Line />
+          )}
         </button>
         <button
           className="text-sm px-2 border rounded-full mx-1"
