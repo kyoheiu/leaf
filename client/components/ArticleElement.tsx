@@ -26,6 +26,11 @@ export default function ArticleElement(props: ElementProps) {
       console.error("Cannot toggle like.");
     } else {
       if (kind === ElementKind.Liked) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add("animate-out", "zoom-out", "duration-150");
+        }
+        setTimeout(() => {
         setArticle((x) => ({
           visible: false,
           data: {
@@ -33,6 +38,7 @@ export default function ArticleElement(props: ElementProps) {
             liked: !x.data.liked,
           },
         }));
+        }, 150);
       } else {
         setArticle((x) => ({
           visible: x.visible,
@@ -55,7 +61,7 @@ export default function ArticleElement(props: ElementProps) {
       if (kind === ElementKind.Archived) {
         const el = document.getElementById(id);
         if (el) {
-          el.classList.add("animate-out", "zoom-out", "duration-200");
+          el.classList.add("animate-out", "zoom-out", "duration-150");
         }
         setTimeout(() => {
           setArticle((x) => ({
@@ -65,11 +71,11 @@ export default function ArticleElement(props: ElementProps) {
               archived: !x.data.archived,
             },
           }));
-        }, 200);
+        }, 150);
       } else {
         const el = document.getElementById(id);
         if (el) {
-          el.classList.add("animate-out", "zoom-out", "duration-200");
+          el.classList.add("animate-out", "zoom-out", "duration-150");
         }
         setTimeout(() => {
           setArticle((x) => ({
@@ -79,7 +85,7 @@ export default function ArticleElement(props: ElementProps) {
               archived: !x.data.archived,
             },
           }));
-        }, 200);
+        }, 150);
       }
     }
   };
@@ -93,14 +99,14 @@ export default function ArticleElement(props: ElementProps) {
     } else {
       const el = document.getElementById(id);
       if (el) {
-        el.classList.add("animate-out", "zoom-out", "duration-200");
+        el.classList.add("animate-out", "zoom-out", "duration-150");
       }
       setTimeout(() => {
         setArticle((x) => ({
           ...x,
           visible: false,
         }));
-      }, 200);
+      }, 150);
     }
   };
 
