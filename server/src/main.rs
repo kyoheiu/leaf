@@ -1,7 +1,6 @@
 mod core;
 mod error;
 mod handler;
-mod readable;
 mod schema;
 mod statements;
 mod types;

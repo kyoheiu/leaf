@@ -1,13 +1,13 @@
+use crate::types::ArticleScraped;
+
 use super::error::Error;
 use super::handler::*;
-use super::readable::readability;
 use super::schema::initialize_schema;
 use super::statements::*;
 use super::types::{ArticleContent, ArticleData, Articles};
 
 use axum::Json;
 use axum::{routing::get, Router};
-use headless_chrome::{Browser, LaunchOptionsBuilder};
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
 use tantivy::collector::TopDocs;
@@ -18,12 +18,6 @@ use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
 const SEARCH_LIMIT: usize = 50;
-const CHROME_ARGS: [&str; 4] = [
-    "--disable-gpu",
-    "--disable-dev-shm-usage",
-    "--disable-setuid-sandbox",
-    "--no-sandbox",
-];
 const BEGINNING_LENGTH: usize = 100;
 const CHUNK_LENGTH: usize = 21;
 
@@ -119,7 +113,7 @@ impl Core {
         })?;
 
         //get tags
-        for mut article in articles.iter_mut() {
+        for article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
             self.db.iterate(state_list_tags(id), |pairs| {
@@ -148,36 +142,31 @@ impl Core {
         }
     }
 
-    pub async fn create(&self, url: &str) -> Result<(), Error> {
+    pub async fn create(&self, scraped: &ArticleScraped) -> Result<(), Error> {
         let ulid = ulid::Ulid::new().to_string();
 
-        //Scrape by headless_chrome
-        let option = LaunchOptionsBuilder::default()
-            .sandbox(false)
-            .path(Some(PathBuf::from("/usr/bin/chromium")))
-            .args(CHROME_ARGS.iter().map(std::ffi::OsStr::new).collect())
-            .build()
-            .unwrap();
-        let browser = Browser::new(option)?;
-        let tab = browser.new_tab()?;
-        tab.navigate_to(url)?;
-        tab.wait_until_navigated()?;
-        let content = tab.get_content()?;
+        let mut cleaner = ammonia::Builder::default();
+        let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
+        let mut html = cleaner.clean(&scraped.html).to_string();
 
-        let parse_result = readability(&content).unwrap();
-        let title = parse_result.metadata.title.replace('\'', "''");
-        let cover = parse_result.metadata.cover.unwrap_or_default();
+        let mut plain = html2text::from_read(html.as_bytes(), 100);
+        let beginning = create_beginning(&plain).replace('\'', "''");
+        plain = plain.replace('\'', "''");
+        html = html.replace('\'', "''");
 
-        let html = parse_result.html.replace('\'', "''");
-        let beginning = create_beginning(&parse_result.plain).replace('\'', "''");
+        info!("{}: {} ({})", ulid, scraped.title, scraped.url);
 
-        info!("{}: {} ({})", ulid, title, url);
-
-        self.db
-            .execute(state_add(&ulid, url, &title, &html, &cover, &beginning))?;
+        self.db.execute(state_add(
+            &ulid,
+            &scraped.url,
+            &scraped.title,
+            &html,
+            &scraped.cover,
+            &beginning,
+        ))?;
 
         //add to schema
-        self.add_to_index(&ulid, &title, &parse_result.plain)?;
+        self.add_to_index(&ulid, &scraped.title, &plain)?;
         Ok(())
     }
 
@@ -288,7 +277,7 @@ impl Core {
         }
 
         //get tags
-        for mut article in articles.iter_mut() {
+        for article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
             self.db.iterate(state_list_tags(id), |pairs| {
@@ -383,7 +372,7 @@ impl Core {
         })?;
 
         //get tags
-        for mut article in articles.iter_mut() {
+        for article in articles.iter_mut() {
             let mut tags = vec![];
             let id = &article.id;
             self.db.iterate(state_list_tags(id), |pairs| {

@@ -66,8 +66,11 @@ pub async fn list_up_liked(
 }
 
 #[debug_handler]
-pub async fn create(State(core): State<Arc<Core>>, body: String) -> Result<(), Error> {
-    core.create(body.trim()).await
+pub async fn create(
+    State(core): State<Arc<Core>>,
+    Json(scraped): Json<ArticleScraped>,
+) -> Result<(), Error> {
+    core.create(&scraped).await
 }
 
 #[debug_handler]

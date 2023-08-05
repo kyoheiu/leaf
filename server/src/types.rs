@@ -1,11 +1,19 @@
 use std::str::FromStr;
 
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Serialize)]
 pub struct Articles {
     pub data: Vec<ArticleData>,
     pub is_last: bool,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ArticleScraped {
+    pub url: String,
+    pub title: String,
+    pub html: String,
+    pub cover: String,
 }
 
 #[derive(Debug, Serialize)]

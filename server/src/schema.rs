@@ -22,12 +22,12 @@ pub fn initialize_schema() -> (Schema, Index, IndexReader) {
 
     let meta_file = search_path.join("meta.json");
     if meta_file.exists() {
-        let index = Index::open_in_dir(&search_path).unwrap();
+        let index = Index::open_in_dir(&search_path).unwrap_or_else(|_| panic!("Cannot open dir."));
         let reader = index
             .reader_builder()
             .reload_policy(ReloadPolicy::OnCommit)
             .try_into()
-            .unwrap();
+            .unwrap_or_else(|_| panic!("Cannot read dir."));
         (schema, index, reader)
     } else {
         let index = Index::create_in_dir(&search_path, schema.clone()).unwrap();
