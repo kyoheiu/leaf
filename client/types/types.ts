@@ -11,6 +11,13 @@ export interface Articles {
   is_last: boolean;
 }
 
+export interface ArticleScraped {
+		url: string;
+		title: string;
+		html: string;
+		cover: string
+}
+
 export interface ArticleData {
   id: string;
   url: string;
