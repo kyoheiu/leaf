@@ -1,6 +1,6 @@
 {
   "name": "leaf-client",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,12 +10,15 @@
     "start": "next start"
   },
   "dependencies": {
+    "@mozilla/readability": "^0.4.4",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "event-stream": "^4.0.1",
+    "jsdom": "^22.1.0",
     "next": "^13.2.4",
     "nextjs-cors": "^2.1.2",
+    "puppeteer": "^21.0.1",
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
@@ -24,6 +27,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.2.4",
+    "@types/jsdom": "^21.1.1",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "autoprefixer": "^10.4.14",
