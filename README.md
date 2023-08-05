@@ -24,6 +24,10 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v0.6.0 (2023-08-06)
+- Scrape contents on the client side: This improves the accuracy of the content, using mozilla/readability.
+- Add animation (fade-out) when archiving/deleting articles.
+
 ### v0.5.1 (2023-07-15)
 - Add link to source code.
 - Fix key for the list in `/searched`.
@@ -43,7 +47,7 @@ Self-hostable "read-it-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.5.1
+    image: docker.io/kyoheiudev/leaf-server:0.6.0
     container_name: leaf-server
     volumes:
       - /path/to/databases:/var/leaf/databases
@@ -51,7 +55,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.5.1
+    image: docker.io/kyoheiudev/leaf-client:0.6.0
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production
@@ -93,11 +97,11 @@ Authorization: LEAF_API_TOKEN
 
 - TypeScript as the frontend
   - Next.js
+  - puppeteer to get contents
+  - mozilla/readability
   - tailwindcss
 - Rust as the backend
   - axum
-  - headless-chrome to get contents
-  - customized content extractor based on mozilla/readability
   - ammonia as the sanitizer
   - tantivy as the full-text search engine
 - SQLite as the database
