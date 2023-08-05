@@ -43,7 +43,7 @@ export const Header = () => {
       body: url,
     });
     if (!res.ok) {
-      toast(res.statusText);
+      toast("Error: Cannot parse the document.");
       setLoading((b) => !b);
     } else {
       router.reload();
