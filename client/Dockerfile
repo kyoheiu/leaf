@@ -26,6 +26,19 @@ FROM debian:bookworm-slim
 ENV NODE_ENV=production
 WORKDIR /app
 
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get install -y chromium \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-thai-tlwg \
+    fonts-kacst \
+    fonts-freefont-ttf \
+    libxss1 \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
 COPY --from=node_modules /usr/local/include/ /usr/local/include/
 COPY --from=node_modules /usr/local/lib/ /usr/local/lib/
 COPY --from=node_modules /usr/local/bin/ /usr/local/bin/
