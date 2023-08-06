@@ -4,7 +4,7 @@ Self-hostable "read-it-later" Web app.
 
 <hr />
 
-![screenshot](images/ss.png)
+![screenshot](images/screenshot.png)
 
 <hr />
 
@@ -24,18 +24,14 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v0.6.1 (2023-08-06)
+- Use light colorscheme.
+- Fix title.
+- Remove unused env variable `NEXT_PUBLIC_TITLE`.
+
 ### v0.6.0 (2023-08-06)
 - Scrape contents on the client side: This improves the accuracy of the content, using mozilla/readability.
 - Add animation (fade-out) when archiving/deleting articles.
-
-### v0.5.1 (2023-07-15)
-- Add link to source code.
-- Fix key for the list in `/searched`.
-
-### v0.5.0 (2023-07-11)
-- Use tailwindcss.
-- Remove built-in auth. Use your own!
-- Refactor frontend overall.
 
 ## Deploy
 
@@ -47,7 +43,7 @@ Self-hostable "read-it-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.6.0
+    image: docker.io/kyoheiudev/leaf-server:0.6.1
     container_name: leaf-server
     volumes:
       - /path/to/databases:/var/leaf/databases
@@ -55,7 +51,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.6.0
+    image: docker.io/kyoheiudev/leaf-client:0.6.1
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production
@@ -65,7 +61,6 @@ services:
 
 `.env.production` example
 ```
-NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=leaf-server
 LEAF_API_TOKEN=WHICH_YOU_USE_WHEN_POST_NEW_ONE_VIA_EXTENSION
 ```
@@ -116,7 +111,6 @@ Authorization: LEAF_API_TOKEN
 Add `.env.development.local` to the `client` directory with the following:
 
 ```
-NEXT_PUBLIC_TITLE=leaf
 NEXT_PUBLIC_HOST=127.0.0.1
 LEAF_API_TOKEN=test
 ```
@@ -136,6 +130,5 @@ Contact me via email: ~kyoheiu/leaf@lists.sr.ht
 
 ## TODO
 
-- Revive export
 - Rewrite backend in Node.js?
 - Import?
