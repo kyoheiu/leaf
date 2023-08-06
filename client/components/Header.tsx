@@ -72,7 +72,7 @@ export const Header = () => {
       <div className="mb-6 mt-3 flex flex-nowrap items-center justify-between">
         <Link className="pr-1" href="/">
           <Image
-            src="/logo_dark.png"
+            src="/logo.png"
             alt="leaf"
             height={MINI_LOGO_SIZE}
             width={MINI_LOGO_SIZE}
@@ -86,7 +86,7 @@ export const Header = () => {
         ) : (
           <form onSubmit={createNew}>
             <input
-              className="w-5/6 flex-auto rounded-md p-1 text-sm text-gray-900"
+              className="w-5/6 flex-auto rounded-md p-1 border border-slate-500 text-sm text-gray-900"
               id={"add_new"}
               type="url"
               value={url}
@@ -108,7 +108,7 @@ export const Header = () => {
             id="search"
             type="text"
             placeholder="search"
-            className="mb-2 w-3/5 rounded-md p-1 text-sm text-gray-900"
+            className="mb-2 w-3/5 rounded-md p-1 text-sm border border-slate-500 text-gray-900"
             autoFocus
           />
         </form>

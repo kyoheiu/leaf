@@ -125,15 +125,15 @@ export default function ArticleElement(props: ElementProps) {
 
   return (
     <div key={article.data.id} id={article.data.id} className="mb-8">
-      <div className="py-1 text-sm text-gray-400">
+      <div className="py-1 text-sm text-slate-500">
         {article.data.timestamp.substring(0, article.data.timestamp.length - 3)}
       </div>
-      <div className="line-clamp-3 text-lg font-semibold leading-6 text-sky-300">
+      <div className="line-clamp-3 text-lg font-semibold leading-6">
         <a href={`/articles/${article.data.id}`} className="no-underline">
           {article.data.title}
         </a>
       </div>
-      <div className="my-2 flex items-center text-sm text-gray-400">
+      <div className="my-2 flex items-center text-sm text-slate-500">
         <a href={article.data.url} target="_blank">
           {trimUrl(article.data.url)}
         </a>
@@ -165,9 +165,9 @@ export default function ArticleElement(props: ElementProps) {
         </div>
       </div>
       <div className="flex items-center">
-        <div className="h-1 w-full rounded-md bg-gray-600">
+        <div className="h-1 w-full rounded-md bg-slate-300">
           <div
-            className="h-1 rounded-md bg-gray-200"
+            className="h-1 rounded-md bg-slate-500"
             style={{ width: `${article.data.progress}%` }}
           ></div>
         </div>
@@ -178,7 +178,7 @@ export default function ArticleElement(props: ElementProps) {
           title="toggle liked"
         >
           {article.data.liked ? (
-            <RiHeart2Fill className="text-rose-400" />
+            <RiHeart2Fill className="text-red-400" />
           ) : (
             <RiHeart2Line />
           )}

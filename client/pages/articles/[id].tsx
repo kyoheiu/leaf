@@ -8,13 +8,12 @@ import {
   RiInboxArchiveLine,
   RiInboxUnarchiveFill,
   RiDeleteBin2Line,
+  RiArrowGoBackFill
 } from "react-icons/ri";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
-import Image from "next/image";
 import Tags from "@/components/Tags";
 import LinkButton from "@/components/LinkButton";
-import { MINI_LOGO_SIZE } from "@/components/Header";
 import { FooterImage } from "@/components/Footer";
 
 type Data = ArticleContent;
@@ -192,14 +191,9 @@ export default function Article({
           {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
         </title>
       </Head>
-      <div className="sticky top-0 my-3 flex items-center bg-gray-900">
+      <div className="sticky top-0 h-8 my-3 flex items-center bg-slate-50 border-b">
         <Link href="/">
-          <Image
-            src={"/logo_dark.png"}
-            alt="leaf"
-            height={MINI_LOGO_SIZE}
-            width={MINI_LOGO_SIZE}
-          />
+          <RiArrowGoBackFill />
         </Link>
         <div className="ml-auto">
           <Buttons data={articleContent} />

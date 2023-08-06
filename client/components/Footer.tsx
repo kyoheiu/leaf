@@ -6,7 +6,7 @@ export const FooterImage = () => {
   return (
     <Link href="/" className="my-6">
       <Image
-        src="/logo_dark.png"
+        src="/logo.png"
         alt="leaf"
         height={MINI_LOGO_SIZE}
         width={MINI_LOGO_SIZE}
