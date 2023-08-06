@@ -67,7 +67,7 @@ export const Header = () => {
   return (
     <>
       <Head>
-        <title>{process.env.NEXT_PUBLIC_TITLE}</title>
+        <title>leaf</title>
       </Head>
       <div className="mb-6 mt-3 flex flex-nowrap items-center justify-between">
         <Link className="pr-1" href="/">

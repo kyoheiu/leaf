@@ -188,7 +188,7 @@ export default function Article({
     <>
       <Head>
         <title>
-          {articleContent.title} | {process.env.NEXT_PUBLIC_TITLE}
+          {articleContent.title} | leaf
         </title>
       </Head>
       <div className="sticky top-0 h-8 my-3 flex items-center bg-slate-50 border-b">
