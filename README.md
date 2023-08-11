@@ -124,10 +124,6 @@ cd .. && make -i dev
 
 Then you can see the page on `localhost:3000`.
 
-## Report bug / Request features / Contribute
-This repository is maintained on [https://git.sr.ht/~kyoheiu/leaf](https://git.sr.ht/~kyoheiu/leaf).
-Contact me via email: ~kyoheiu/leaf@lists.sr.ht
-
 ## TODO
 
 - Rewrite backend in Node.js?
