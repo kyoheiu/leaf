@@ -168,7 +168,7 @@ export default function Article({
       <div className="flex">
         <LinkButton url={articleContent.url} />
         <button className="px-2" onClick={toggleLiked} title="toggle liked">
-          {data.liked ? <RiHeart2Fill /> : <RiHeart2Line />}
+          {data.liked ? <RiHeart2Fill className="text-red-600" /> : <RiHeart2Line />}
         </button>
         <button
           className="px-2"

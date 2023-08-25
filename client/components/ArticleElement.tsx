@@ -178,7 +178,7 @@ export default function ArticleElement(props: ElementProps) {
           title="toggle liked"
         >
           {article.data.liked ? (
-            <RiHeart2Fill className="text-red-400" />
+            <RiHeart2Fill className="text-red-600" />
           ) : (
             <RiHeart2Line />
           )}
