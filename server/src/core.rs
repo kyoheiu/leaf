@@ -148,18 +148,18 @@ impl Core {
         let mut cleaner = ammonia::Builder::default();
         let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
         let mut html = cleaner.clean(&scraped.html).to_string();
-
         let mut plain = html2text::from_read(html.as_bytes(), 100);
         let beginning = create_beginning(&plain).replace('\'', "''");
         plain = plain.replace('\'', "''");
         html = html.replace('\'', "''");
+        let title = &scraped.title.replace('\'', "''");
 
         info!("{}: {} ({})", ulid, scraped.title, scraped.url);
 
         self.db.execute(state_add(
             &ulid,
             &scraped.url,
-            &scraped.title,
+            title,
             &html,
             &scraped.cover,
             &beginning,
