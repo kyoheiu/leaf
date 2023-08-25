@@ -24,6 +24,10 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v0.6.2 (2023-08-25)
+- Use red-600 instead of 400 in favor of accessibility.
+- Escape single quote in title.
+
 ### v0.6.1 (2023-08-06)
 - Use light colorscheme.
 - Fix title.
@@ -43,7 +47,7 @@ Self-hostable "read-it-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.6.1
+    image: docker.io/kyoheiudev/leaf-server:0.6.2
     container_name: leaf-server
     volumes:
       - /path/to/databases:/var/leaf/databases
@@ -51,7 +55,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.6.1
+    image: docker.io/kyoheiudev/leaf-client:0.6.2
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production
