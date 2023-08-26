@@ -39,10 +39,10 @@
     @apply mb-3 mt-6 font-bold;
   }
   :not(pre) > code {
-    @apply rounded-md px-1 font-mono bg-slate-300 text-sm;
+    @apply rounded-md bg-slate-300 px-1 font-mono text-sm;
   }
   pre {
-    @apply m-2 overflow-x-scroll border bg-slate-50 border-slate-500 p-3;
+    @apply m-2 overflow-x-scroll border border-slate-500 bg-slate-50 p-3;
   }
   pre > code {
     @apply font-mono;

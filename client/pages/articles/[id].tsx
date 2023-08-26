@@ -8,7 +8,7 @@ import {
   RiInboxArchiveLine,
   RiInboxUnarchiveFill,
   RiDeleteBin2Line,
-  RiArrowGoBackFill
+  RiArrowGoBackFill,
 } from "react-icons/ri";
 import { getArticleContent } from "../api/articles/[id]";
 import Head from "next/head";
@@ -168,7 +168,11 @@ export default function Article({
       <div className="flex">
         <LinkButton url={articleContent.url} />
         <button className="px-2" onClick={toggleLiked} title="toggle liked">
-          {data.liked ? <RiHeart2Fill className="text-red-600" /> : <RiHeart2Line />}
+          {data.liked ? (
+            <RiHeart2Fill className="text-red-600" />
+          ) : (
+            <RiHeart2Line />
+          )}
         </button>
         <button
           className="px-2"
@@ -187,11 +191,9 @@ export default function Article({
   return (
     <>
       <Head>
-        <title>
-          {articleContent.title} | leaf
-        </title>
+        <title>{articleContent.title} | leaf</title>
       </Head>
-      <div className="sticky top-0 h-8 my-3 flex items-center bg-slate-50 border-b">
+      <div className="sticky top-0 my-3 flex h-8 items-center border-b bg-slate-50">
         <Link href="/">
           <RiArrowGoBackFill />
         </Link>

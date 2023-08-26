@@ -87,7 +87,7 @@ export const Header = () => {
         ) : (
           <form onSubmit={createNew}>
             <input
-              className="w-5/6 flex-auto rounded-md p-1 border border-slate-500 text-sm text-gray-900"
+              className="w-5/6 flex-auto rounded-md border border-slate-500 p-1 text-sm text-gray-900"
               id={"add_new"}
               type="url"
               value={url}
@@ -109,7 +109,7 @@ export const Header = () => {
             id="search"
             type="text"
             placeholder="search"
-            className="mb-2 w-3/5 rounded-md p-1 text-sm border border-slate-500 text-gray-900"
+            className="mb-2 w-3/5 rounded-md border border-slate-500 p-1 text-sm text-gray-900"
             autoFocus
           />
         </form>

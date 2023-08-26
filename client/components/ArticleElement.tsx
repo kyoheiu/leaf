@@ -31,13 +31,13 @@ export default function ArticleElement(props: ElementProps) {
           el.classList.add("animate-out", "zoom-out", "duration-150");
         }
         setTimeout(() => {
-        setArticle((x) => ({
-          visible: false,
-          data: {
-            ...x.data,
-            liked: !x.data.liked,
-          },
-        }));
+          setArticle((x) => ({
+            visible: false,
+            data: {
+              ...x.data,
+              liked: !x.data.liked,
+            },
+          }));
         }, 150);
       } else {
         setArticle((x) => ({

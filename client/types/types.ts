@@ -12,10 +12,10 @@ export interface Articles {
 }
 
 export interface ArticleScraped {
-		url: string;
-		title: string;
-		html: string;
-		cover: string
+  url: string;
+  title: string;
+  html: string;
+  cover: string;
 }
 
 export interface ArticleData {
