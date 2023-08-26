@@ -118,9 +118,8 @@ impl Core {
             let id = &article.id;
             self.db.iterate(state_list_tags(id), |pairs| {
                 for &(column, value) in pairs.iter() {
-                    match column {
-                        "tag" => tags.push(value.unwrap().to_owned()),
-                        _ => {}
+                    if column == "tag" {
+                        tags.push(value.unwrap().to_owned());
                     }
                 }
                 true
