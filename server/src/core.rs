@@ -147,9 +147,11 @@ impl Core {
         let mut cleaner = ammonia::Builder::default();
         let cleaner = cleaner.url_relative(ammonia::UrlRelative::Deny);
         let mut html = cleaner.clean(&scraped.html).to_string();
-        let mut plain = html2text::from_read(html.as_bytes(), 100);
+
+        let re = regex::Regex::new(r"<[^>]*>").unwrap();
+        let plain = re.replace_all(&html, "").to_string();
+
         let beginning = create_beginning(&plain).replace('\'', "''");
-        plain = plain.replace('\'', "''");
         html = html.replace('\'', "''");
         let title = &scraped.title.replace('\'', "''");
 
