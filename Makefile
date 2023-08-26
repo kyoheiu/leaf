@@ -1,3 +1,7 @@
+fmt:
+	cd client && npm run fmt
+	cd server && cargo fmt
+
 dev:
 	cd client && sudo rm -rf .next
 	cd server && sudo chown -R ${USER}:${GROUP} databases
