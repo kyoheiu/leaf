@@ -19,9 +19,9 @@ export default async function handler(
   ) {
     const body = req.body;
     if (body.url) {
-      const response = await createArticle(body.url as string);
-      if (!response.ok) {
-        res.status(500).end();
+      const err = await createArticle(body.url as string);
+      if (err) {
+        res.status(500).send(err);
       } else {
         res.status(200).end();
       }

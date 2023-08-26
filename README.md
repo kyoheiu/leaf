@@ -24,18 +24,8 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
-### v0.6.2 (2023-08-25)
-- Use red-600 instead of 400 in favor of accessibility.
-- Escape single quote in title.
-
-### v0.6.1 (2023-08-06)
-- Use light colorscheme.
-- Fix title.
-- Remove unused env variable `NEXT_PUBLIC_TITLE`.
-
-### v0.6.0 (2023-08-06)
-- Scrape contents on the client side: This improves the accuracy of the content, using mozilla/readability.
-- Add animation (fade-out) when archiving/deleting articles.
+### v0.6.3 (2023-08-26)
+- Show proper error message when creating new article fails.
 
 ## Deploy
 

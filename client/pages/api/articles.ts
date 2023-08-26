@@ -20,12 +20,13 @@ export const reloadArticles = async (page: string) => {
   return data;
 };
 
-export const createArticle = async (url: string) => {
+/// If http POST reguest fails, returns string
+export const createArticle = async (url: string): Promise<string | undefined> => {
   const { JSDOM } = jsdom;
 
 	const browser = await puppeteer.launch({
 		executablePath: "chromium",
-		headless: true,
+		headless: "new",
 		args: [
 			"--disable-gpu",
 			"--disable-dev-shm-usage",
@@ -40,7 +41,7 @@ export const createArticle = async (url: string) => {
 	const document = dom.window.document;
 	const parsed = new Readability(document).parse();
 	if (!parsed) {
-		throw Error("Cannot parse document.");
+		return "Failed to parse the document.";
 	}
 
 	const cover = document
@@ -53,13 +54,17 @@ export const createArticle = async (url: string) => {
 		html: parsed.content ?? "",
 		cover: cover ?? "",
 	};
-	return await fetch(`http://${process.env.NEXT_PUBLIC_HOST}:8000/articles`, {
+	const res = await fetch(`http://${process.env.NEXT_PUBLIC_HOST}:8000/articles`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(content)
 	});
+	if (!res.ok) {
+		return res.text();
+	}
+	return undefined;
 };
 
 const crawl = async (url: string, browser: Browser): Promise<string> => {
@@ -85,12 +90,11 @@ export default async function handler(
     }
   } else if (req.method === "POST") {
     const url: string = req.body;
-    const response = await createArticle(url);
-    if (!response.ok) {
-      res.send(response.body);
-    } else {
+    const err = await createArticle(url);
+	if (err) {
+		res.status(500).send(err);
+	}
       res.status(303).setHeader("Location", "/").end();
-    }
   } else {
     res.status(404).end();
   }

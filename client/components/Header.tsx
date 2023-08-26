@@ -34,7 +34,7 @@ export const Header = () => {
 
   const [url, setUrl] = useState<string>("");
 
-  const createNew = async (e: React.FormEvent) => {
+  const createNew = async (e: React.FormEvent): Promise<void | string> => {
     setLoading(() => true);
     setUrl(() => "");
     e.preventDefault();
@@ -43,7 +43,8 @@ export const Header = () => {
       body: url,
     });
     if (!res.ok) {
-      toast("Error: Cannot parse the document.");
+      const message = await res.text();
+      toast(`Error: ${message}`);
       setLoading((b) => !b);
     } else {
       router.reload();
