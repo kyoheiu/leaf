@@ -11,9 +11,9 @@ pub enum Error {
     ParseInt(String),
     Sqlite(String),
     Ammonia(String),
-    Tantivy(String),
     Tag(String),
-    HeadlessChrome(String),
+    FromUtf8(String),
+    Grep,
 }
 
 impl std::error::Error for Error {}
@@ -25,9 +25,9 @@ impl std::fmt::Display for Error {
             Error::ParseInt(s) => s,
             Error::Sqlite(s) => s,
             Error::Ammonia(s) => s,
-            Error::Tantivy(s) => s,
             Error::Tag(s) => s,
-            Error::HeadlessChrome(s) => s,
+            Error::FromUtf8(s) => s,
+            Error::Grep => "Failed to execute ripgrep.",
         };
         write!(f, "{}", printable)
     }
@@ -57,15 +57,9 @@ impl From<ammonia::url::ParseError> for Error {
     }
 }
 
-impl From<tantivy::TantivyError> for Error {
-    fn from(err: tantivy::TantivyError) -> Self {
-        Error::Tantivy(err.to_string())
-    }
-}
-
-impl From<anyhow::Error> for Error {
-    fn from(err: anyhow::Error) -> Self {
-        Error::HeadlessChrome(err.to_string())
+impl From<std::string::FromUtf8Error> for Error {
+    fn from(err: std::string::FromUtf8Error) -> Self {
+        Error::FromUtf8(err.to_string())
     }
 }
 
@@ -82,9 +76,9 @@ impl IntoResponse for Error {
             Error::ParseInt(s) => s,
             Error::Sqlite(s) => s,
             Error::Ammonia(s) => s,
-            Error::Tantivy(s) => s,
             Error::Tag(s) => s,
-            Error::HeadlessChrome(s) => s,
+            Error::FromUtf8(s) => s,
+            Error::Grep => "Failed to execute ripgrep.".to_string(),
         };
         tracing::error!("{}", body);
         (StatusCode::INTERNAL_SERVER_ERROR, body).into_response()

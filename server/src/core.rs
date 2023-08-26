@@ -1,8 +1,8 @@
+use super::store::{create_row, search_store};
 use crate::types::ArticleScraped;
 
 use super::error::Error;
 use super::handler::*;
-use super::schema::initialize_schema;
 use super::statements::*;
 use super::types::{ArticleContent, ArticleData, Articles};
 
@@ -10,22 +10,14 @@ use axum::Json;
 use axum::{routing::get, Router};
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
-use tantivy::collector::TopDocs;
-use tantivy::query::{BooleanQuery, Occur, Query, TermQuery};
-use tantivy::schema::Schema;
-use tantivy::Term;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
-const SEARCH_LIMIT: usize = 50;
 const BEGINNING_LENGTH: usize = 100;
 const CHUNK_LENGTH: usize = 21;
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
-    pub schema: Schema,
-    pub index: tantivy::Index,
-    pub reader: tantivy::IndexReader,
 }
 
 pub fn router(core: Core) -> axum::Router {
@@ -79,14 +71,7 @@ impl Core {
         connection.execute(state_create_articles_table())?;
         connection.execute(state_create_tags_table())?;
 
-        let (schema, index, reader) = initialize_schema();
-
-        Ok(Core {
-            db: connection,
-            schema,
-            index,
-            reader,
-        })
+        Ok(Core { db: connection })
     }
 
     pub async fn list_up(&self, statement: &str) -> Result<Json<Articles>, Error> {
@@ -155,6 +140,8 @@ impl Core {
         html = html.replace('\'', "''");
         let title = &scraped.title.replace('\'', "''");
 
+        create_row(&ulid, title, &plain)?;
+
         info!("{}: {} ({})", ulid, scraped.title, scraped.url);
 
         self.db.execute(state_add(
@@ -166,16 +153,12 @@ impl Core {
             &beginning,
         ))?;
 
-        //add to schema
-        self.add_to_index(&ulid, &scraped.title, &plain)?;
         Ok(())
     }
 
     pub async fn delete(&self, id: &str) -> Result<(), Error> {
         self.db.execute(state_delete(id))?;
         info!("DELETED: {}", id);
-        self.delete_from_index(id)?;
-        info!("DELETED FROM INEX: {}", id);
         Ok(())
     }
 
@@ -203,9 +186,8 @@ impl Core {
         let mut tags = vec![];
         self.db.iterate(state_list_tags(id), |pairs| {
             for &(column, value) in pairs.iter() {
-                match column {
-                    "tag" => tags.push(value.unwrap().to_owned()),
-                    _ => {}
+                if column == "tag" {
+                    tags.push(value.unwrap().to_owned());
                 }
             }
             true
@@ -217,45 +199,14 @@ impl Core {
 
     pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, Error> {
         info!("query: {}", query);
-        let title = self.schema.get_field("title").unwrap();
-        let plain = self.schema.get_field("plain").unwrap();
 
-        let mut queries = vec![];
-        for query in query.split_whitespace() {
-            let q_title: Box<dyn Query> = Box::new(TermQuery::new(
-                Term::from_field_text(title, query),
-                tantivy::schema::IndexRecordOption::Basic,
-            ));
-            let q_plain: Box<dyn Query> = Box::new(TermQuery::new(
-                Term::from_field_text(plain, query),
-                tantivy::schema::IndexRecordOption::Basic,
-            ));
-            queries.push((Occur::Should, q_title));
-            queries.push((Occur::Must, q_plain));
-        }
-        let queries = BooleanQuery::new(queries);
-
-        let searcher = self.reader.searcher();
-        let found = searcher.search(&queries, &TopDocs::with_limit(SEARCH_LIMIT))?;
-
-        let result: Vec<String> = found
-            .iter()
-            .map(|x| {
-                let field = self.schema.get_field("id").unwrap();
-                let id = searcher
-                    .doc(x.1)
-                    .unwrap()
-                    .get_first(field)
-                    .unwrap()
-                    .as_text()
-                    .unwrap()
-                    .to_owned();
-                id
-            })
-            .collect();
+        //Currently single pattern is supported.
+        let q = query.split_whitespace().next().unwrap();
+        info!("query: {:?}", q);
+        let search_result = search_store(q)?;
 
         let mut articles = vec![];
-        for id in result {
+        for id in search_result {
             let mut article = ArticleData::new();
             self.db.iterate(state_read(&id), |pairs| {
                 for &(column, value) in pairs.iter() {
@@ -283,9 +234,8 @@ impl Core {
             let id = &article.id;
             self.db.iterate(state_list_tags(id), |pairs| {
                 for &(column, value) in pairs.iter() {
-                    match column {
-                        "tag" => tags.push(value.unwrap().to_owned()),
-                        _ => {}
+                    if column == "tag" {
+                        tags.push(value.unwrap().to_owned());
                     }
                 }
                 true
@@ -320,32 +270,6 @@ impl Core {
     pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), Error> {
         self.db.execute(state_delete_tag(id, tag))?;
         info!("Delete tag {} of ID {}", tag, id);
-        Ok(())
-    }
-
-    //add to schema
-    fn add_to_index(&self, ulid: &str, title: &str, plain: &str) -> Result<(), Error> {
-        let mut index_writer = self.index.writer(50_000_000)?;
-        let schema_id = self.schema.get_field("id").unwrap();
-        let schema_title = self.schema.get_field("title").unwrap();
-        let schema_plain = self.schema.get_field("plain").unwrap();
-        index_writer.add_document(tantivy::doc!(
-            schema_id => ulid,
-            schema_title => title,
-            schema_plain => plain
-        ))?;
-        index_writer.commit()?;
-        drop(index_writer);
-        Ok(())
-    }
-
-    fn delete_from_index(&self, id: &str) -> Result<(), Error> {
-        let mut index_writer = self.index.writer(50_000_000)?;
-        let schema_id = self.schema.get_field("id").unwrap();
-        let term = Term::from_field_text(schema_id, id);
-        index_writer.delete_term(term);
-        index_writer.commit()?;
-        drop(index_writer);
         Ok(())
     }
 

@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
 pub struct Articles {
