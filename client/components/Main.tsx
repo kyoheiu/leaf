@@ -20,7 +20,7 @@ export const Main = (
 ) => {
   const Menu = ({ children }: { children: ReactNode }) => {
     return (
-      <div className="mb-6 flex h-8 items-center justify-evenly rounded-full border border-slate-500 py-2">
+      <div className="mb-6 mt-6 flex h-8 items-center justify-evenly rounded-full border border-slate-500 py-2">
         {children}
       </div>
     );

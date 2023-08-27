@@ -72,15 +72,15 @@ export default function Tags(data: TagsProps) {
               );
             }
           })}
+        <button
+          className="rounded-full border px-2 text-xs"
+          onClick={handleClickOpen}
+          title="add new tag"
+        >
+          <PiTagChevronFill className="inline" />{" "}
+          <RiAddLine className="inline" />
+        </button>
       </div>
-      &nbsp;
-      <button
-        className="rounded-full border px-2 text-xs"
-        onClick={handleClickOpen}
-        title="add new tag"
-      >
-        <PiTagChevronFill className="inline" /> <RiAddLine className="inline" />
-      </button>
       {open && (
         <form
           onSubmit={(e) => submitTag(e, data.id)}
