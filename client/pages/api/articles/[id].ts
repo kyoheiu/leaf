@@ -64,9 +64,9 @@ export default async function handler(
         query.toggle as string
       );
       if (!response.ok) {
-        return res.status(404).end();
+        res.status(404).end();
       } else {
-        return res.status(200).end();
+        res.status(200).end();
       }
     } else if (query.kind) {
       const tag = req.body;
