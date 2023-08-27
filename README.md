@@ -25,7 +25,7 @@ Self-hostable "read-it-later" Web app.
 
 ### v0.7.0
 - Use `ripgrep` instead of `tantivy` (search engine).
-  - To migrate this search style, Send a POST reguest to client's `/api/migrate`, which will make index files in your `databases` directory.
+  - To migrate from v0.6.3 or before, send a POST reguest to client's `/api/migrate`, which will make index files in your `databases` directory.
 - Add menu link to download JSON file that contains information of stored articles.
 - Fix minor bugs and styles.
 
@@ -104,8 +104,9 @@ Authorization: LEAF_API_TOKEN
 
 ### dev-prerequisites
 
-- docker
-- nodejs, cargo, make
+- nodejs (front end)
+- cargo (back end)
+- make
 
 Add `.env.development.local` to the `client` directory with the following:
 
@@ -123,7 +124,3 @@ cd .. && make -i dev
 
 Then you can see the page on `localhost:3000`.
 
-## TODO
-
-- Rewrite backend in Node.js?
-- Import?
