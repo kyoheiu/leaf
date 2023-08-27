@@ -160,7 +160,7 @@ export default function ArticleElement(props: ElementProps) {
         )}
       </div>
       <div>
-        <div>
+        <div className="my-1">
           <Tags tags={article.data.tags} id={article.data.id} />
         </div>
       </div>
