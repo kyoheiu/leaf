@@ -1,9 +1,9 @@
 use super::error::Error;
-use tracing::error;
+use tracing::{error, info};
 
 const DATA_PATH: &str = "./databases/.store";
 
-pub fn create_row(id: &str, title: &str, text: &str) -> Result<(), Error> {
+pub fn create_index(id: &str, title: &str, text: &str) -> Result<(), Error> {
     let store_path = std::path::Path::new("./databases/.store");
     if !store_path.exists() {
         std::fs::create_dir_all(store_path)?;
@@ -11,12 +11,21 @@ pub fn create_row(id: &str, title: &str, text: &str) -> Result<(), Error> {
 
     let content = format!("title: {}\n{}", title, text);
 
-    std::fs::write(format!("./databases/.store/{}", id), content)?;
+    std::fs::write(format!("{}/{}", DATA_PATH, id), content)?;
+    info!("CREATED: search index of {}", id);
 
     Ok(())
 }
 
-pub fn search_store(q: &str) -> Result<Vec<String>, Error> {
+pub fn delete_index(id: &str) {
+    if let Err(e) = std::fs::remove_file(format!("{}/{}", DATA_PATH, id)) {
+        error!("Error: {}\nFailed to delete index of {}", e, id);
+    } else {
+        info!("DELETED: search index of {}", id);
+    }
+}
+
+pub fn search_index(q: &str) -> Result<Vec<String>, Error> {
     let mut result = Vec::new();
 
     //exec ripgrep

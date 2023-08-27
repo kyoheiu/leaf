@@ -1,4 +1,4 @@
-use super::store::{create_row, search_store};
+use super::store::{create_index, delete_index, search_index};
 use crate::types::ArticleScraped;
 
 use super::error::Error;
@@ -140,9 +140,9 @@ impl Core {
         html = html.replace('\'', "''");
         let title = &scraped.title.replace('\'', "''");
 
-        create_row(&ulid, title, &plain)?;
+        create_index(&ulid, title, &plain)?;
 
-        info!("{}: {} ({})", ulid, scraped.title, scraped.url);
+        info!("CREATED {}: {} ({})", ulid, scraped.title, scraped.url);
 
         self.db.execute(state_add(
             &ulid,
@@ -159,6 +159,7 @@ impl Core {
     pub async fn delete(&self, id: &str) -> Result<(), Error> {
         self.db.execute(state_delete(id))?;
         info!("DELETED: {}", id);
+        delete_index(id);
         Ok(())
     }
 
@@ -203,7 +204,7 @@ impl Core {
         //Currently single pattern is supported.
         let q = query.split_whitespace().next().unwrap();
         info!("query: {:?}", q);
-        let search_result = search_store(q)?;
+        let search_result = search_index(q)?;
 
         let mut articles = vec![];
         for id in search_result {
@@ -253,7 +254,7 @@ impl Core {
 
     pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), Error> {
         self.db.execute(state_toggle(toggle, id))?;
-        info!("ID {} toggle {}", id, toggle);
+        info!("TOGGLED: {} of ID {}",  toggle, id);
         Ok(())
     }
 
@@ -262,14 +263,14 @@ impl Core {
             Err(Error::Tag("Tag is empty.".to_owned()))
         } else {
             self.db.execute(state_add_tag(id, tag))?;
-            info!("Add tag {} to ID {}", tag, id);
+            info!("ADDED TAG: {} to ID {}", tag, id);
             Ok(())
         }
     }
 
     pub async fn delete_tag(&self, id: &str, tag: &str) -> Result<(), Error> {
         self.db.execute(state_delete_tag(id, tag))?;
-        info!("Delete tag {} of ID {}", tag, id);
+        info!("DELETED TAG: {} of ID {}", tag, id);
         Ok(())
     }
 
@@ -302,9 +303,8 @@ impl Core {
             let id = &article.id;
             self.db.iterate(state_list_tags(id), |pairs| {
                 for &(column, value) in pairs.iter() {
-                    match column {
-                        "tag" => tags.push(value.unwrap().to_owned()),
-                        _ => {}
+                    if column == "tag" {
+                        tags.push(value.unwrap().to_owned());
                     }
                 }
                 true
