@@ -16,13 +16,18 @@ Self-hostable "read-it-later" Web app.
   - like
   - archive
   - tagging
-  - full-text search (works only with languages based on the Latin script for
-    now)
-- With the
+  - full-text search by `ripgrep`
+- Via the client API, or the
   [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
   you can easily add new articles.
 
 ## New release
+
+### v0.7.0
+- Use `ripgrep` instead of `tantivy` (search engine).
+  - To migrate this search style, Send a POST reguest to client's `/api/migrate`, which will make index files in your `databases` directory.
+- Add menu link to download JSON file that contains information of stored articles.
+- Fix minor bugs and styles.
 
 ### v0.6.3 (2023-08-26)
 - Show proper error message when creating new article fails.
@@ -30,14 +35,14 @@ Self-hostable "read-it-later" Web app.
 ## Deploy
 
 1. Prepare 2 files and 1 empty directory: `docker-compose.yml`, `.env.production` and `databases`.  
-`databases` directory will have `.search` directory and `.sqlite` database, which will be automatically created.
+`databases` directory will have `.index` directory (to store the search index) and `.sqlite` binary, both of which will be automatically created.
 
 `docker-compose.yml` example
 ```
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.6.2
+    image: docker.io/kyoheiudev/leaf-server:0.7.0
     container_name: leaf-server
     volumes:
       - /path/to/databases:/var/leaf/databases
@@ -45,7 +50,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.6.2
+    image: docker.io/kyoheiudev/leaf-client:0.7.0
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production
@@ -66,7 +71,7 @@ By default this app is not protected by any means so that you can use your own a
 2. `docker compose up -d` and the app will start listening on port 3000.
 
 ## API   
-Via API you can add new article:
+Via the client API you can add new article:
 
 ```http
 POST /api/create
@@ -92,7 +97,7 @@ Authorization: LEAF_API_TOKEN
 - Rust as the backend
   - axum
   - ammonia as the sanitizer
-  - tantivy as the full-text search engine
+  - ripgrep as the full-text search tool
 - SQLite as the database
 
 ## Dev
