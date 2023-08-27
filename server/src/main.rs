@@ -1,7 +1,6 @@
 mod core;
 mod error;
 mod handler;
-mod index;
 mod statements;
 mod types;
 

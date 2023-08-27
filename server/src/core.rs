@@ -1,6 +1,5 @@
 use super::error::Error;
 use super::handler::*;
-use super::index::{create_index, delete_index, refresh_index, search_index};
 use super::statements::*;
 use super::types::ArticleScraped;
 use super::types::{ArticleContent, ArticleData, Articles};
@@ -13,13 +12,14 @@ use axum::{
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
 use tower_http::cors::{Any, CorsLayer};
-use tracing::info;
+use tracing::{error, info};
 
 const BEGINNING_LENGTH: usize = 100;
 const CHUNK_LENGTH: usize = 21;
 
 pub struct Core {
     pub db: sqlite::ConnectionWithFullMutex,
+    pub index: String,
 }
 
 pub fn router(core: Core) -> axum::Router {
@@ -74,7 +74,12 @@ impl Core {
         connection.execute(state_create_articles_table())?;
         connection.execute(state_create_tags_table())?;
 
-        Ok(Core { db: connection })
+        let index = std::env::var("INDEX_PATH").unwrap_or("./databases/.index".to_string());
+
+        Ok(Core {
+            db: connection,
+            index,
+        })
     }
 
     pub async fn list_up(&self, statement: &str) -> Result<Json<Articles>, Error> {
@@ -143,7 +148,7 @@ impl Core {
         html = html.replace('\'', "''");
         let title = &scraped.title.replace('\'', "''");
 
-        create_index(&ulid, title, &plain)?;
+        self.create_index(&ulid, title, &plain)?;
 
         info!("CREATED {}: {} ({})", ulid, scraped.title, scraped.url);
 
@@ -162,7 +167,7 @@ impl Core {
     pub async fn delete(&self, id: &str) -> Result<(), Error> {
         self.db.execute(state_delete(id))?;
         info!("DELETED: {}", id);
-        delete_index(id);
+        self.delete_index(id);
         Ok(())
     }
 
@@ -205,7 +210,7 @@ impl Core {
         //Currently single pattern is supported.
         let q = query.split_whitespace().next().unwrap();
         info!("query: {:?}", q);
-        let search_result = search_index(q)?;
+        let search_result = self.search_index(q)?;
 
         let mut articles = vec![];
         for id in search_result {
@@ -315,6 +320,72 @@ impl Core {
         Ok(Json(articles))
     }
 
+    pub fn create_index(&self, id: &str, title: &str, text: &str) -> Result<(), Error> {
+        let p = std::path::Path::new(&self.index);
+        if !p.exists() {
+            std::fs::create_dir_all(p)?;
+        }
+
+        let content = format!("title: {}\n{}", title, text);
+
+        std::fs::write(format!("{}/{}", &self.index, id), content)?;
+        info!("CREATED: search index of {}", id);
+
+        Ok(())
+    }
+
+    pub fn delete_index(&self, id: &str) {
+        if let Err(e) = std::fs::remove_file(format!("{}/{}", &self.index, id)) {
+            error!("Error: {}\nFailed to delete index of {}", e, id);
+        } else {
+            info!("DELETED: search index of {}", id);
+        }
+    }
+
+    pub fn refresh_index(&self, articles: &[ArticleContent]) -> Result<(), Error> {
+        let p = std::path::Path::new(&self.index);
+        if p.exists() {
+            std::fs::remove_dir_all(p)?;
+            info!("REFRESH: Removed old index.");
+        }
+        std::fs::create_dir_all(&self.index)?;
+
+        for article in articles {
+            let re = regex::Regex::new(r"<[^>]*>").unwrap();
+            let plain = re.replace_all(&article.html, "").to_string();
+            self.create_index(&article.id, &article.title, &plain)?;
+        }
+        Ok(())
+    }
+
+    pub fn search_index(&self, q: &str) -> Result<Vec<String>, Error> {
+        let mut result = Vec::new();
+
+        //exec ripgrep
+        if let Ok(output) = std::process::Command::new("rg")
+            .arg("-l")
+            .arg("-i")
+            .arg(q)
+            .arg(&self.index)
+            .output()
+        {
+            let output = String::from_utf8(output.stdout)?;
+            for item in output.lines() {
+                if let Some(file_path) = item.lines().next() {
+                    if let Some(file_name) = file_path.split('/').last() {
+                        result.push(file_name.to_string());
+                    }
+                }
+            }
+        } else {
+            error!("ripgrep did not work successfully.");
+            return Err(Error::Grep);
+        }
+
+        result.sort_by(|a, b| b.partial_cmp(a).unwrap());
+
+        Ok(result)
+    }
     pub async fn migrate(&self) -> Result<(), Error> {
         info!("MIGRATE: Started.");
         let mut articles = vec![];
@@ -333,7 +404,7 @@ impl Core {
         })?;
         info!("{:?}", articles);
 
-        refresh_index(&articles)?;
+        self.refresh_index(&articles)?;
 
         Ok(())
     }
