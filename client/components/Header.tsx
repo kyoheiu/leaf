@@ -101,19 +101,24 @@ export const Header = () => {
         )}
         <SearchButton />
         <div className="relative">
-        <button 
-        
-        onClick={() => setShowMenu((s) => !s)}
-        className="ml-3">
+          <button onClick={() => setShowMenu((s) => !s)} className="ml-3">
             <RiMenuFill />
-        </button>
-        {showMenu && (
-          <div className=" space-y-3 border p-2 w-32 rounded bg-slate-50 drop-shadow-2xl flex flex-col absolute items-end right-0 top-8 text-sm">
-           <a className="no-underline" href="/api/download">Download JSON</a> 
-           <a className="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">Source code</a>
-          </div>
-        )}
-</div>
+          </button>
+          {showMenu && (
+            <div className=" absolute right-0 top-8 flex w-32 flex-col items-end space-y-3 rounded border bg-slate-50 p-2 text-sm drop-shadow-2xl">
+              <a className="no-underline" href="/api/download">
+                Download JSON
+              </a>
+              <a
+                className="no-underline"
+                href="https://github.com/kyoheiu/leaf"
+                target="_blank"
+              >
+                Source code
+              </a>
+            </div>
+          )}
+        </div>
       </div>
       {searchOpen && (
         <form onSubmit={(e) => execSearch(e)} className="mt-3 flex justify-end">
