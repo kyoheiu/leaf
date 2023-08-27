@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { RiSearch2Line, RiCodeSSlashFill } from "react-icons/ri";
+import { RiSearch2Line, RiMenuFill } from "react-icons/ri";
 import { ImSpinner } from "react-icons/im";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -16,6 +16,7 @@ export const Header = () => {
   const router = useRouter();
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleClickSearchToggle = () => {
@@ -99,11 +100,20 @@ export const Header = () => {
           </form>
         )}
         <SearchButton />
-        <div className="ml-3">
-          <a href="https://github.com/kyoheiu/leaf" target="_blank">
-            <RiCodeSSlashFill />
-          </a>
-        </div>
+        <div className="relative">
+        <button 
+        
+        onClick={() => setShowMenu((s) => !s)}
+        className="ml-3">
+            <RiMenuFill />
+        </button>
+        {showMenu && (
+          <div className=" space-y-3 border p-2 w-32 rounded bg-slate-50 drop-shadow-2xl flex flex-col absolute items-end right-0 top-8 text-sm">
+           <a className="no-underline" href="/api/download">Download JSON</a> 
+           <a className="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">Source code</a>
+          </div>
+        )}
+</div>
       </div>
       {searchOpen && (
         <form onSubmit={(e) => execSearch(e)} className="mt-3 flex justify-end">
