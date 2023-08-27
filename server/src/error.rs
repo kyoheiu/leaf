@@ -13,6 +13,7 @@ pub enum Error {
     Ammonia(String),
     Tag(String),
     FromUtf8(String),
+    EmptyQuery,
     Grep,
 }
 
@@ -27,6 +28,7 @@ impl std::fmt::Display for Error {
             Error::Ammonia(s) => s,
             Error::Tag(s) => s,
             Error::FromUtf8(s) => s,
+            Error::EmptyQuery => "Query must not be empty.",
             Error::Grep => "Failed to execute ripgrep.",
         };
         write!(f, "{}", printable)
@@ -78,6 +80,7 @@ impl IntoResponse for Error {
             Error::Ammonia(s) => s,
             Error::Tag(s) => s,
             Error::FromUtf8(s) => s,
+            Error::EmptyQuery => "Query must not be empty.".to_string(),
             Error::Grep => "Failed to execute ripgrep.".to_string(),
         };
         tracing::error!("{}", body);

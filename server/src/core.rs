@@ -1,7 +1,7 @@
 use super::error::Error;
 use super::handler::*;
+use super::index::{create_index, delete_index, refresh_index, search_index};
 use super::statements::*;
-use super::store::{create_index, delete_index, refresh_index, search_index};
 use super::types::ArticleScraped;
 use super::types::{ArticleContent, ArticleData, Articles};
 
@@ -202,8 +202,6 @@ impl Core {
     }
 
     pub async fn search(&self, query: &str) -> Result<Json<Vec<ArticleData>>, Error> {
-        info!("query: {}", query);
-
         //Currently single pattern is supported.
         let q = query.split_whitespace().next().unwrap();
         info!("query: {:?}", q);

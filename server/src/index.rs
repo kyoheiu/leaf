@@ -2,12 +2,12 @@ use super::error::Error;
 use super::types::ArticleContent;
 use tracing::{error, info};
 
-const DATA_PATH: &str = "./databases/.store";
+const DATA_PATH: &str = "./databases/.index";
 
 pub fn create_index(id: &str, title: &str, text: &str) -> Result<(), Error> {
-    let store_path = std::path::Path::new(DATA_PATH);
-    if !store_path.exists() {
-        std::fs::create_dir_all(store_path)?;
+    let index_path = std::path::Path::new(DATA_PATH);
+    if !index_path.exists() {
+        std::fs::create_dir_all(index_path)?;
     }
 
     let content = format!("title: {}\n{}", title, text);
@@ -27,12 +27,12 @@ pub fn delete_index(id: &str) {
 }
 
 pub fn refresh_index(articles: &[ArticleContent]) -> Result<(), Error> {
-    let store_path = std::path::Path::new(DATA_PATH);
-    if store_path.exists() {
-        std::fs::remove_dir_all(store_path)?;
+    let index_path = std::path::Path::new(DATA_PATH);
+    if index_path.exists() {
+        std::fs::remove_dir_all(index_path)?;
         info!("REFRESH: Removed old index.");
     }
-    std::fs::create_dir_all(store_path)?;
+    std::fs::create_dir_all(index_path)?;
 
     for article in articles {
         let re = regex::Regex::new(r"<[^>]*>").unwrap();

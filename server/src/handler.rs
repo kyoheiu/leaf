@@ -130,6 +130,9 @@ pub async fn search(
             continue;
         }
     }
+    if query.is_empty() {
+        return Err(Error::EmptyQuery);
+    }
     core.search(&query).await
 }
 
