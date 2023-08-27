@@ -13,7 +13,7 @@ export default async function handler(
   if (req.method === "POST") {
     console.log("Migration.");
     await migrate();
-    res.status(200).end();
+    res.status(200).send("Completed migration.\n");
   } else {
     res.status(404).end();
   }
