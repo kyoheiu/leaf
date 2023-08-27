@@ -53,7 +53,7 @@ export default function Tags(data: TagsProps) {
               return (
                 <div
                   key={`tag-element-${data.id}-${index.toString()}`}
-                  className="flex items-center m-1 rounded-full border border-gray-200 bg-gray-200 px-2 text-xs text-gray-900"
+                  className="m-1 flex items-center rounded-full border border-gray-200 bg-gray-200 px-2 text-xs text-gray-900"
                 >
                   <Link
                     className="mr-2 px-2 text-xs no-underline"
