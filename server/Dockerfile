@@ -1,7 +1,7 @@
 FROM rust:latest as builder
 WORKDIR /home/server
 COPY . .
-RUN cargo build --release
+RUN cargo build --release --locked
 
 FROM debian:bookworm-slim
 WORKDIR /leaf-server
