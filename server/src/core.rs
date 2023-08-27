@@ -1,13 +1,15 @@
-use super::store::{create_index, delete_index, search_index};
-use crate::types::ArticleScraped;
-
 use super::error::Error;
 use super::handler::*;
 use super::statements::*;
+use super::store::{create_index, delete_index, refresh_index, search_index};
+use super::types::ArticleScraped;
 use super::types::{ArticleContent, ArticleData, Articles};
 
 use axum::Json;
-use axum::{routing::get, Router};
+use axum::{
+    routing::{get, post},
+    Router,
+};
 use std::path::PathBuf;
 use std::{net::TcpListener, sync::Arc};
 use tower_http::cors::{Any, CorsLayer};
@@ -41,6 +43,7 @@ pub fn router(core: Core) -> axum::Router {
         .route("/search", get(search))
         .route("/tags/:name", get(list_up_tag))
         .route("/export", get(export))
+        .route("/migrate", post(migrate))
         .layer(layer)
         .with_state(shared_core)
 }
@@ -254,7 +257,7 @@ impl Core {
 
     pub async fn toggle_state(&self, id: &str, toggle: &str) -> Result<(), Error> {
         self.db.execute(state_toggle(toggle, id))?;
-        info!("TOGGLED: {} of ID {}",  toggle, id);
+        info!("TOGGLED: {} of ID {}", toggle, id);
         Ok(())
     }
 
@@ -312,6 +315,29 @@ impl Core {
             article.tags = tags;
         }
         Ok(Json(articles))
+    }
+
+    pub async fn migrate(&self) -> Result<(), Error> {
+        info!("MIGRATE: Started.");
+        let mut articles = vec![];
+        self.db.iterate(state_list_all(), |pairs| {
+            let mut article = ArticleContent::new();
+            for &(column, value) in pairs.iter() {
+                match column {
+                    "id" => article.id = value.unwrap().to_owned(),
+                    "title" => article.title = value.unwrap().to_owned(),
+                    "html" => article.html = value.unwrap().to_owned(),
+                    _ => {}
+                }
+            }
+            articles.push(article);
+            true
+        })?;
+        info!("{:?}", articles);
+
+        refresh_index(&articles)?;
+
+        Ok(())
     }
 
     pub async fn health(&self) -> String {

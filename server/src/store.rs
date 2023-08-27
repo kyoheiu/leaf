@@ -1,10 +1,11 @@
 use super::error::Error;
+use super::types::ArticleContent;
 use tracing::{error, info};
 
 const DATA_PATH: &str = "./databases/.store";
 
 pub fn create_index(id: &str, title: &str, text: &str) -> Result<(), Error> {
-    let store_path = std::path::Path::new("./databases/.store");
+    let store_path = std::path::Path::new(DATA_PATH);
     if !store_path.exists() {
         std::fs::create_dir_all(store_path)?;
     }
@@ -23,6 +24,22 @@ pub fn delete_index(id: &str) {
     } else {
         info!("DELETED: search index of {}", id);
     }
+}
+
+pub fn refresh_index(articles: &[ArticleContent]) -> Result<(), Error> {
+    let store_path = std::path::Path::new(DATA_PATH);
+    if store_path.exists() {
+        std::fs::remove_dir_all(store_path)?;
+        info!("REFRESH: Removed old index.");
+    }
+    std::fs::create_dir_all(store_path)?;
+
+    for article in articles {
+        let re = regex::Regex::new(r"<[^>]*>").unwrap();
+        let plain = re.replace_all(&article.html, "").to_string();
+        create_index(&article.id, &article.title, &plain)?;
+    }
+    Ok(())
 }
 
 pub fn search_index(q: &str) -> Result<Vec<String>, Error> {

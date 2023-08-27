@@ -155,3 +155,8 @@ pub async fn export(State(core): State<Arc<Core>>) -> Result<Json<Vec<ArticleDat
     let json = core.export().await?;
     Ok(json)
 }
+
+#[debug_handler]
+pub async fn migrate(State(core): State<Arc<Core>>) -> Result<(), Error> {
+    core.migrate().await
+}
