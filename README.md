@@ -54,8 +54,6 @@ services:
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production
-    ports:
-      - 3000:3000
 ```
 
 `.env.production` example
