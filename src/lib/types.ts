@@ -67,8 +67,3 @@ export interface ElementProps {
 	element: WrappedData;
 	kind: ElementKind;
 }
-
-export interface TagsProps {
-	id: string;
-	tags: string[];
-}
