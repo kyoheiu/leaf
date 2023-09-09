@@ -23,14 +23,14 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v0.8.0
+- Use alpine to build image to reduce the size.
+
 ### v0.7.0
 - Use `ripgrep` instead of `tantivy` (search engine).
   - To migrate from v0.6.3 or before, send a POST reguest to client's `/api/migrate`, which will make index files in your `databases` directory.
 - Add menu link to download JSON file that contains information of stored articles.
 - Fix minor bugs and styles.
-
-### v0.6.3 (2023-08-26)
-- Show proper error message when creating new article fails.
 
 ## Deploy
 
@@ -42,7 +42,7 @@ Self-hostable "read-it-later" Web app.
 version: "3"
 services:
   server:
-    image: docker.io/kyoheiudev/leaf-server:0.7.0
+    image: docker.io/kyoheiudev/leaf-server:0.8.0
     container_name: leaf-server
     volumes:
       - /path/to/databases:/var/leaf/databases
@@ -50,7 +50,7 @@ services:
     ports:
       - 8000:8000
   client:
-    image: docker.io/kyoheiudev/leaf-client:0.7.0
+    image: docker.io/kyoheiudev/leaf-client:0.8.0
     container_name: leaf-client
     volumes:
       - /path/to/.env.production:/app/.env.production

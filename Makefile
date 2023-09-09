@@ -14,6 +14,8 @@ stop:
 	killall node && killall leaf-server
 
 build:
+	cd client && npm install --package-lock-only 
+	cd server && cargo generate-lockfile
 	sudo docker build --tag=kyoheiudev/leaf-server:$(VER) server 
 	sudo docker build --tag=kyoheiudev/leaf-client:$(VER) client 
 
