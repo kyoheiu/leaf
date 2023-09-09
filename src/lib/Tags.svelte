@@ -37,7 +37,7 @@
 </script>
 
 <div class="flex flex-wrap items-center">
-	{#if tags.length !== 0}
+	{#if tags && tags.length !== 0}
 		{#each tags as x}
 			<div
 				class="m-1 flex items-center rounded-full border border-gray-200 bg-gray-200 px-2 text-xs text-gray-900"

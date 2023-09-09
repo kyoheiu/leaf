@@ -55,7 +55,7 @@
 	<span />
 {:else}
 	<div class="py-1 text-sm text-slate-500">
-		{article.timestamp.substring(0, article.timestamp.length - 3)}
+		{article.timestamp}
 	</div>
 	<div class="line-clamp-3 text-lg font-semibold leading-6">
 		<a href={`/articles/${article.id}`} class="no-underline">

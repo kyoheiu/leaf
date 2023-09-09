@@ -1,6 +1,5 @@
 fmt:
 	npm run format && npm run lint
-	cd server && cargo fmt
 
 dev:
 	cd server && sudo chown -R ${USER}:${GROUP} databases
