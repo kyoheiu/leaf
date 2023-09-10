@@ -17,35 +17,49 @@
 		return url.split('/').slice(2, 3).join('/');
 	};
 
-	const toggleLiked = async (id: string) => {
-		const res = await fetch(`/api/articles/${id}?toggle=liked`, {
-			method: 'POST'
+	const toggleLiked = async () => {
+		const res = await fetch(`/api/article`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: article.id, action: 0, current: article.liked })
 		});
 		if (!res.ok) {
-			console.error('Cannot toggle like.');
+			console.error(await res.text());
 		} else {
 			article.liked = 1 - article.liked;
 		}
 	};
 
-	const toggleArchived = async (id: string) => {
-		const res = await fetch(`/api/articles/${id}?toggle=archived`, {
-			method: 'POST'
+	const toggleArchived = async () => {
+		const res = await fetch(`/api/article`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: article.id, action: 1, current: article.archived })
 		});
 		if (!res.ok) {
-			console.error('Cannot archive article.');
+			console.error(await res.text());
 		} else {
 			article.archived = 1 - article.archived;
+			isInvisible = true;
 		}
 	};
 
-	const deleteArticleContent = async (id: string) => {
-		const res = await fetch(`/api/articles/${id}`, {
-			method: 'DELETE'
+	const deleteArticleContent = async () => {
+		const res = await fetch(`/api/article`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: article.id, action: 2 })
 		});
 		if (!res.ok) {
-			console.error('Cannot delete article.');
+			console.error(await res.text());
 		} else {
+			isInvisible = true;
 		}
 	};
 </script>
@@ -92,7 +106,7 @@
 		<button
 			id={`like-button-${article.id}`}
 			class="mx-1 rounded-full border px-2 text-sm"
-			on:click={() => toggleLiked(article.id)}
+			on:click={toggleLiked}
 			title="toggle liked"
 		>
 			{#if article.liked}
@@ -103,7 +117,7 @@
 		</button>
 		<button
 			class="mx-1 rounded-full border px-2 text-sm"
-			on:click={() => toggleArchived(article.id)}
+			on:click={toggleArchived}
 			title="toggle archived"
 		>
 			{#if article.archived}
@@ -114,7 +128,7 @@
 		</button>
 		<button
 			class="ml-1 rounded-full border px-2 text-sm"
-			on:click={() => deleteArticleContent(article.id)}
+			on:click={deleteArticleContent}
 			title="delete"
 		>
 			<TrashBinOutline />
