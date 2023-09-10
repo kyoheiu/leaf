@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { SearchOutline, BarsOutline } from 'flowbite-svelte-icons';
 	import toast, { Toaster } from 'svelte-french-toast';
+	import Spinner from './Spinner.svelte';
 
 	// h-10
 	export const LOGO_SIZE = 40;
@@ -35,6 +36,7 @@
 			},
 			body: JSON.stringify({ url: url })
 		});
+		url = '';
 		if (!res.ok) {
 			const message = await res.text();
 			toast.error(`Error: ${message}`);
@@ -54,15 +56,19 @@
 		<img src="/logo.png" alt="leaf" height={MINI_LOGO_SIZE} width={MINI_LOGO_SIZE} />
 	</a>
 	&nbsp;
-	<form on:submit={createNew}>
-		<input
-			class="w-5/6 flex-auto rounded-md border border-slate-500 p-1 text-sm text-gray-900"
-			id={'add_new'}
-			type="url"
-			bind:value={url}
-			placeholder="+"
-		/>
-	</form>
+	{#if loading}
+		<Spinner />
+	{:else}
+		<form on:submit={createNew}>
+			<input
+				class="w-5/6 flex-auto rounded-md border border-slate-500 p-1 text-sm text-gray-900"
+				id={'add_new'}
+				type="url"
+				bind:value={url}
+				placeholder="+"
+			/>
+		</form>
+	{/if}
 	<button class="ml-auto" on:click={() => (searchOpen = !searchOpen)} title="search">
 		<SearchOutline size="sm" />
 	</button>
@@ -90,7 +96,6 @@
 			bind:value={query}
 			placeholder="search"
 			class="mb-2 w-3/5 rounded-md border border-slate-500 p-1 text-sm text-gray-900"
-			autoFocus
 		/>
 	</form>
 {/if}

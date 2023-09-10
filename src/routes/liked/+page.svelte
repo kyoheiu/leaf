@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ArticleCard from '$lib/ArticleCard.svelte';
 	import Header from '$lib/Header.svelte';
-	import '../app.css';
+	import '../../app.css';
 	import type { PageData } from './$types';
 
 	export let data: PageData;

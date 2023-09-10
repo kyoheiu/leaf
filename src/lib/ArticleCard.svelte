@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ElementProps, ElementKind, ArticleData } from '$lib/types';
+	import type { ArticleData } from '$lib/types';
 	import Tags from '$lib/Tags.svelte';
 	import {
 		HeartOutline,
@@ -11,7 +11,6 @@
 	import LinkButton from '$lib/LinkButton.svelte';
 
 	export let article: ArticleData;
-	export let kind: ElementKind;
 	let isInvisible = false;
 
 	const trimUrl = (url: string) => {
@@ -58,7 +57,7 @@
 		{article.timestamp}
 	</div>
 	<div class="line-clamp-3 text-lg font-semibold leading-6">
-		<a href={`/articles/${article.id}`} class="no-underline">
+		<a href={`/article/${article.id}`} class="no-underline">
 			{article.title}
 		</a>
 	</div>

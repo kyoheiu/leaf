@@ -30,7 +30,7 @@ export const POST: RequestHandler = async (event) => {
 		args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox']
 	});
 	console.log('Start crawling.');
-	let crawled: string = '';
+	let crawled = '';
 	try {
 		crawled = await crawl(url, browser);
 	} catch (e) {
@@ -42,13 +42,18 @@ export const POST: RequestHandler = async (event) => {
 
 	const dom = new JSDOM(crawled, { url: url });
 	const document = dom.window.document;
-	const parsed = new Readability(document).parse()!;
+	const parsed = new Readability(document).parse();
+	if (!parsed) {
+		return new Response('Failed to parse the document.', {
+			status: 500
+		});
+	}
 	const cover = document.querySelector("[property='og:image']")?.getAttribute('content');
 
 	const id = ulid();
 
 	const prisma = new PrismaClient({ log: ['query', 'info', 'error'] });
-	const article = await prisma.articles.create({
+	await prisma.articles.create({
 		data: {
 			id: id,
 			url: url,

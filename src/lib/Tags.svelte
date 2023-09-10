@@ -53,7 +53,7 @@
 	{/if}
 	<button
 		class="rounded-full border px-2 text-xs"
-		on:click={() => (isOpen = true)}
+		on:click={() => (isOpen = !isOpen)}
 		title="add new tag"
 	>
 		<PlusOutline class="inline" />
@@ -62,7 +62,6 @@
 {#if isOpen}
 	<form on:submit={(e) => submitTag(e)} class="m-2 flex justify-start">
 		<input
-			autoFocus
 			id={`${id}_add_tag`}
 			placeholder="Add new tag"
 			class="w-3/4 rounded-md p-1 text-sm text-gray-900"

@@ -32,7 +32,7 @@ export const load = async ({ url }: { url: URL }) => {
 		try {
 			const articles = await prisma.articles.findMany({
 				where: {
-					archived: 0
+					liked: 1
 				},
 				select: {
 					id: true,
@@ -64,7 +64,7 @@ export const load = async ({ url }: { url: URL }) => {
 		try {
 			const articles = await prisma.articles.findMany({
 				where: {
-					archived: 0
+					liked: 1
 				},
 				select: {
 					id: true,
