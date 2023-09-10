@@ -21,13 +21,13 @@ export interface ArticleScraped {
 export interface ArticleData {
 	id: string;
 	url: string;
-	title: string;
-	cover: string;
-	beginning: string;
-	progress: number;
-	archived: boolean;
-	liked: boolean;
-	timestamp: string;
+	title: string | null;
+	cover: string | null;
+	beginning: string | null;
+	progress: number | null;
+	archived: number;
+	liked: number;
+	timestamp: Date | null;
 	tags: string[];
 }
 

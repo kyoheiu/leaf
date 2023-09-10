@@ -10,12 +10,12 @@ generator client {
 model Articles {
   id        String    @id @unique
   url       String
-  title     String?
+  title     String
   html      String?
   cover     String?
   beginning String?
-  position  Int?
-  progress  Int?
+  position  Int?      @default(0)
+  progress  Int?      @default(0)
   archived  Int       @default(0)
   liked     Int       @default(0)
   timestamp DateTime

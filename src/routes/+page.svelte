@@ -13,7 +13,9 @@
 </svelte:head>
 <Header />
 <main class="bg-itembackground flex min-h-screen flex-col items-center">
-	{#each data.result as item}
-		<ArticleCard article={item} kind={ElementKind.Top} />
-	{/each}
+	{#if data.result}
+		{#each data.result as item}
+			<ArticleCard article={item} kind={ElementKind.Top} />
+		{/each}
+	{/if}
 </main>

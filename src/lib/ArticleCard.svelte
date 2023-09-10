@@ -25,7 +25,7 @@
 		if (!res.ok) {
 			console.error('Cannot toggle like.');
 		} else {
-			article.liked = !article.liked;
+			article.liked = 1 - article.liked;
 		}
 	};
 
@@ -36,7 +36,7 @@
 		if (!res.ok) {
 			console.error('Cannot archive article.');
 		} else {
-			article.archived = !article.archived;
+			article.archived = 1 - article.archived;
 		}
 	};
 

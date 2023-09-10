@@ -11,18 +11,28 @@ export const load = async () => {
 				cover: true,
 				beginning: true,
 				progress: true,
+				liked: true,
+				archived: true,
 				timestamp: true
+			},
+			orderBy: {
+				id: 'desc'
 			}
 		});
 		const result = [];
 		for (let i = 0; i < articles.length; i++) {
 			const item = articles[i];
-			const tags = await prisma.tags.findFirst({
+			const tags = [];
+			const tagResult = await prisma.tags.findMany({
 				where: { ulid: item.id }
 			});
+			for (let i = 0; i < tags.length; i++) {
+				const tag = tagResult[i];
+				tags.push(tag.tag);
+			}
 			result.push({
 				...item,
-				tags: tags?.tag
+				tags: tags
 			});
 		}
 		return { result: result };

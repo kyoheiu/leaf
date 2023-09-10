@@ -28,16 +28,19 @@
 	const createNew = async (e): Promise<void | string> => {
 		loading = true;
 		e.preventDefault();
-		const res = await fetch('/api/articles', {
+		const res = await fetch('/api/create', {
 			method: 'POST',
-			body: url
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ url: url })
 		});
 		if (!res.ok) {
 			const message = await res.text();
 			toast.error(`Error: ${message}`);
 			loading = false;
 		} else {
-			goto('/');
+			window.location.reload();
 		}
 	};
 </script>
@@ -61,11 +64,11 @@
 		/>
 	</form>
 	<button class="ml-auto" on:click={() => (searchOpen = !searchOpen)} title="search">
-        search
+		<SearchOutline size="sm" />
 	</button>
 	<div class="relative">
-		<button on:click={() => showMenu = !showMenu} class="ml-3" title="menu">
-menu
+		<button on:click={() => (showMenu = !showMenu)} class="ml-3" title="menu">
+			<BarsOutline size="sm" />
 		</button>
 		{#if showMenu}
 			<div
