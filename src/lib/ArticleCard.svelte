@@ -67,8 +67,9 @@
 {#if isInvisible}
 	<span />
 {:else}
+<div class="mt-4 mb-4">
 	<div class="py-1 text-sm text-slate-500">
-		{article.timestamp}
+		{article.timestamp?.toLocaleString()}
 	</div>
 	<div class="line-clamp-3 text-lg font-semibold leading-6">
 		<a href={`/article/${article.id}`} class="no-underline">
@@ -110,9 +111,9 @@
 			title="toggle liked"
 		>
 			{#if article.liked}
-				<HeartSolid />
+				<HeartSolid size="xs" />
 			{:else}
-				<HeartOutline />
+				<HeartOutline size="xs"  />
 			{/if}
 		</button>
 		<button
@@ -121,9 +122,9 @@
 			title="toggle archived"
 		>
 			{#if article.archived}
-				<ArchiveSolid />
+				<ArchiveSolid  size="xs" />
 			{:else}
-				<ArchiveOutline />
+				<ArchiveOutline  size="xs" />
 			{/if}
 		</button>
 		<button
@@ -131,7 +132,8 @@
 			on:click={deleteArticleContent}
 			title="delete"
 		>
-			<TrashBinOutline />
+			<TrashBinOutline  size="xs" />
 		</button>
 	</div>
+</div>
 {/if}

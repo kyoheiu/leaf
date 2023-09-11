@@ -12,5 +12,5 @@
 
 <Toaster />
 <button class="px-2" on:click={() => copyToClipboard(url)} title="copy URL">
-	<LinkSolid />
+	<LinkSolid size="xs" />
 </button>

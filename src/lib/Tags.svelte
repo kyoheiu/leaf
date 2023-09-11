@@ -56,7 +56,7 @@
 		on:click={() => (isOpen = !isOpen)}
 		title="add new tag"
 	>
-		<PlusOutline class="inline" />
+		<PlusOutline size="xs" class="inline" />
 	</button>
 </div>
 {#if isOpen}
