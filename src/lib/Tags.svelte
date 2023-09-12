@@ -1,41 +1,57 @@
 <script lang="ts">
 	import { CloseOutline, PlusOutline } from 'flowbite-svelte-icons';
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	export let tags: string[];
 	export let id: string;
+
+	let newTag = '';
 	let isOpen = false;
 
 	const submitTag = async (e: any) => {
 		e.preventDefault();
-		const element = document.getElementById(`${id}_add_tag`);
-		const tag = (element as HTMLInputElement).value;
-		const res = await fetch(`/api/articles/${id}?kind=add`, {
+		const res = await fetch(`/api/tag`, {
 			method: 'POST',
-			body: tag
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: id, tag: newTag })
 		});
 		if (!res.ok) {
-			console.error('Cannot add tag.');
-			isOpen = false;
+			const message = await res.text();
+			console.error(message);
+			toast.error(message);
 		} else {
-			tags = [...tags, tag.toLowerCase()];
-			isOpen = false;
+			tags = [...tags, newTag.toLowerCase()];
+			console.log(`Add tag ${newTag} to ${id}`);
 		}
+		newTag = '';
+		isOpen = false;
 	};
 
 	const deleteTag = async (tag: string) => {
-		const res = await fetch(`/api/articles/${id}?kind=delete`, {
-			method: 'POST',
-			body: tag
+		const res = await fetch(`/api/tag`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ id: id, tag: tag })
 		});
 		if (!res.ok) {
-			console.error('Cannot delete tag.');
+			const message = await res.text();
+			console.error(message);
+			toast.error(message);
 		} else {
 			const updated = tags.filter((x) => x !== tag);
 			tags = updated;
+			console.log(`Delete tag ${newTag} from ${id}`);
 		}
+		newTag = '';
+		isOpen = false;
 	};
 </script>
 
+<Toaster />
 <div class="flex flex-wrap items-center">
 	{#if tags && tags.length !== 0}
 		{#each tags as x}
@@ -45,7 +61,7 @@
 				<a class="mr-2 px-2 text-xs no-underline" href={`/tags/${x}`}>
 					&nbsp;{x}
 				</a>
-				<button id={`${id}_delete_tag`} on:click={() => deleteTag(x)}>
+				<button on:click={() => deleteTag(x)}>
 					<CloseOutline />
 				</button>
 			</div>
@@ -62,7 +78,7 @@
 {#if isOpen}
 	<form on:submit={(e) => submitTag(e)} class="m-2 flex justify-start">
 		<input
-			id={`${id}_add_tag`}
+			bind:value={newTag}
 			placeholder="Add new tag"
 			class="w-3/4 rounded-md p-1 text-sm text-gray-900"
 		/>
