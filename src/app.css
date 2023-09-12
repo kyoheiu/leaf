@@ -27,16 +27,16 @@
 		@apply mb-3 mt-6 border-b text-xl font-bold;
 	}
 	h3 {
-		@apply mb-3  mt-6 text-lg font-bold;
+		@apply border-l-4 pl-2 border-slate-500  mb-3  mt-6 text-lg font-bold;
 	}
 	h4 {
-		@apply mb-3 mt-6 font-bold;
+		@apply border-l-4  pl-2 mb-3 mt-6 font-bold;
 	}
 	h5 {
-		@apply mb-3 mt-6 font-bold;
+		@apply border-l-4  pl-2 mb-3 mt-6 font-bold;
 	}
 	h6 {
-		@apply mb-3 mt-6 font-bold;
+		@apply border-l-4  pl-2 mb-3 mt-6 font-bold;
 	}
 	:not(pre) > code {
 		@apply rounded-md bg-slate-200 px-1 font-mono text-sm;
@@ -51,22 +51,16 @@
 		@apply m-2 border-l-2 border-slate-500 pl-2 italic;
 	}
 	ul {
-		@apply m-2 list-disc px-2;
+		@apply mx-4 list-inside list-disc space-y-1;
 	}
 	ol {
-		@apply m-2 list-decimal px-2;
+		@apply mx-4 list-inside list-decimal space-y-1;
 	}
 	table {
-		@apply w-full max-w-full table-auto border-collapse overflow-x-scroll;
-	}
-	table th {
-		@apply p-1;
+		@apply w-full table-fixed text-left mb-3;
 	}
 	table th,
 	td {
-		@apply border;
-	}
-	table td {
-		@apply p-1;
+		@apply p-2 border-b;
 	}
 }
