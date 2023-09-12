@@ -67,73 +67,73 @@
 {#if isInvisible}
 	<span />
 {:else}
-<div class="mt-4 mb-4">
-	<div class="py-1 text-sm text-slate-500">
-		{article.timestamp?.toLocaleString()}
-	</div>
-	<div class="line-clamp-3 text-lg font-semibold leading-6">
-		<a href={`/article/${article.id}`} class="no-underline">
-			{article.title}
-		</a>
-	</div>
-	<div class="my-2 flex items-center text-sm text-slate-500">
-		<a href={article.url} target="_blank">
-			{trimUrl(article.url)}
-		</a>
-		&nbsp;
-		<LinkButton url={article.url} />
-	</div>
-	<div class="mx-auto mb-2 mt-1 grid grid-cols-10 gap-3">
-		{#if article.cover !== ''}
-			<div class="col-span-7 line-clamp-4 text-sm">
-				{article.beginning}
+	<div class="mt-4 mb-4">
+		<div class="py-1 text-sm text-slate-500">
+			{article.timestamp?.toLocaleString()}
+		</div>
+		<div class="line-clamp-3 text-lg font-semibold leading-6">
+			<a href={`/article/${article.id}`} class="no-underline">
+				{article.title}
+			</a>
+		</div>
+		<div class="my-2 flex items-center text-sm text-slate-500">
+			<a href={article.url} target="_blank">
+				{trimUrl(article.url)}
+			</a>
+			&nbsp;
+			<LinkButton url={article.url} />
+		</div>
+		<div class="mx-auto mb-2 mt-1 grid grid-cols-10 gap-3">
+			{#if article.cover !== ''}
+				<div class="col-span-7 line-clamp-4 text-sm">
+					{article.beginning}
+				</div>
+				<div class="col-span-3">
+					<img loading="lazy" class="h-16 object-contain" alt="cover" src={article.cover} />
+				</div>
+			{:else}
+				<div class="col-span-10 text-sm">{article.beginning}</div>
+			{/if}
+		</div>
+		<div>
+			<div class="my-1">
+				<Tags tags={article.tags} id={article.id} />
 			</div>
-			<div class="col-span-3">
-				<img loading="lazy" class="h-16 object-contain" alt="cover" src={article.cover} />
+		</div>
+		<div class="flex items-center">
+			<div class="h-1 w-full rounded-md bg-slate-300">
+				<div class="h-1 rounded-md bg-slate-500" style="width: {article.progress}%;" />
 			</div>
-		{:else}
-			<div class="col-span-10 text-sm">{article.beginning}</div>
-		{/if}
-	</div>
-	<div>
-		<div class="my-1">
-			<Tags tags={article.tags} id={article.id} />
+			<button
+				id={`like-button-${article.id}`}
+				class="mx-1 rounded-full border px-2 text-sm"
+				on:click={toggleLiked}
+				title="toggle liked"
+			>
+				{#if article.liked}
+					<HeartSolid size="xs" />
+				{:else}
+					<HeartOutline size="xs" />
+				{/if}
+			</button>
+			<button
+				class="mx-1 rounded-full border px-2 text-sm"
+				on:click={toggleArchived}
+				title="toggle archived"
+			>
+				{#if article.archived}
+					<ArchiveSolid size="xs" />
+				{:else}
+					<ArchiveOutline size="xs" />
+				{/if}
+			</button>
+			<button
+				class="ml-1 rounded-full border px-2 text-sm"
+				on:click={deleteArticleContent}
+				title="delete"
+			>
+				<TrashBinOutline size="xs" />
+			</button>
 		</div>
 	</div>
-	<div class="flex items-center">
-		<div class="h-1 w-full rounded-md bg-slate-300">
-			<div class="h-1 rounded-md bg-slate-500" style="width: {article.progress}%;" />
-		</div>
-		<button
-			id={`like-button-${article.id}`}
-			class="mx-1 rounded-full border px-2 text-sm"
-			on:click={toggleLiked}
-			title="toggle liked"
-		>
-			{#if article.liked}
-				<HeartSolid size="xs" />
-			{:else}
-				<HeartOutline size="xs"  />
-			{/if}
-		</button>
-		<button
-			class="mx-1 rounded-full border px-2 text-sm"
-			on:click={toggleArchived}
-			title="toggle archived"
-		>
-			{#if article.archived}
-				<ArchiveSolid  size="xs" />
-			{:else}
-				<ArchiveOutline  size="xs" />
-			{/if}
-		</button>
-		<button
-			class="ml-1 rounded-full border px-2 text-sm"
-			on:click={deleteArticleContent}
-			title="delete"
-		>
-			<TrashBinOutline  size="xs" />
-		</button>
-	</div>
-</div>
 {/if}
