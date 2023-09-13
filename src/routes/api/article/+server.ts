@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '$lib/server/client';
 import type { RequestHandler } from '@sveltejs/kit';
 
 interface Req {
@@ -15,7 +15,6 @@ enum Action {
 
 export const POST: RequestHandler = async (event) => {
 	const req: Req = await event.request.json();
-	const prisma = new PrismaClient({ log: ['query', 'info', 'error'] });
 
 	try {
 		if (req.action === Action.ToggleLiked) {

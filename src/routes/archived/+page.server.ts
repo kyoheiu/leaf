@@ -1,28 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma, { getTags } from "$lib/server/client";
 
 const CHUNK = 21;
 const PER_PAGE = 20;
-const prisma = new PrismaClient({ log: ['query', 'info', 'error'] });
-
-const getTags = async (articles) => {
-	const result = [];
-	for (let i = 0; i < articles.length; i++) {
-		const item = articles[i];
-		const tags = [];
-		const tagResult = await prisma.tags.findMany({
-			where: { ulid: item.id }
-		});
-		for (let i = 0; i < tags.length; i++) {
-			const tag = tagResult[i];
-			tags.push(tag.tag);
-		}
-		result.push({
-			...item,
-			tags: tags
-		});
-	}
-	return result;
-};
 
 export const load = async ({ url }: { url: URL }) => {
 	const param: string | null = url.searchParams.get('page');
@@ -51,7 +30,13 @@ export const load = async ({ url }: { url: URL }) => {
 				skip: (page - 1) * PER_PAGE,
 				take: CHUNK
 			});
-			const result = await getTags(articles);
+			const result = [];
+			for (let i = 0; i < articles.length; i++) {
+				const article = articles[i];
+				const tags = await getTags(article.id);
+				result.push({...article, tags: tags})
+				
+			}
 			const next = result.length > PER_PAGE ? page + 1 : null;
 			if (next) {
 				result.pop();
@@ -82,7 +67,13 @@ export const load = async ({ url }: { url: URL }) => {
 				},
 				take: CHUNK
 			});
-			const result = await getTags(articles);
+			const result = [];
+			for (let i = 0; i < articles.length; i++) {
+				const article = articles[i];
+				const tags = await getTags(article.id);
+				result.push({...article, tags: tags})
+				
+			}
 			const next = result.length > PER_PAGE ? 2 : null;
 			if (next) {
 				result.pop();

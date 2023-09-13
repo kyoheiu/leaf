@@ -23,7 +23,6 @@
 			toast.error(message);
 		} else {
 			tags = [...tags, newTag.toLowerCase()];
-			console.log(`Add tag ${newTag} to ${id}`);
 		}
 		newTag = '';
 		isOpen = false;
@@ -44,7 +43,6 @@
 		} else {
 			const updated = tags.filter((x) => x !== tag);
 			tags = updated;
-			console.log(`Delete tag ${newTag} from ${id}`);
 		}
 		newTag = '';
 		isOpen = false;

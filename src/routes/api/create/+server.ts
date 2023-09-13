@@ -2,9 +2,9 @@ import { Readability } from '@mozilla/readability';
 import puppeteer, { Browser } from 'puppeteer';
 import jsdom from 'jsdom';
 import type { RequestHandler } from '@sveltejs/kit';
-import { PrismaClient } from '@prisma/client';
 import { ulid } from 'ulid';
 import * as fs from 'node:fs/promises';
+import prisma from '$lib/server/client';
 
 const { JSDOM } = jsdom;
 
@@ -52,7 +52,6 @@ export const POST: RequestHandler = async (event) => {
 
 	const id = ulid();
 
-	const prisma = new PrismaClient({ log: ['query', 'info', 'error'] });
 	await prisma.articles.create({
 		data: {
 			id: id,

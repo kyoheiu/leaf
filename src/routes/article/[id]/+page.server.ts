@@ -1,13 +1,13 @@
+import prisma, { getTags } from '$lib/server/client';
 import type { PageServerLoad } from './$types';
-import { PrismaClient } from '@prisma/client';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const id = params.id;
 
-	const prisma = new PrismaClient({ log: ['query', 'info', 'error'] });
 	const article = await prisma.articles.findFirst({
 		where: { id: id },
 		select: {
+			id: true,
 			url: true,
 			title: true,
 			html: true,
@@ -19,17 +19,10 @@ export const load: PageServerLoad = async ({ params }) => {
 		}
 	});
 	if (article) {
-		const tags = await prisma.tags.findMany({
-			where: { ulid: id }
-		});
-		const tagResult: string[] = [];
-		for (let i = 0; i < tags.length; i++) {
-			const t = tags[i];
-			tagResult.push(t.tag);
-		}
+		const tags = await getTags(article.id)
 		const result = {
 			...article,
-			tags: tagResult
+			tags: tags
 		};
 		return { id: id, result: result };
 	} else {
