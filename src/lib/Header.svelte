@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { MagnifyingGlass, DotsThreeVertical } from 'phosphor-svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import Spinner from './Spinner.svelte';
@@ -12,21 +11,9 @@
 	export const MINI_LOGO_SIZE = 32;
 
 	let url = '';
-	let query = '';
 	let loading = false;
 	let searchOpen = false;
 	let showMenu = false;
-
-	const execSearch = async (e) => {
-		e.preventDefault();
-		if (query.trim().length === 0) {
-			return;
-		} else {
-			const q = query.split(/(\s+)/).filter((x) => x.trim().length > 0)[0];
-			searchOpen = false;
-			goto(`/search?q=${q}`);
-		}
-	};
 
 	const createNew = async (e): Promise<void | string> => {
 		loading = true;
@@ -91,11 +78,11 @@
 	{/if}
 </div>
 {#if searchOpen}
-	<form on:submit={(e) => execSearch(e)} class="mt-3 flex justify-end">
+	<form action="/search" class="mt-3 flex justify-end">
 		<input
 			id="search"
 			type="text"
-			bind:value={query}
+			name="q"
 			placeholder="search"
 			class="mb-2 w-3/5 rounded-md border border-slate-500 p-1 text-sm text-gray-900"
 		/>
