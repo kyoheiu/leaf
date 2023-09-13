@@ -12,7 +12,7 @@ export const load = async ({ url }: { url: URL }) => {
 	}
 	const idResult: string[] = [];
 
-	const path = `${DATA_PATH}/.index`;
+	const path = process.env.LEAF_INDEX ?? `./prisma/databases/.index`;
 
 	//ripgrep
 	const subprocessRg = child.spawnSync('rg', ['-i', '-l', q, path]);
