@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { SearchOutline, BarsOutline } from 'flowbite-svelte-icons';
+	import { MagnifyingGlass, DotsThreeVertical } from 'phosphor-svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 	import Spinner from './Spinner.svelte';
+
+	const ICON_SIZE = 24;
 
 	// h-10
 	export const LOGO_SIZE = 40;
@@ -51,7 +53,7 @@
 	<title>leaf</title>
 </svelte:head>
 <Toaster />
-<div class="mt-3 flex flex-nowrap items-center justify-between">
+<div class="mt-3 flex flex-nowrap items-text-top justify-between">
 	<a class="pr-1" href="/">
 		<img src="/logo.png" alt="leaf" height={MINI_LOGO_SIZE} width={MINI_LOGO_SIZE} />
 	</a>
@@ -70,25 +72,23 @@
 		</form>
 	{/if}
 	<button class="ml-auto" on:click={() => (searchOpen = !searchOpen)} title="search">
-		<SearchOutline size="sm" />
+		<MagnifyingGlass size={ICON_SIZE} />
 	</button>
-	<div class="relative">
-		<button on:click={() => (showMenu = !showMenu)} class="ml-3" title="menu">
-			<BarsOutline size="sm" />
-		</button>
-		{#if showMenu}
-			<div
-				class=" absolute right-0 top-8 flex w-32 flex-col items-end space-y-3 rounded border bg-slate-50 p-2 text-sm drop-shadow-2xl"
-			>
-				<a class="no-underline" href="/liked">Liked</a>
-				<a class="no-underline" href="/archived">Archived</a>
-				<a class="no-underline" href="/api/download"> Download JSON </a>
-				<a class="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">
-					Source code
-				</a>
-			</div>
-		{/if}
-	</div>
+	<button on:click={() => (showMenu = !showMenu)} class="ml-3 relative" title="menu">
+		<DotsThreeVertical size={ICON_SIZE} />
+	</button>
+	{#if showMenu}
+		<div
+			class=" absolute right-10 top-10 flex w-32 flex-col items-end space-y-3 rounded border bg-slate-50 p-2 text-sm drop-shadow-2xl"
+		>
+			<a class="no-underline" href="/liked">Liked</a>
+			<a class="no-underline" href="/archived">Archived</a>
+			<a class="no-underline" href="/api/download"> Download JSON </a>
+			<a class="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">
+				Source code
+			</a>
+		</div>
+	{/if}
 </div>
 {#if searchOpen}
 	<form on:submit={(e) => execSearch(e)} class="mt-3 flex justify-end">

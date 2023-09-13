@@ -1,7 +1,6 @@
 <script lang="ts">
 	import toast, { Toaster } from 'svelte-french-toast';
-	import { LinkSolid } from 'flowbite-svelte-icons';
-
+	import { LinkSimple } from 'phosphor-svelte';
 	export let url: string;
 
 	const copyToClipboard = async (url: string) => {
@@ -12,5 +11,5 @@
 
 <Toaster />
 <button class="px-2" on:click={() => copyToClipboard(url)} title="copy URL">
-	<LinkSolid size="xs" />
+	<LinkSimple size={18} />
 </button>

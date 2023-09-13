@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { CloseOutline, PlusOutline } from 'flowbite-svelte-icons';
+	import { Plus, X, TagSimple } from 'phosphor-svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
+
+	const ICON_SIZE = 16;
 
 	export let tags: string[];
 	export let id: string;
@@ -57,10 +59,10 @@
 				class="m-1 flex items-center rounded-full border border-gray-200 bg-gray-200 px-2 text-xs text-gray-900"
 			>
 				<a class="mr-2 px-2 text-xs no-underline" href={`/tags/${x}`}>
-					&nbsp;{x}
+					<TagSimple size={ICON_SIZE} class="inline" />&nbsp;{x}
 				</a>
 				<button on:click={() => deleteTag(x)}>
-					<CloseOutline />
+					<X size={ICON_SIZE} />
 				</button>
 			</div>
 		{/each}
@@ -70,7 +72,7 @@
 		on:click={() => (isOpen = !isOpen)}
 		title="add new tag"
 	>
-		<PlusOutline size="xs" class="inline" />
+		<Plus size={ICON_SIZE} class="inline" />
 	</button>
 </div>
 {#if isOpen}

@@ -1,14 +1,10 @@
 <script lang="ts">
 	import type { ArticleData } from '$lib/types';
 	import Tags from '$lib/Tags.svelte';
-	import {
-		HeartOutline,
-		HeartSolid,
-		ArchiveOutline,
-		ArchiveSolid,
-		TrashBinOutline
-	} from 'flowbite-svelte-icons';
+	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from '$lib/LinkButton.svelte';
+
+	const ICON_SIZE = 20;
 
 	export let article: ArticleData;
 	let isInvisible = false;
@@ -111,9 +107,9 @@
 				title="toggle liked"
 			>
 				{#if article.liked}
-					<HeartSolid size="xs" />
+					<Heart weight="fill" size={ICON_SIZE} />
 				{:else}
-					<HeartOutline size="xs" />
+					<Heart size={ICON_SIZE} />
 				{/if}
 			</button>
 			<button
@@ -122,9 +118,9 @@
 				title="toggle archived"
 			>
 				{#if article.archived}
-					<ArchiveSolid size="xs" />
+					<ArchiveBox weight="fill" size={ICON_SIZE} />
 				{:else}
-					<ArchiveOutline size="xs" />
+					<ArchiveBox size={ICON_SIZE} />
 				{/if}
 			</button>
 			<button
@@ -132,7 +128,7 @@
 				on:click={deleteArticleContent}
 				title="delete"
 			>
-				<TrashBinOutline size="xs" />
+				<Trash size={ICON_SIZE} />
 			</button>
 		</div>
 	</div>
