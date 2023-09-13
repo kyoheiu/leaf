@@ -1,0 +1,57 @@
+import * as child from 'node:child_process';
+import * as fs from 'node:fs';
+import prisma, { DATA_PATH, getTags } from '$lib/server/client';
+import type { ArticleData, ArticleDataWithTag } from '$lib/types';
+
+export const load = async ({ url }: { url: URL }) => {
+	const q: string | null = url.searchParams.get('q');
+	if (!q) {
+		return {
+			result: []
+		};
+	}
+	const idResult: string[] = [];
+
+	const path = `${DATA_PATH}/.index`;
+
+	//ripgrep
+	const subprocessRg = child.spawnSync('rg', ['-i', '-l', q, path]);
+	const splitRg: (string | null)[] = subprocessRg.stdout
+		.toString()
+		.split('\n')
+		.filter((x: string) => x.length > 0)
+		.map((x: string) => {
+			return x.split('/').at(-1) ?? null;
+		})
+		.filter((x) => x !== null);
+	splitRg.forEach((s) => {
+		if (s) {
+			idResult.push(s);
+		}
+	});
+
+	const articleResult: ArticleData[] = [];
+	for (let i = 0; i < idResult.length; i++) {
+		const id = idResult[i];
+		const article: ArticleData = await prisma.articles.findFirstOrThrow({
+			where: { id: id }
+		});
+		articleResult.push(article);
+	}
+	console.log(articleResult);
+
+	const result: ArticleDataWithTag[] = [];
+	for (let i = 0; i < articleResult.length; i++) {
+		const article = articleResult[i];
+		const tags = await getTags(article.id);
+		result.push({
+			...article,
+			tags: tags
+		});
+	}
+
+	return {
+		result: result,
+		query: q
+	};
+};
