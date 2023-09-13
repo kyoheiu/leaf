@@ -8,13 +8,14 @@ interface Req {
 
 export const POST: RequestHandler = async (event) => {
 	const req: Req = await event.request.json();
+	const tag = req.tag.trim().toLocaleLowerCase();
 	await prisma.tags.create({
 		data: {
 			ulid: req.id,
-			tag: req.tag
+			tag: tag
 		}
 	});
-	console.log(`Add tag ${req.tag} to ${req.id}`);
+	console.log(`Add tag ${tag} to ${req.id}`);
 	return new Response(null, {
 		status: 201
 	});
