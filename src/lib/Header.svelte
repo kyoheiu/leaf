@@ -80,6 +80,8 @@
 			<div
 				class=" absolute right-0 top-8 flex w-32 flex-col items-end space-y-3 rounded border bg-slate-50 p-2 text-sm drop-shadow-2xl"
 			>
+				<a class="no-underline" href="/liked">Liked</a>
+				<a class="no-underline" href="/archived">Archived</a>
 				<a class="no-underline" href="/api/download"> Download JSON </a>
 				<a class="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">
 					Source code
