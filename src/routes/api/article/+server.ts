@@ -1,5 +1,6 @@
-import prisma from '$lib/server/client';
+import prisma, { DATA_PATH } from '$lib/server/client';
 import type { RequestHandler } from '@sveltejs/kit';
+import * as fs from 'node:fs/promises';
 
 interface Req {
 	id: string;
@@ -35,6 +36,7 @@ export const POST: RequestHandler = async (event) => {
 			await prisma.articles.delete({
 				where: { id: req.id }
 			});
+			await fs.rm(`${DATA_PATH}.index/${req.id}`);
 		}
 		return new Response(null, {
 			status: 200
