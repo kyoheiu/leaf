@@ -7,7 +7,7 @@ export enum Category {
 }
 
 export interface Articles {
-	data: ArticleData[];
+	data: ArticleDataWithTag[];
 	is_last: boolean;
 }
 
@@ -28,12 +28,24 @@ export interface ArticleData {
 	archived: number;
 	liked: number;
 	timestamp: Date | null;
+}
+
+export interface ArticleDataWithTag {
+	id: string;
+	url: string;
+	title: string | null;
+	cover: string | null;
+	beginning: string | null;
+	progress: number | null;
+	archived: number;
+	liked: number;
+	timestamp: Date | null;
 	tags: string[];
 }
 
 export interface WrappedData {
 	visible: boolean;
-	data: ArticleData;
+	data: ArticleDataWithTag;
 }
 
 export interface ArticleContent {
