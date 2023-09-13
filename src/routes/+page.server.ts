@@ -1,4 +1,5 @@
 import prisma, { getTags } from '$lib/server/client';
+import type { ArticleData, ArticleDataWithTag } from '$lib/types';
 
 const CHUNK = 21;
 const PER_PAGE = 20;
@@ -46,27 +47,16 @@ export const load = async ({ url }: { url: URL }) => {
 		}
 	} else {
 		try {
-			const articles = await prisma.articles.findMany({
+			const articles: ArticleData[] = await prisma.articles.findMany({
 				where: {
 					archived: 0
-				},
-				select: {
-					id: true,
-					url: true,
-					title: true,
-					cover: true,
-					beginning: true,
-					progress: true,
-					liked: true,
-					archived: true,
-					timestamp: true
 				},
 				orderBy: {
 					id: 'desc'
 				},
 				take: CHUNK
 			});
-			const result = [];
+			const result: ArticleDataWithTag[] = [];
 			for (let i = 0; i < articles.length; i++) {
 				const article = articles[i];
 				const tags = await getTags(article.id);
