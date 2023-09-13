@@ -19,7 +19,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		}
 	});
 	if (article) {
-		const tags = await getTags(article.id)
+		const tags = await getTags(article.id);
 		const result = {
 			...article,
 			tags: tags

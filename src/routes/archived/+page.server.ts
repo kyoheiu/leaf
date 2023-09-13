@@ -1,4 +1,4 @@
-import prisma, { getTags } from "$lib/server/client";
+import prisma, { getTags } from '$lib/server/client';
 
 const CHUNK = 21;
 const PER_PAGE = 20;
@@ -34,8 +34,7 @@ export const load = async ({ url }: { url: URL }) => {
 			for (let i = 0; i < articles.length; i++) {
 				const article = articles[i];
 				const tags = await getTags(article.id);
-				result.push({...article, tags: tags})
-				
+				result.push({ ...article, tags: tags });
 			}
 			const next = result.length > PER_PAGE ? page + 1 : null;
 			if (next) {
@@ -71,8 +70,7 @@ export const load = async ({ url }: { url: URL }) => {
 			for (let i = 0; i < articles.length; i++) {
 				const article = articles[i];
 				const tags = await getTags(article.id);
-				result.push({...article, tags: tags})
-				
+				result.push({ ...article, tags: tags });
 			}
 			const next = result.length > PER_PAGE ? 2 : null;
 			if (next) {
