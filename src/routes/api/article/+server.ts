@@ -1,4 +1,5 @@
-import prisma, { DATA_PATH } from '$lib/server/client';
+import prisma from '$lib/server/client';
+import { Action } from '$lib/types';
 import type { RequestHandler } from '@sveltejs/kit';
 import * as fs from 'node:fs/promises';
 
@@ -6,12 +7,8 @@ interface Req {
 	id: string;
 	action: Action;
 	current: number | null;
-}
-
-enum Action {
-	ToggleLiked,
-	ToggleArchived,
-	Delete
+	pos: number | null;
+	prog: number | null;
 }
 
 export const POST: RequestHandler = async (event) => {
@@ -32,11 +29,19 @@ export const POST: RequestHandler = async (event) => {
 					archived: 1 - req.current!
 				}
 			});
+		} else if (req.action === Action.UpdatePosition) {
+			await prisma.articles.update({
+				where: { id: req.id },
+				data: {
+					position: req.pos as number,
+					progress: req.prog as number
+				}
+			});
 		} else {
 			await prisma.articles.delete({
 				where: { id: req.id }
 			});
-			await fs.rm(`${DATA_PATH}.index/${req.id}`);
+			await fs.rm(`${process.env.LEAF_INDEX ?? './prisma/databases/'}.index/${req.id}`);
 		}
 		return new Response(null, {
 			status: 200

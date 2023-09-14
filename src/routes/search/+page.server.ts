@@ -1,6 +1,5 @@
 import * as child from 'node:child_process';
-import * as fs from 'node:fs';
-import prisma, { DATA_PATH, getTags } from '$lib/server/client';
+import prisma, { getTags } from '$lib/server/client';
 import type { ArticleData, ArticleDataWithTag } from '$lib/types';
 
 export const load = async ({ url }: { url: URL }) => {
@@ -38,7 +37,6 @@ export const load = async ({ url }: { url: URL }) => {
 		});
 		articleResult.push(article);
 	}
-	console.log(articleResult);
 
 	const result: ArticleDataWithTag[] = [];
 	for (let i = 0; i < articleResult.length; i++) {

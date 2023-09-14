@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { ArticleData } from '$lib/types';
+	import { Action, type ArticleData, type ArticleDataWithTag } from '$lib/types';
 	import Tags from '$lib/Tags.svelte';
 	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from '$lib/LinkButton.svelte';
 
 	const ICON_SIZE = 20;
 
-	export let article: ArticleData;
+	export let article: ArticleDataWithTag;
 	let isInvisible = false;
 
 	const trimUrl = (url: string) => {
@@ -19,7 +19,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: article.id, action: 0, current: article.liked })
+			body: JSON.stringify({ id: article.id, action: Action.ToggleLiked, current: article.liked })
 		});
 		if (!res.ok) {
 			console.error(await res.text());
@@ -34,7 +34,11 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: article.id, action: 1, current: article.archived })
+			body: JSON.stringify({
+				id: article.id,
+				action: Action.ToggleArchived,
+				current: article.archived
+			})
 		});
 		if (!res.ok) {
 			console.error(await res.text());
@@ -50,7 +54,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: article.id, action: 2 })
+			body: JSON.stringify({ id: article.id, action: Action.Delete })
 		});
 		if (!res.ok) {
 			console.error(await res.text());

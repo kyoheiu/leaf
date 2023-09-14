@@ -12,6 +12,7 @@
 </svelte:head>
 <Header />
 <main class="bg-itembackground flex min-h-screen flex-col items-center">
+	/Liked
 	{#if data.result}
 		{#each data.result as item}
 			<ArticleCard article={item} />
