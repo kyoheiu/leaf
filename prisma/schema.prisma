@@ -14,8 +14,8 @@ model Articles {
   html      String?
   cover     String?
   beginning String?
-  position  Int?      @default(0)
-  progress  Int?      @default(0)
+  position  Int       @default(0)
+  progress  Int       @default(0)
   archived  Int       @default(0)
   liked     Int       @default(0)
   timestamp DateTime
