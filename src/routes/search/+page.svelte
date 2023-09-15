@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ArticleCard from '$lib/ArticleCard.svelte';
+	import Breadcrumb from '$lib/Breadcrumb.svelte';
 	import Header from '$lib/Header.svelte';
 	import type { PageData } from './$types';
 
@@ -11,7 +12,7 @@
 </svelte:head>
 <Header />
 <main class="bg-itembackground flex min-h-screen flex-col items-center">
-	q: {data.query}
+	<Breadcrumb page={`query: ${data.query}`} />
 	{#if data.result}
 		{#each data.result as item}
 			<ArticleCard article={item} />
