@@ -37,7 +37,7 @@
 	<title>leaf</title>
 </svelte:head>
 <Toaster />
-<div class="mt-3 flex flex-nowrap items-text-top justify-between">
+<div class="mt-3 flex flex-nowrap items-center justify-between">
 	<a class="pr-1" href="/">
 		<div class="w-7 h-7">
 			<img src="/logo.png" alt="leaf" width="auto" height="auto" />
