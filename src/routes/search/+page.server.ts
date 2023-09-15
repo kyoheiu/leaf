@@ -11,8 +11,11 @@ export const load = async ({ url }: { url: URL }) => {
 	}
 	const idResult: string[] = [];
 
-	const path = process.env.LEAF_INDEX ?? `./prisma/databases/.index`;
+	const path = process.env.LEAF_DATA
+		? `${process.env.LEAF_DATA}/.index`.slice(5)
+		: `./prisma/databases/.index`;
 
+	console.log(path);
 	//ripgrep
 	const subprocessRg = child.spawnSync('rg', ['-i', '-l', q, path]);
 	const splitRg: (string | null)[] = subprocessRg.stdout

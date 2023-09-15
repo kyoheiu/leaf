@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = env("LEAF_DATABASE")
+  url = "file:./databases/.sqlite"
 }
 
 generator client {

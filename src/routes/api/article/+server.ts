@@ -127,7 +127,7 @@ export const POST: RequestHandler = async (event) => {
 			await prisma.articles.delete({
 				where: { id: req.id }
 			});
-			await fs.rm(`${process.env.LEAF_INDEX ?? './prisma/databases/'}.index/${req.id}`);
+			await fs.rm(`${process.env.LEAF_DATA ?? './prisma/databases/'}.index/${req.id}`);
 		}
 		return new Response(null, {
 			status: 200

@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"dev": "LEAF_DATABASE=file:./databases/.sqlite LEAF_API_TOKEN=test vite dev",
+		"dev": "LEAF_API_TOKEN=test vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
