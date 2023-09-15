@@ -50,7 +50,6 @@ export const POST: RequestHandler = async (event) => {
 				await browser.close();
 			}
 			await browser.close();
-			console.log(crawled);
 
 			const dom = new JSDOM(crawled, { url: url });
 			const document = dom.window.document;
@@ -92,7 +91,7 @@ export const POST: RequestHandler = async (event) => {
 			});
 		}
 		if (req.action === Action.ToggleLiked) {
-			if (!req.current) {
+			if (req.current === null) {
 				return new Response(null, {
 					status: 400
 				});
@@ -103,8 +102,9 @@ export const POST: RequestHandler = async (event) => {
 					liked: 1 - req.current
 				}
 			});
+			console.log(`Toggle liked: ${req.id}`);
 		} else if (req.action === Action.ToggleArchived) {
-			if (!req.current) {
+			if (req.current === null) {
 				return new Response(null, {
 					status: 400
 				});
@@ -115,6 +115,7 @@ export const POST: RequestHandler = async (event) => {
 					archived: 1 - req.current
 				}
 			});
+			console.log(`Toggle archived: ${req.id}`);
 		} else if (req.action === Action.UpdatePosition) {
 			await prisma.articles.update({
 				where: { id: req.id },
@@ -123,11 +124,18 @@ export const POST: RequestHandler = async (event) => {
 					progress: req.prog as number
 				}
 			});
-		} else {
+		} else if (req.action === Action.Delete) {
+			//Remove from articles table
 			await prisma.articles.delete({
 				where: { id: req.id }
 			});
+			//Remove from tags table
+			await prisma.tags.deleteMany({
+				where: { ulid: req.id }
+			});
+			//Remove from search index
 			await fs.rm(`${process.env.LEAF_DATA ?? './prisma/databases/'}.index/${req.id}`);
+			console.log(`Delete article ${req.id}`);
 		}
 		return new Response(null, {
 			status: 200
