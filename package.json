@@ -39,6 +39,7 @@
 		"@mozilla/readability": "^0.4.4",
 		"@prisma/client": "^5.2.0",
 		"jsdom": "^22.1.0",
+		"moment": "^2.29.4",
 		"puppeteer": "^21.1.1",
 		"svelte-french-toast": "^1.2.0",
 		"ulid": "^2.3.0"
