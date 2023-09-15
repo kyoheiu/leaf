@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
+/* eslint @typescript-eslint/no-var-requires: "off" */
 const colors = require('tailwindcss/colors');
 
 export default {

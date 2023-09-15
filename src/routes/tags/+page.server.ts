@@ -1,6 +1,4 @@
-import * as child from 'node:child_process';
-import prisma, { getTags } from '$lib/server/client';
-import type { ArticleDataWithTag } from '$lib/types';
+import prisma from '$lib/server/client';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async () => {

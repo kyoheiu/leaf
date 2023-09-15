@@ -11,7 +11,7 @@
 	let newTag = '';
 	let isOpen = false;
 
-	const submitTag = async (e: any) => {
+	const submitTag = async (e: Event) => {
 		e.preventDefault();
 		const res = await fetch(`/api/tag`, {
 			method: 'POST',

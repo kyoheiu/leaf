@@ -1,4 +1,3 @@
-import * as child from 'node:child_process';
 import prisma, { getTags } from '$lib/server/client';
 import type { ArticleDataWithTag } from '$lib/types';
 import type { PageServerLoad } from './$types';

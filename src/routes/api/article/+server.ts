@@ -92,17 +92,27 @@ export const POST: RequestHandler = async (event) => {
 			});
 		}
 		if (req.action === Action.ToggleLiked) {
+			if (!req.current) {
+				return new Response(null, {
+					status: 400
+				});
+			}
 			await prisma.articles.update({
 				where: { id: req.id },
 				data: {
-					liked: 1 - req.current!
+					liked: 1 - req.current
 				}
 			});
 		} else if (req.action === Action.ToggleArchived) {
+			if (!req.current) {
+				return new Response(null, {
+					status: 400
+				});
+			}
 			await prisma.articles.update({
 				where: { id: req.id },
 				data: {
-					archived: 1 - req.current!
+					archived: 1 - req.current
 				}
 			});
 		} else if (req.action === Action.UpdatePosition) {
