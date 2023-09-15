@@ -1,26 +1,26 @@
 const addNewOne = (url) => {
-	const gettingItem = browser.storage.local.get(["leafBase", "leafToken"]);
+	const gettingItem = browser.storage.local.get(['leafBase', 'leafToken']);
 	gettingItem.then((res) => {
 		const target = `${res.leafBase}/api/create`;
 		console.debug(`Add new article: ${url}`);
 
 		fetch(target, {
-			method: "POST",
+			method: 'POST',
 			headers: {
-				"Content-Type": "application/json",
-				Authorization: res.leafToken,
+				'Content-Type': 'application/json',
+				Authorization: res.leafToken
 			},
-			body: JSON.stringify({ url: url }),
+			body: JSON.stringify({ url: url })
 		}).then((res) => {
 			browser.notifications
-				.create("leafResult", {
-					type: "basic",
-					title: "leaf",
-					message: `Result: ${res.statusText}`,
+				.create('leafResult', {
+					type: 'basic',
+					title: 'leaf',
+					message: `Result: ${res.statusText}`
 				})
 				.then((r) => {
 					setTimeout(() => {
-						browser.notifications.clear("leafResult");
+						browser.notifications.clear('leafResult');
 					}, 3000);
 				});
 		});
@@ -30,17 +30,17 @@ const addNewOne = (url) => {
 browser.browserAction.onClicked.addListener((tab) => addNewOne(tab.url));
 
 browser.contextMenus.create({
-  id: "leaf",
-  title: "Save this page to leaf",
-  contexts: ["all"],
+	id: 'leaf',
+	title: 'Save this page to leaf',
+	contexts: ['all']
 });
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-	if (info.menuItemId == "leaf") {
+	if (info.menuItemId == 'leaf') {
 		if (info.linkUrl) {
 			addNewOne(info.linkUrl);
 		} else {
 			addNewOne(tab.url);
 		}
 	}
-  });
+});
