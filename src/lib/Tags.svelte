@@ -74,7 +74,7 @@
 		title="add new tag"
 	>
 		{#if tags.length === 0}
-			Add tag
+			<TagSimple size={ICON_SIZE} class="inline" />&nbsp;+
 		{:else}
 			<Plus size={ICON_SIZE} />
 		{/if}
