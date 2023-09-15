@@ -1,5 +1,0 @@
-Dockerfile
-.dockerignore
-.gitignore
-/target
-/databases
