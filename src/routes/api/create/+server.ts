@@ -23,6 +23,12 @@ interface Req {
 export const POST: RequestHandler = async (event) => {
 	const req: Req = await event.request.json();
 	const url = req.url;
+	const header = event.request.headers.get('Authorization');
+	if (header !== process.env.LEAF_API_TOKEN) {
+		return new Response('Unauthorized request.', {
+			status: 401
+		});
+	}
 
 	const browser = await puppeteer.launch({
 		executablePath: 'chromium',
