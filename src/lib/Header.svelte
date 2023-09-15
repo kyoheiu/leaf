@@ -72,6 +72,7 @@
 		>
 			<a class="no-underline" href="/liked">Liked</a>
 			<a class="no-underline" href="/archived">Archived</a>
+			<a class="no-underline" href="/tags">Tags</a>
 			<a class="no-underline" href="/api/download" download> Download JSON </a>
 			<a class="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">
 				Source code
