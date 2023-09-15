@@ -44,7 +44,6 @@ export const POST: RequestHandler = async (event) => {
 		await browser.close();
 	}
 	await browser.close();
-	console.log(crawled);
 
 	const dom = new JSDOM(crawled, { url: url });
 	const document = dom.window.document;

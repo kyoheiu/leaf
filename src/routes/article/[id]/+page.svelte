@@ -49,7 +49,6 @@
 
 	const restoreScrollPos = () => {
 		if (data.result?.position) {
-			console.log(data.result.position);
 			const scroll = Math.round(
 				(document.documentElement.scrollHeight * data.result.position) / 100
 			);

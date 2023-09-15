@@ -7,7 +7,6 @@ export const load: PageServerLoad = async ({ params }) => {
 	const idResult = await prisma.tags.findMany({
 		where: { tag: tagName }
 	});
-	console.log(idResult);
 
 	const articleResult = [];
 	for (let i = 0; i < idResult.length; i++) {
