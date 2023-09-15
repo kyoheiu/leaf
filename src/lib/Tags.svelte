@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Plus, X, TagSimple } from 'phosphor-svelte';
-	import toast, { Toaster } from 'svelte-french-toast';
+	import { Toaster } from 'svelte-french-toast';
+	import { toastError } from './toast';
 
 	const ICON_SIZE = 16;
 
@@ -22,7 +23,7 @@
 		if (!res.ok) {
 			const message = await res.text();
 			console.error(message);
-			toast.error(message);
+			toastError(message);
 		} else {
 			tags = [...tags, newTag.toLowerCase()];
 		}
@@ -41,7 +42,7 @@
 		if (!res.ok) {
 			const message = await res.text();
 			console.error(message);
-			toast.error(message);
+			toastError(message);
 		} else {
 			const updated = tags.filter((x) => x !== tag);
 			tags = updated;
@@ -52,13 +53,13 @@
 </script>
 
 <Toaster />
-<div class="flex flex-wrap items-center">
+<div class="flex flex-wrap items-top">
 	{#if tags && tags.length !== 0}
 		{#each tags as x}
 			<div
-				class="m-1 flex items-center rounded-full border border-gray-200 bg-gray-200 px-2 text-xs text-gray-900"
+				class="h-6 mr-2 mb-1 flex items-center rounded-full border border-bordercolor px-2 text-xs"
 			>
-				<a class="mr-2 px-2 text-xs no-underline" href={`/tags/${x}`}>
+				<a class="mr-2 text-xs no-underline" href={`/tags/${x}`}>
 					<TagSimple size={ICON_SIZE} class="inline" />&nbsp;{x}
 				</a>
 				<button on:click={() => deleteTag(x)}>
@@ -68,11 +69,15 @@
 		{/each}
 	{/if}
 	<button
-		class="rounded-full border px-2 text-xs"
+		class="h-6 rounded-full border border-bordercolor px-2 text-xs"
 		on:click={() => (isOpen = !isOpen)}
 		title="add new tag"
 	>
-		<Plus size={ICON_SIZE} class="inline" />
+		{#if tags.length === 0}
+			Add tag
+		{:else}
+			<Plus size={ICON_SIZE} />
+		{/if}
 	</button>
 </div>
 {#if isOpen}
@@ -80,7 +85,7 @@
 		<input
 			bind:value={newTag}
 			placeholder="Add new tag"
-			class="w-3/4 rounded-md p-1 text-sm text-gray-900"
+			class="w-3/4 rounded-full py-1 px-3 text-sm border border-bordercolor"
 		/>
 	</form>
 {/if}

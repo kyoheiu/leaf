@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Action, type ArticleData, type ArticleDataWithTag } from '$lib/types';
+	import { Action, type ArticleDataWithTag } from '$lib/types';
 	import Tags from '$lib/Tags.svelte';
 	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from '$lib/LinkButton.svelte';
@@ -106,18 +106,18 @@
 			</div>
 			<button
 				id={`like-button-${article.id}`}
-				class="mx-1 rounded-full border px-2 text-sm"
+				class="mx-1 rounded-full border border-bordercolor px-2 text-sm"
 				on:click={toggleLiked}
 				title="toggle liked"
 			>
 				{#if article.liked}
-					<Heart weight="fill" size={ICON_SIZE} />
+					<Heart weight="fill" class="text-heart" size={ICON_SIZE} />
 				{:else}
 					<Heart size={ICON_SIZE} />
 				{/if}
 			</button>
 			<button
-				class="mx-1 rounded-full border px-2 text-sm"
+				class="mx-1 rounded-full border border-bordercolor px-2 text-sm"
 				on:click={toggleArchived}
 				title="toggle archived"
 			>
@@ -128,7 +128,7 @@
 				{/if}
 			</button>
 			<button
-				class="ml-1 rounded-full border px-2 text-sm"
+				class="ml-1 rounded-full border border-bordercolor px-2 text-sm"
 				on:click={deleteArticleContent}
 				title="delete"
 			>

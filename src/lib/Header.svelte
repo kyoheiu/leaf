@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { MagnifyingGlass, DotsThreeVertical } from 'phosphor-svelte';
-	import toast, { Toaster } from 'svelte-french-toast';
+	import { Toaster } from 'svelte-french-toast';
 	import Spinner from './Spinner.svelte';
+	import { Action } from './types';
+	import { toastError } from './toast';
 
 	const ICON_SIZE = 24;
 
@@ -15,20 +17,20 @@
 	let searchOpen = false;
 	let showMenu = false;
 
-	const createNew = async (e): Promise<void | string> => {
+	const createNew = async (e: Event): Promise<void | string> => {
 		loading = true;
 		e.preventDefault();
-		const res = await fetch('/api/create', {
+		const res = await fetch('/api/article', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ url: url })
+			body: JSON.stringify({ id: '', action: Action.Create, url: url })
 		});
 		url = '';
 		if (!res.ok) {
 			const message = await res.text();
-			toast.error(`Error: ${message}`);
+			toastError(`Error: ${message}`);
 			loading = false;
 		} else {
 			window.location.reload();
@@ -50,7 +52,7 @@
 	{:else}
 		<form on:submit={createNew}>
 			<input
-				class="w-5/6 flex-auto rounded-md border border-slate-500 p-1 text-sm text-gray-900"
+				class="w-5/6 flex-auto rounded-full border border-bordercolor py-1 px-3 text-sm"
 				id={'add_new'}
 				type="url"
 				bind:value={url}
@@ -70,7 +72,7 @@
 		>
 			<a class="no-underline" href="/liked">Liked</a>
 			<a class="no-underline" href="/archived">Archived</a>
-			<a class="no-underline" href="/api/download"> Download JSON </a>
+			<a class="no-underline" href="/api/download" download> Download JSON </a>
 			<a class="no-underline" href="https://github.com/kyoheiu/leaf" target="_blank">
 				Source code
 			</a>
@@ -84,7 +86,7 @@
 			type="text"
 			name="q"
 			placeholder="search"
-			class="mb-2 w-3/5 rounded-md border border-slate-500 p-1 text-sm text-gray-900"
+			class="mb-2 w-3/5 rounded-full border border-bordercolor py-1 px-3 text-sm"
 		/>
 	</form>
 {/if}
