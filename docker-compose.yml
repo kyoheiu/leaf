@@ -1,0 +1,10 @@
+version: '3'
+services:
+  leaf:
+    image: docker.io/kyoheiudev/leaf:0.8.0
+    container_name: leaf
+    volumes:
+      - ./server/databases:/var/leaf/databases
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 5173:5173
