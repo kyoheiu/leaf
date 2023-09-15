@@ -67,7 +67,7 @@
 {#if isInvisible}
 	<span />
 {:else}
-	<div class="mt-4 mb-4">
+	<div class="mt-4 mb-4 first:mt-8 last:mb-8">
 		<div class="py-1 text-sm text-slate-500">
 			{article.timestamp?.toLocaleString()}
 		</div>
