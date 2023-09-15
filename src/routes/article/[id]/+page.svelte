@@ -1,8 +1,12 @@
 <script lang="ts">
 	import Tags from '$lib/Tags.svelte';
 	import { Action } from '$lib/types';
-	import { onMount, tick } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
+	import { House } from 'phosphor-svelte';
+	import Buttons from '$lib/Buttons.svelte';
+
+	const ICON_SIZE = 24;
 
 	export let data: PageData;
 
@@ -62,22 +66,41 @@
 
 <svelte:window on:scroll={saveScrollPos} />
 {#if data.result}
-	<div class="sticky top-0 my-3 flex h-8 items-center border-b bg-slate-50">
-		<a href="/"> Home </a>
-		<div class="ml-auto">buttons</div>
+	<div class="sticky top-0 my-3 flex h-8 items-center bg-slate-50">
+		<a href="/"><House size={ICON_SIZE} /></a>
+		<div class="ml-auto">
+			<Buttons
+				id={data.result.id}
+				url={data.result.url}
+				bind:liked={data.result.liked}
+				bind:archived={data.result.archived}
+			/>
+		</div>
 	</div>
-	<div class="m-auto w-3/4 text-center text-lg font-semibold leading-6">
+	<div class="m-auto mt-6 w-3/4 text-center font-serif text-3xl font-semibold leading-9">
 		{data.result.title}
 	</div>
-	<div class="mx-3 mb-6 mt-3 line-clamp-1 text-center text-sm text-gray-400">
+	<div class="mx-3 mb-6 mt-3 line-clamp-1 text-center text-sm">
 		<a href={data.result.url}>{data.result.url}</a>
 	</div>
-	<div class="mb-6">
+	<div
+		class="prose
+				prose-slate
+				prose-h1:border-b
+				prose-h2:border-b
+				prose-h1:border-bordercolor
+				prose-h2:border-bordercolor
+				prose-table:table-fixed
+				prose-a:text-sky-700
+	            mb-6"
+	>
 		<!-- eslint-disable -->
 		{@html data.result.html}
 	</div>
-	footer
-	<div class="mx-3 mb-6">
+	<div class="flex justify-center">
+		<img src="/logo.png" width={36} alt="logo" />
+	</div>
+	<div class="my-6">
 		<Tags tags={data.result.tags} id={data.id} />
 	</div>
 {:else}

@@ -3,57 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-	a {
-		@apply underline;
-	}
-	p {
-		@apply my-3;
-	}
-	img,
-	video {
-		@apply m-auto table h-auto max-w-full;
-	}
-	h1 {
-		@apply mb-3 mt-6 border-b text-2xl font-bold;
-	}
-	h2 {
-		@apply mb-3 mt-6 border-b text-xl font-bold;
-	}
-	h3 {
-		@apply border-l-4 pl-2 border-slate-500  mb-3  mt-6 text-lg font-bold;
-	}
-	h4 {
-		@apply border-l-4  pl-2 mb-3 mt-6 font-bold;
-	}
-	h5 {
-		@apply border-l-4  pl-2 mb-3 mt-6 font-bold;
-	}
-	h6 {
-		@apply border-l-4  pl-2 mb-3 mt-6 font-bold;
-	}
 	:not(pre) > code {
-		@apply rounded-md bg-slate-200 px-1 font-mono text-sm;
-	}
-	pre {
-		@apply rounded m-2 overflow-x-scroll border border-slate-400 bg-slate-100 p-3;
-	}
-	pre > code {
-		@apply font-mono;
-	}
-	blockquote {
-		@apply m-2 border-l-2 border-slate-500 pl-2 italic;
-	}
-	ul {
-		@apply mx-4 list-inside list-disc space-y-1;
-	}
-	ol {
-		@apply mx-4 list-inside list-decimal space-y-1;
-	}
-	table {
-		@apply w-full table-fixed text-left mb-3;
-	}
-	table th,
-	td {
-		@apply p-2 border-b;
+		@apply rounded-md bg-slate-200 px-1;
 	}
 }
