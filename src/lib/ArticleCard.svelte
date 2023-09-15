@@ -3,6 +3,7 @@
 	import Tags from '$lib/Tags.svelte';
 	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from '$lib/LinkButton.svelte';
+	import moment from 'moment';
 
 	const ICON_SIZE = 20;
 
@@ -68,9 +69,11 @@
 	<span />
 {:else}
 	<div class="mt-4 mb-4 first:mt-8 last:mb-8">
-		<div class="py-1 text-sm text-slate-500">
-			{article.timestamp?.toLocaleString()}
-		</div>
+		{#if article.timestamp}
+			<div class="py-1 text-sm text-slate-500">
+				{moment(article.timestamp).format('lll')}
+			</div>
+		{/if}
 		<div class="line-clamp-3 text-lg font-semibold leading-6">
 			<a href={`/article/${article.id}`} class="no-underline">
 				{article.title}
@@ -83,16 +86,16 @@
 			&nbsp;
 			<LinkButton url={article.url} />
 		</div>
-		<div class="mx-auto mb-2 mt-1 grid grid-cols-10 gap-3">
-			{#if article.cover !== ''}
-				<div class="col-span-7 line-clamp-4 text-sm">
+		<div class="mx-auto mb-2 mt-1 grid grid-cols-10 gap-4 h-16">
+			{#if article.cover}
+				<div class="col-span-7 line-clamp-3 text-sm">
 					{article.beginning}
 				</div>
 				<div class="col-span-3">
 					<img loading="lazy" class="h-16 object-contain" alt="cover" src={article.cover} />
 				</div>
 			{:else}
-				<div class="col-span-10 text-sm">{article.beginning}</div>
+				<div class="col-span-10 line-clamp-3 text-sm">{article.beginning}</div>
 			{/if}
 		</div>
 		<div>
