@@ -1,6 +1,6 @@
 import * as child from 'node:child_process';
 import prisma, { getTags } from '$lib/server/client';
-import type { ArticleData, ArticleDataWithTag } from '$lib/types';
+import type { ArticleDataWithTag } from '$lib/types';
 
 export const load = async ({ url }: { url: URL }) => {
 	const q: string | null = url.searchParams.get('q');
@@ -32,7 +32,7 @@ export const load = async ({ url }: { url: URL }) => {
 	const articleResult = [];
 	for (let i = 0; i < idResult.length; i++) {
 		const id = idResult[i];
-		const article = await prisma.articles.findFirstOrThrow({
+		const article = await prisma.articles.findFirst({
 			where: { id: id },
 			select: {
 				id: true,
@@ -49,7 +49,9 @@ export const load = async ({ url }: { url: URL }) => {
 				id: 'desc'
 			}
 		});
-		articleResult.push(article);
+		if (article) {
+			articleResult.push(article);
+		}
 	}
 
 	const result: ArticleDataWithTag[] = [];
