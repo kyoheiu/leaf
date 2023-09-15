@@ -53,7 +53,7 @@
 				id={'add_new'}
 				type="url"
 				bind:value={url}
-				placeholder="+"
+				placeholder="Add new URL"
 			/>
 		</form>
 	{/if}
