@@ -59,7 +59,7 @@
 			<div
 				class="h-6 mr-2 mb-1 flex items-center rounded-full border border-bordercolor px-2 text-xs"
 			>
-				<a class="mr-2 text-xs no-underline" href={`/tags/${x}`}>
+				<a class="mr-2 text-xs no-underline" href={`/tag/${x}`}>
 					<TagSimple size={ICON_SIZE} class="inline" />&nbsp;{x}
 				</a>
 				<button on:click={() => deleteTag(x)}>
