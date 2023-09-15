@@ -37,6 +37,7 @@ export interface ArticleContent {
 	tags: string[];
 }
 export enum Action {
+	Create,
 	ToggleLiked,
 	ToggleArchived,
 	UpdatePosition,
