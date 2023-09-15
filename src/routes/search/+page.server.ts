@@ -29,11 +29,25 @@ export const load = async ({ url }: { url: URL }) => {
 		}
 	});
 
-	const articleResult: ArticleData[] = [];
+	const articleResult = [];
 	for (let i = 0; i < idResult.length; i++) {
 		const id = idResult[i];
-		const article: ArticleData = await prisma.articles.findFirstOrThrow({
-			where: { id: id }
+		const article = await prisma.articles.findFirstOrThrow({
+			where: { id: id },
+			select: {
+				id: true,
+				url: true,
+				title: true,
+				cover: true,
+				beginning: true,
+				progress: true,
+				liked: true,
+				archived: true,
+				timestamp: true
+			},
+			orderBy: {
+				id: 'desc'
+			}
 		});
 		articleResult.push(article);
 	}
