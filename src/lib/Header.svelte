@@ -7,11 +7,6 @@
 
 	const ICON_SIZE = 24;
 
-	// h-10
-	export const LOGO_SIZE = 40;
-	// h-8
-	export const MINI_LOGO_SIZE = 32;
-
 	let url = '';
 	let loading = false;
 	let searchOpen = false;
@@ -44,7 +39,9 @@
 <Toaster />
 <div class="mt-3 flex flex-nowrap items-text-top justify-between">
 	<a class="pr-1" href="/">
-		<img src="/logo.png" alt="leaf" height={MINI_LOGO_SIZE} width={MINI_LOGO_SIZE} />
+		<div class="w-7 h-7">
+			<img src="/logo.png" alt="leaf" width="auto" height="auto" />
+		</div>
 	</a>
 	&nbsp;
 	{#if loading}
