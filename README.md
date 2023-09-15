@@ -67,7 +67,6 @@ By default this app is not protected by any means so that you can use your own a
 ## API
 
 Via the client API you can add a new article:
->>>>>>> rewrite
 
 ```http
 POST /api/create
