@@ -12,7 +12,7 @@ export const load = async ({ url }: { url: URL }) => {
 	const idResult: string[] = [];
 
 	const path = process.env.LEAF_DATA
-		? `${process.env.LEAF_DATA}/.index`.slice(5)
+		? `${process.env.LEAF_DATA}/.index`
 		: `./prisma/databases/.index`;
 
 	//ripgrep
