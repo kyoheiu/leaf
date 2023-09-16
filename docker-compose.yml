@@ -4,10 +4,10 @@ services:
     image: docker.io/kyoheiudev/leaf:0.9.0
     container_name: leaf
     environment:
-      - LEAF_DATA: /leaf/databases
-      - LEAF_API_TOKEN: STRING_USED_WHEN_ADDDING_NEW_ARTICLE_VIA_API
+      - LEAF_DATA=/leaf/databases
+      - LEAF_API_TOKEN=STRING_USED_WHEN_ADDING_NEW_ARTICLE_VIA_API
     volumes:
       - /path/to/databases:/leaf/databases
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - 5173:5173
+      - 3000:3000
