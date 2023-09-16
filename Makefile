@@ -2,7 +2,7 @@ fmt:
 	npm run format && npm run lint
 
 build:
-	cd client && npm install --package-lock-only 
+	npm install --package-lock-only 
 	sudo docker build --tag=kyoheiudev/leaf:$(VER) .
 
 push:
