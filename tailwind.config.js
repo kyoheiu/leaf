@@ -30,6 +30,9 @@ export default {
 						}
 					}
 				}
+			},
+			spacing: {
+				144: '36rem'
 			}
 		}
 	},
