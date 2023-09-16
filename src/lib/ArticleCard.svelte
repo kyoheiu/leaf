@@ -68,7 +68,7 @@
 {#if isInvisible}
 	<span />
 {:else}
-	<div class="mt-4 mb-4 first:mt-8 last:mb-8">
+	<div class="w-64 sm:w-96 md:w-144 mt-4 mb-4 first:mt-8 last:mb-8">
 		{#if article.timestamp}
 			<div class="py-1 text-sm text-slate-500">
 				{moment(article.timestamp).format('lll')}
@@ -91,7 +91,7 @@
 				<div class="col-span-7 line-clamp-3 text-sm">
 					{article.beginning}
 				</div>
-				<div class="col-span-3">
+				<div class="col-span-3 flex justify-center">
 					<img loading="lazy" class="h-16 object-contain" alt="cover" src={article.cover} />
 				</div>
 			{:else}
