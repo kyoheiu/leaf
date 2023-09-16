@@ -77,7 +77,9 @@ Authorization: LEAF_API_TOKEN
 
 ### dev-prerequisites
 
-- nodejs (front end)
+- nodejs
+- npm
+- chromium
 
 ```
 npm install
