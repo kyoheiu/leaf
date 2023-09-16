@@ -2,12 +2,6 @@
 
 Self-hostable "read-it-later" Web app.
 
-<hr />
-
-![screenshot](images/screenshot.png)
-
-<hr />
-
 ## What is this exactly
 
 - Save a web page by URL and read its content later.
@@ -27,6 +21,7 @@ Self-hostable "read-it-later" Web app.
 
 - Rewrite in SvelteKit, omit the server-side container.
 - If you use v0.8.0 or before, an manual intervention is required.
+  - `cat migrate_table.sql | sqlite3 /path/to/.sqlite` would uppate the database.
 
 ### v0.8.0
 
@@ -34,7 +29,7 @@ Self-hostable "read-it-later" Web app.
 
 ## Deploy
 
-1. Before you start using this app, you have to initialize the sqlite database.
+1. To get started, you have to initialize the sqlite database and create an empty directory.
 
 ```sh
 # pwd: /path/to/databases
@@ -42,7 +37,7 @@ cat create_table.sql | sqlite3 .sqlite
 mkdir .index
 ```
 
-2. Then `docker compose up -d` will do the work.
+2. Then `docker compose up -d` will do the rest.
 
 `docker-compose.yml` example:
 
@@ -53,13 +48,13 @@ services:
     image: docker.io/kyoheiudev/leaf:0.9.0
     container_name: leaf
     environment:
-      - LEAF_DATA: /leaf/databases
-      - LEAF_API_TOKEN: STRING_USED_WHEN_ADDDING_NEW_ARTICLE_VIA_API
+      - LEAF_DATA=/leaf/databases
+      - LEAF_API_TOKEN=STRING_USED_WHEN_ADDING_NEW_ARTICLE_VIA_API
     volumes:
       - /path/to/databases:/leaf/databases
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - 5173:5173
+      - 3000:3000
 ```
 
 By default this app is not protected by any means so that you can use your own auth process.
