@@ -3,7 +3,9 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient({
 	datasources: {
 		db: {
-			url: process.env.LEAF_DATA ? `${process.env.LEAF_DATA}/.sqlite` : 'file:databases/.sqlite'
+			url: process.env.LEAF_DATA
+				? `file:${process.env.LEAF_DATA}/.sqlite`
+				: 'file:databases/.sqlite'
 		}
 	}
 });
