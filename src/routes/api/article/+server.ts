@@ -77,7 +77,7 @@ export const POST: RequestHandler = async (event) => {
 
 			try {
 				await fs.writeFile(
-					`./prisma/databases/.index/${id}`,
+					`${process.env.LEAF_DATA ?? './prisma/databases'}/.index/${id}`,
 					`${parsed.title}\n${parsed.textContent}`
 				);
 			} catch (e) {
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async (event) => {
 				where: { ulid: req.id }
 			});
 			//Remove from search index
-			await fs.rm(`${process.env.LEAF_DATA ?? './prisma/databases/'}.index/${req.id}`);
+			await fs.rm(`${process.env.LEAF_DATA ?? './prisma/databases'}/.index/${req.id}`);
 			console.log(`Delete article ${req.id}`);
 		}
 		return new Response(null, {

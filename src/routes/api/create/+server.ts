@@ -70,7 +70,10 @@ export const POST: RequestHandler = async (event) => {
 	});
 
 	try {
-		await fs.writeFile(`./prisma/databases/.index/${id}`, `${parsed.title}\n${parsed.textContent}`);
+		await fs.writeFile(
+			`${process.env.LEAF_DATA ?? './prisma/databases'}/.index/${id}`,
+			`${parsed.title}\n${parsed.textContent}`
+		);
 	} catch (e) {
 		return new Response(e as string, {
 			status: 500
