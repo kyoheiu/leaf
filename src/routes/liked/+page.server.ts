@@ -1,3 +1,4 @@
+import logger from '$lib/logger';
 import prisma, { getTags } from '$lib/server/client';
 
 const CHUNK = 21;
@@ -42,7 +43,7 @@ export const load = async ({ url }: { url: URL }) => {
 			}
 			return { result: result, prev: page - 1, next: next };
 		} catch (e) {
-			console.error(e);
+			logger.error(e);
 		}
 	} else {
 		try {
@@ -78,7 +79,7 @@ export const load = async ({ url }: { url: URL }) => {
 			}
 			return { result: result, prev: null, next: next };
 		} catch (e) {
-			console.error(e);
+			logger.error(e);
 		}
 	}
 };

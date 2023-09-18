@@ -1,3 +1,4 @@
+import logger from '$lib/logger';
 import prisma from '$lib/server/client';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -15,7 +16,7 @@ export const POST: RequestHandler = async (event) => {
 			tag: tag
 		}
 	});
-	console.log(`Add tag ${tag} to ${req.id}`);
+	logger.info(`Add tag ${tag} to ${req.id}`);
 	return new Response(null, {
 		status: 201
 	});
@@ -26,7 +27,7 @@ export const DELETE: RequestHandler = async (event) => {
 	await prisma.tags.deleteMany({
 		where: { ulid: req.id, tag: req.tag }
 	});
-	console.log(`Delete tag ${req.tag} from ${req.id}`);
+	logger.info(`Delete tag ${req.tag} from ${req.id}`);
 	return new Response(null, {
 		status: 200
 	});

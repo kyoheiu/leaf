@@ -1,3 +1,4 @@
+import logger from '$lib/logger';
 import prisma from '$lib/server/client';
 import type { RequestHandler } from '@sveltejs/kit';
 
@@ -12,6 +13,7 @@ export const GET: RequestHandler = async () => {
 		});
 	} catch (e) {
 		const message = 'Failed to download data.';
+		logger.error(message);
 		return new Response(message, { status: 500 });
 	}
 };

@@ -4,6 +4,7 @@
 	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from './LinkButton.svelte';
 	import { toastError } from './toast';
+	import logger from './logger';
 
 	const ICON_SIZE = 20;
 
@@ -21,7 +22,7 @@
 			body: JSON.stringify({ id: id, action: Action.ToggleLiked, current: liked })
 		});
 		if (!res.ok) {
-			console.error(await res.text());
+			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		}
 		liked = 1 - liked;
@@ -40,7 +41,7 @@
 			})
 		});
 		if (!res.ok) {
-			console.error(await res.text());
+			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		}
 		archived = 1 - archived;
@@ -55,7 +56,7 @@
 			body: JSON.stringify({ id: id, action: Action.Delete })
 		});
 		if (!res.ok) {
-			console.error(await res.text());
+			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		} else {
 			goto('/');

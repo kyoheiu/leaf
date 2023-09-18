@@ -6,6 +6,7 @@ import { Readability } from '@mozilla/readability';
 import puppeteer, { Browser } from 'puppeteer';
 import jsdom from 'jsdom';
 import { ulid } from 'ulid';
+import { logger } from '$lib/logger';
 
 interface Req {
 	id: string;
@@ -41,12 +42,12 @@ export const POST: RequestHandler = async (event) => {
 					'--no-sandbox'
 				]
 			});
-			console.log('Start crawling.');
+			logger.info(`Start crawling: ${url}`);
 			let crawled = '';
 			try {
 				crawled = await crawl(url, browser);
 			} catch (e) {
-				console.error(e);
+				logger.error(e);
 				await browser.close();
 			}
 			await browser.close();
@@ -55,7 +56,9 @@ export const POST: RequestHandler = async (event) => {
 			const document = dom.window.document;
 			const parsed = new Readability(document).parse();
 			if (!parsed) {
-				return new Response('Failed to parse the document.', {
+				const message = 'Failed to parse the document.';
+				logger.error(message);
+				return new Response(message, {
 					status: 500
 				});
 			}
@@ -81,11 +84,13 @@ export const POST: RequestHandler = async (event) => {
 					`${parsed.title}\n${parsed.textContent}`
 				);
 			} catch (e) {
+				logger.error(e);
 				return new Response(e as string, {
 					status: 500
 				});
 			}
 
+			logger.info(`Added new article: ${parsed.title}`);
 			return new Response(null, {
 				status: 201
 			});
@@ -102,7 +107,7 @@ export const POST: RequestHandler = async (event) => {
 					liked: 1 - req.current
 				}
 			});
-			console.log(`Toggle liked: ${req.id}`);
+			logger.info(`Toggled liked: ${req.id}`);
 		} else if (req.action === Action.ToggleArchived) {
 			if (req.current === null) {
 				return new Response(null, {
@@ -115,7 +120,7 @@ export const POST: RequestHandler = async (event) => {
 					archived: 1 - req.current
 				}
 			});
-			console.log(`Toggle archived: ${req.id}`);
+			logger.info(`Toggled archived: ${req.id}`);
 		} else if (req.action === Action.UpdatePosition) {
 			await prisma.articles.update({
 				where: { id: req.id },
@@ -135,12 +140,13 @@ export const POST: RequestHandler = async (event) => {
 			});
 			//Remove from search index
 			await fs.rm(`${process.env.LEAF_DATA ?? './prisma/databases'}/.index/${req.id}`);
-			console.log(`Delete article ${req.id}`);
+			logger.info(`Deleted article ${req.id}`);
 		}
 		return new Response(null, {
 			status: 200
 		});
 	} catch (e) {
+		logger.error(e);
 		return new Response(e as string, {
 			status: 500
 		});

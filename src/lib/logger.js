@@ -1,5 +1,7 @@
 import pino from 'pino';
 
-module.exports.logger = pino({
+export const logger = pino({
 	level: 'info'
 });
+
+export default logger;

@@ -5,6 +5,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 import { ulid } from 'ulid';
 import * as fs from 'node:fs/promises';
 import prisma from '$lib/server/client';
+import logger from '$lib/logger';
 
 const { JSDOM } = jsdom;
 
@@ -35,12 +36,12 @@ export const POST: RequestHandler = async (event) => {
 		headless: 'new',
 		args: ['--disable-gpu', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-sandbox']
 	});
-	console.log('Start crawling.');
+	logger.info(`Start crawling: ${url}`);
 	let crawled = '';
 	try {
 		crawled = await crawl(url, browser);
 	} catch (e) {
-		console.error(e);
+		logger.error(e);
 		await browser.close();
 	}
 	await browser.close();
@@ -49,7 +50,9 @@ export const POST: RequestHandler = async (event) => {
 	const document = dom.window.document;
 	const parsed = new Readability(document).parse();
 	if (!parsed) {
-		return new Response('Failed to parse the document.', {
+		const message = 'Failed to parse the document.';
+		logger.error(message);
+		return new Response(message, {
 			status: 500
 		});
 	}
@@ -80,6 +83,7 @@ export const POST: RequestHandler = async (event) => {
 		});
 	}
 
+	logger.info(`Added new article: ${parsed.title}`);
 	return new Response(null, {
 		status: 201
 	});

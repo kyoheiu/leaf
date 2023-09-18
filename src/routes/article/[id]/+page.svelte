@@ -5,6 +5,7 @@
 	import type { PageData } from './$types';
 	import { House } from 'phosphor-svelte';
 	import Buttons from '$lib/Buttons.svelte';
+	import logger from '$lib/logger';
 
 	const ICON_SIZE = 24;
 
@@ -42,7 +43,7 @@
 			})
 		}).then((res) => {
 			if (!res.ok) {
-				console.error('Cannot update progress.');
+				logger.error('Cannot update progress.');
 			}
 		});
 	};

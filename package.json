@@ -41,6 +41,7 @@
 		"@prisma/client": "^5.2.0",
 		"jsdom": "^22.1.0",
 		"moment": "^2.29.4",
+		"pino": "^8.15.1",
 		"puppeteer": "^21.1.1",
 		"svelte-french-toast": "^1.2.0",
 		"ulid": "^2.3.0"

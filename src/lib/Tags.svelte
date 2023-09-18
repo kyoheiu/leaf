@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Plus, X, TagSimple } from 'phosphor-svelte';
-	import { Toaster } from 'svelte-french-toast';
 	import { toastError } from './toast';
+	import logger from './logger';
 
 	const ICON_SIZE = 16;
 
@@ -22,7 +22,7 @@
 		});
 		if (!res.ok) {
 			const message = await res.text();
-			console.error(message);
+			logger.error(message);
 			toastError(message);
 		} else {
 			tags = [...tags, newTag.toLowerCase()];
@@ -41,7 +41,7 @@
 		});
 		if (!res.ok) {
 			const message = await res.text();
-			console.error(message);
+			logger.error(message);
 			toastError(message);
 		} else {
 			const updated = tags.filter((x) => x !== tag);
@@ -52,7 +52,6 @@
 	};
 </script>
 
-<Toaster />
 <div class="flex flex-wrap items-top">
 	{#if tags && tags.length !== 0}
 		{#each tags as x}

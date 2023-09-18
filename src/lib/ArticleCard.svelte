@@ -5,6 +5,7 @@
 	import LinkButton from '$lib/LinkButton.svelte';
 	import moment from 'moment';
 	import { toastError, toastSuccess } from './toast';
+	import logger from './logger';
 
 	const ICON_SIZE = 20;
 
@@ -24,7 +25,7 @@
 			body: JSON.stringify({ id: article.id, action: Action.ToggleLiked, current: article.liked })
 		});
 		if (!res.ok) {
-			console.error(await res.text());
+			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		} else {
 			article.liked = 1 - article.liked;
@@ -44,7 +45,7 @@
 			})
 		});
 		if (!res.ok) {
-			console.error(await res.text());
+			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		} else {
 			article.archived = 1 - article.archived;
@@ -66,7 +67,7 @@
 			body: JSON.stringify({ id: article.id, action: Action.Delete })
 		});
 		if (!res.ok) {
-			console.error(await res.text());
+			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		} else {
 			isInvisible = true;
