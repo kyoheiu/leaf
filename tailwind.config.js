@@ -13,6 +13,7 @@ export default {
 			slate: colors.slate,
 			sky: colors.sky,
 			bordercolor: '#94a3b8', // slate-400
+			tagcolor: '#e2e8f0', // slate-200
 			heart: '#ef4444' // red-500
 		},
 		extend: {

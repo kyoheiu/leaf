@@ -55,9 +55,7 @@
 <div class="flex flex-wrap items-top">
 	{#if tags && tags.length !== 0}
 		{#each tags as x}
-			<div
-				class="h-6 mr-2 mb-1 flex items-center rounded-full border border-bordercolor px-2 text-xs"
-			>
+			<div class="h-6 mr-2 mb-1 flex items-center rounded-full bg-tagcolor px-2 text-xs">
 				<a class="mr-2 text-xs no-underline" href={`/tag/${x}`}>
 					<TagSimple size={ICON_SIZE} class="inline" />&nbsp;{x}
 				</a>
@@ -68,7 +66,7 @@
 		{/each}
 	{/if}
 	<button
-		class="h-6 rounded-full border border-bordercolor px-2 text-xs"
+		class="h-6 rounded-full bg-tagcolor px-2 text-xs"
 		on:click={() => (isOpen = !isOpen)}
 		title="add new tag"
 	>
