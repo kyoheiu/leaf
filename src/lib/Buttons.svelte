@@ -3,6 +3,7 @@
 	import { Action } from '$lib/types';
 	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from './LinkButton.svelte';
+	import { toastError } from './toast';
 
 	const ICON_SIZE = 20;
 
@@ -21,6 +22,7 @@
 		});
 		if (!res.ok) {
 			console.error(await res.text());
+			toastError(`Error:\n${res.statusText}`);
 		}
 		liked = 1 - liked;
 	};
@@ -39,6 +41,7 @@
 		});
 		if (!res.ok) {
 			console.error(await res.text());
+			toastError(`Error:\n${res.statusText}`);
 		}
 		archived = 1 - archived;
 	};
@@ -53,6 +56,7 @@
 		});
 		if (!res.ok) {
 			console.error(await res.text());
+			toastError(`Error:\n${res.statusText}`);
 		} else {
 			goto('/');
 		}

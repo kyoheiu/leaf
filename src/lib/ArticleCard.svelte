@@ -4,6 +4,7 @@
 	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from '$lib/LinkButton.svelte';
 	import moment from 'moment';
+	import { toastError, toastSuccess } from './toast';
 
 	const ICON_SIZE = 20;
 
@@ -24,6 +25,7 @@
 		});
 		if (!res.ok) {
 			console.error(await res.text());
+			toastError(`Error:\n${res.statusText}`);
 		} else {
 			article.liked = 1 - article.liked;
 		}
@@ -43,8 +45,14 @@
 		});
 		if (!res.ok) {
 			console.error(await res.text());
+			toastError(`Error:\n${res.statusText}`);
 		} else {
 			article.archived = 1 - article.archived;
+			if (article.archived === 1) {
+				toastSuccess(`Archived:\n${article.title}`);
+			} else {
+				toastSuccess(`Unarchived:\n${article.title}`);
+			}
 			isInvisible = true;
 		}
 	};
@@ -59,6 +67,7 @@
 		});
 		if (!res.ok) {
 			console.error(await res.text());
+			toastError(`Error:\n${res.statusText}`);
 		} else {
 			isInvisible = true;
 		}
