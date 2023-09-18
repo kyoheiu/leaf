@@ -24,7 +24,7 @@ Self-hostable "read-it-later" Web app.
 
 - Rewrite in SvelteKit, omit the server-side container.
 - If you use v0.8.0 or before, an manual intervention is required.
-  - `cat migrate_table.sql | sqlite3 /path/to/.sqlite` would uppate the database.
+  - `cat migrate_table.sql | sqlite3 /path/to/.sqlite` would update the database.
 
 ## Deploy
 
