@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { MagnifyingGlass, DotsThreeVertical } from 'phosphor-svelte';
-	import { Toaster } from 'svelte-french-toast';
 	import Spinner from './Spinner.svelte';
 	import { Action } from './types';
 	import { toastError } from './toast';
@@ -36,7 +35,6 @@
 <svelte:head>
 	<title>leaf</title>
 </svelte:head>
-<Toaster />
 <div class="mt-3 flex flex-nowrap items-center justify-between">
 	<a class="pr-1" href="/">
 		<div class="w-7 h-7">
