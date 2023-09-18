@@ -17,15 +17,14 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v1.0.0
+- Update style overall.
+
 ### v0.9.0
 
 - Rewrite in SvelteKit, omit the server-side container.
 - If you use v0.8.0 or before, an manual intervention is required.
   - `cat migrate_table.sql | sqlite3 /path/to/.sqlite` would uppate the database.
-
-### v0.8.0
-
-- Use alpine to build image to reduce the size.
 
 ## Deploy
 
@@ -45,7 +44,7 @@ mkdir .index
 version: '3'
 services:
   leaf:
-    image: docker.io/kyoheiudev/leaf:0.9.0
+    image: docker.io/kyoheiudev/leaf:1.0.0
     container_name: leaf
     environment:
       - LEAF_DATA=/leaf/databases

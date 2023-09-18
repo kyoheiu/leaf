@@ -1,6 +1,6 @@
 {
-	"name": "leaf-svelte",
-	"version": "0.0.1",
+	"name": "leaf",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 		"dev": "LEAF_API_TOKEN=test vite dev",
