@@ -64,6 +64,13 @@
 	});
 </script>
 
+<svelte:head>
+	{#if data.result}
+		<title>{data.result.title} | leaf</title>
+	{:else}
+		<title>leaf</title>
+	{/if}
+</svelte:head>
 <svelte:window on:scroll={saveScrollPos} />
 {#if data.result}
 	<div class="sticky top-0 my-3 flex h-8 items-center bg-slate-50">

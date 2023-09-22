@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>leaf</title>
+	<title>query: {data.query} | leaf</title>
 </svelte:head>
 <Header />
 <main class="bg-itembackground flex min-h-screen flex-col items-center">
