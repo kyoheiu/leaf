@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Toaster } from 'svelte-french-toast';
 	import { LinkSimple } from 'phosphor-svelte';
 	import { toastSuccess } from '$lib/toast';
 	export let url: string;
@@ -10,7 +9,6 @@
 	};
 </script>
 
-<Toaster />
 <button on:click={() => copyToClipboard(url)} title="copy URL">
 	<LinkSimple size={18} />
 </button>
