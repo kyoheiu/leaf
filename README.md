@@ -17,10 +17,10 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
-### v1.0.1 (2023-09-23)
+### v1.1.0 (2023-10-08)
 
-- Fix toast.
-- Add title according to the routes.
+- Add transition to article card.
+- Add progress bar in article pages.
 
 ## Deploy
 
@@ -40,7 +40,7 @@ mkdir .index
 version: '3'
 services:
   leaf:
-    image: docker.io/kyoheiudev/leaf:1.0.1
+    image: docker.io/kyoheiudev/leaf:1.1.0
     container_name: leaf
     environment:
       - LEAF_DATA=/leaf/databases
