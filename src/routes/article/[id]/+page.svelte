@@ -10,6 +10,7 @@
 	const ICON_SIZE = 24;
 
 	export let data: PageData;
+	let progData = data.result?.progress;
 
 	const getScrollPosition = () => {
 		const bodyheight = document.documentElement.scrollHeight;
@@ -19,11 +20,13 @@
 		const prog = Math.abs(bodyheight - client - scrolled);
 
 		if (prog < 1) {
+			progData = 100;
 			return { pos: pos, prog: 100 };
 		} else {
+			progData = 100 - Math.round((prog * 100) / bodyheight);
 			return {
 				pos: pos,
-				prog: 100 - Math.round((prog * 100) / bodyheight)
+				prog: progData
 			};
 		}
 	};
@@ -73,7 +76,11 @@
 </svelte:head>
 <svelte:window on:scroll={saveScrollPos} />
 {#if data.result}
-	<div class="sticky top-0 my-3 flex h-8 items-center bg-slate-50">
+	<!-- progress bar -->
+	<div class="fixed h-1 top-0 left-0 w-screen bg-slate-300">
+		<div class="fixed h-1 bg-sky-500" style="width: {progData}%;" />
+	</div>
+	<div class="sticky top-1 my-3 flex h-8 items-center bg-slate-50">
 		<a href="/"><House size={ICON_SIZE} /></a>
 		<div class="ml-auto">
 			<Buttons
