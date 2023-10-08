@@ -19,6 +19,7 @@ Self-hostable "read-it-later" Web app.
 
 ### v1.1.0 (2023-10-08)
 
+- Fix width in small screens.
 - Add transition to article card.
 - Add progress bar in article pages.
 
