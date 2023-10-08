@@ -81,7 +81,7 @@
 {:else}
 	<div
 		transition:scale={{ duration: 250 }}
-		class="w-64 sm:w-96 md:w-144 mt-4 mb-4 first:mt-8 last:mb-8"
+		class="w-11/12 sm:w-96 md:w-144 mt-4 mb-4 first:mt-8 last:mb-8"
 	>
 		{#if article.timestamp}
 			<div class="py-1 text-sm text-slate-500">
