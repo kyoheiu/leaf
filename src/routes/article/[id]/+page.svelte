@@ -76,7 +76,7 @@
 </svelte:head>
 <svelte:window on:scroll={saveScrollPos} />
 {#if data.result}
-	<div class="sticky top-0 mb-3 flex h-8 items-center bg-slate-50">
+	<div class="z-50 sticky top-0 mb-3 flex h-8 items-center bg-slate-50">
 		<a href="/"><House size={ICON_SIZE} /></a>
 		<div class="ml-auto">
 			<Buttons
@@ -88,7 +88,7 @@
 		</div>
 	</div>
 	<!-- progress bar -->
-	<div class="fixed h-1 top-8 left-0 w-screen bg-slate-300">
+	<div class="z-50 fixed h-1 top-8 left-0 w-screen bg-slate-300">
 		<div class="fixed h-1 top-8 bg-sky-500" style="width: {progData}%;" />
 	</div>
 
