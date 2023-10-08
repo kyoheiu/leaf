@@ -15,7 +15,7 @@ const addNewOne = async (url) => {
 	chrome.notifications.create('leafResult', {
 		type: 'basic',
 		title: 'New article',
-		iconUrl: chrome.runtime.getURL("icons/48.png"),
+		iconUrl: chrome.runtime.getURL('icons/48.png'),
 		message: `${res.statusText} ${url}`
 	});
 };
