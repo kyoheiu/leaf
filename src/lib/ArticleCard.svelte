@@ -102,14 +102,18 @@
 		</div>
 		<div class="mx-auto mb-2 mt-1 grid grid-cols-10 gap-4 h-16">
 			{#if article.cover}
-				<div class="col-span-7 line-clamp-3 text-sm">
-					{article.beginning}
+				<div class="col-span-7 text-sm">
+					<div class="line-clamp-3">
+						{article.beginning}
+					</div>
 				</div>
 				<div class="col-span-3 flex justify-center">
 					<img loading="lazy" class="h-16 object-contain" alt="cover" src={article.cover} />
 				</div>
 			{:else}
-				<div class="col-span-10 line-clamp-3 text-sm">{article.beginning}</div>
+				<div class="col-span-10 text-sm">
+					<div class="line-clamp-3">{article.beginning}</div>
+				</div>
 			{/if}
 		</div>
 		<div>
