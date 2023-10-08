@@ -1,0 +1,25 @@
+{
+	"manifest_version": 3,
+	"author": "Kyohei Uto",
+	"name": "leaf",
+	"version": "0.2.2",
+	"description": "Add new article to your leaf app.",
+	"icons": {
+		"48": "icons/48.png"
+	},
+	"permissions": ["tabs", "storage", "notifications", "contextMenus"],
+	"background": {
+		"service_worker": "background.js",
+		"type": "module"
+	},
+	"options_ui": {
+		"page": "options.html",
+		"browser_style": true
+	},
+	"action": {
+		"default_icon": {
+			"19": "icons/19.png",
+			"38": "icons/38.png"
+		}
+	}
+}
