@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Tags from '$lib/Tags.svelte';
 	import { Action } from '$lib/types';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { House } from 'phosphor-svelte';
 	import Buttons from '$lib/Buttons.svelte';
@@ -11,6 +11,7 @@
 
 	export let data: PageData;
 	let progData = data.result?.progress;
+	let intervalId: NodeJS.Timeout;
 
 	const getScrollPosition = () => {
 		const bodyheight = document.documentElement.scrollHeight;
@@ -62,8 +63,13 @@
 		}
 	};
 
-	onMount(async () => {
+	onMount(() => {
 		restoreScrollPos();
+		intervalId = setInterval(saveScrollPos, 1000);
+	});
+
+	onDestroy(() => {
+		clearInterval(intervalId);
 	});
 </script>
 
@@ -74,7 +80,6 @@
 		<title>leaf</title>
 	{/if}
 </svelte:head>
-<svelte:window on:scroll={saveScrollPos} />
 {#if data.result}
 	<div class="z-50 sticky top-0 mb-3 flex h-8 items-center bg-slate-50">
 		<a href="/"><House size={ICON_SIZE} /></a>
