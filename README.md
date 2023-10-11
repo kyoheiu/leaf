@@ -17,6 +17,10 @@ Self-hostable "read-it-later" Web app.
 
 ## New release
 
+### v1.1.1 (2023-10-11)
+
+- Fix back button lag by using `setInterval` / `clearInterval` in article pages.
+
 ### v1.1.0 (2023-10-08)
 
 - Fix width in small screens.
@@ -41,7 +45,7 @@ mkdir .index
 version: '3'
 services:
   leaf:
-    image: docker.io/kyoheiudev/leaf:1.1.0
+    image: docker.io/kyoheiudev/leaf:1.1.1
     container_name: leaf
     environment:
       - LEAF_DATA=/leaf/databases
