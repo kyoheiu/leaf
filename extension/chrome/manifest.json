@@ -7,7 +7,7 @@
 	"icons": {
 		"48": "icons/48.png"
 	},
-	"permissions": ["tabs", "storage", "notifications", "contextMenus"],
+	"permissions": ["activeTab", "storage", "notifications", "contextMenus"],
 	"background": {
 		"service_worker": "background.js",
 		"type": "module"
