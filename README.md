@@ -11,9 +11,8 @@ Self-hostable "read-it-later" Web app.
   - archive
   - tagging
   - full-text search by `ripgrep`
-- Via the client API, or the
-  [Firefox extension](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/),
-  you can easily add new articles.
+- Via the client API, or the browser extension, you can easily add new articles.
+  - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/)  - [Chrome](https://chrome.google.com/webstore/detail/leaf/almdhkbalnhgdmkfejpihbcfibbpmdkg)
 
 ## New release
 
