@@ -12,19 +12,18 @@ Self-hostable "read-it-later" Web app.
   - tagging
   - full-text search by `ripgrep`
 - Via the client API, or the browser extension, you can easily add new articles.
-  - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/)  - [Chrome](https://chrome.google.com/webstore/detail/leaf/almdhkbalnhgdmkfejpihbcfibbpmdkg)
+  - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/) 
+  - [Chrome](https://chrome.google.com/webstore/detail/leaf/almdhkbalnhgdmkfejpihbcfibbpmdkg)
 
 ## New release
+
+### v1.1.2 (2023-10-24)
+
+- Order search results by the date the article is added.
 
 ### v1.1.1 (2023-10-11)
 
 - Fix back button lag by using `setInterval` / `clearInterval` in article pages.
-
-### v1.1.0 (2023-10-08)
-
-- Fix width in small screens.
-- Add transition to article card.
-- Add progress bar in article pages.
 
 ## Deploy
 
@@ -44,7 +43,7 @@ mkdir .index
 version: '3'
 services:
   leaf:
-    image: docker.io/kyoheiudev/leaf:1.1.1
+    image: docker.io/kyoheiudev/leaf
     container_name: leaf
     environment:
       - LEAF_DATA=/leaf/databases
