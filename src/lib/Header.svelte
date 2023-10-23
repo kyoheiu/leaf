@@ -82,7 +82,7 @@
 			type="text"
 			name="q"
 			placeholder="search"
-			class="mb-2 w-3/5 rounded-full border border-bordercolor py-1 px-3 text-sm"
+			class="w-3/5 rounded-full border border-bordercolor py-1 px-3 text-sm"
 		/>
 	</form>
 {/if}
