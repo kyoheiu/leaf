@@ -56,7 +56,7 @@ export const load = async ({ url }: { url: URL }) => {
 		}
 	}
 
-	const result: ArticleDataWithTag[] = [];
+	let result: ArticleDataWithTag[] = [];
 	for (let i = 0; i < articleResult.length; i++) {
 		const article = articleResult[i];
 		const tags = await getTags(article.id);
@@ -65,6 +65,11 @@ export const load = async ({ url }: { url: URL }) => {
 			tags: tags
 		});
 	}
+
+	// Search results are ordered by the date the article is added (using ulid)
+	result = result.sort((a, b) => {
+		return b.id.localeCompare(a.id);
+	});
 
 	return {
 		result: result,
