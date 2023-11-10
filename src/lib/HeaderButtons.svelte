@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { Action } from '$lib/types';
-	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from './LinkButton.svelte';
 	import { toastError } from './toast';
 	import logger from './logger';
-
-	const ICON_SIZE = 20;
+	import ArchiveBoxFilled from './buttons/ArchiveBoxFilled.svelte';
+	import ArchiveBox from './buttons/ArchiveBox.svelte';
+	import HeartFilled from './buttons/HeartFilled.svelte';
+	import Heart from './buttons/Heart.svelte';
+	import Trash from './buttons/Trash.svelte';
 
 	export let id: string;
 	export let url: string;
+	export let title: string;
 	export let liked: number;
 	export let archived: number;
 
@@ -19,7 +22,13 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: id, action: Action.ToggleLiked, current: liked })
+			body: JSON.stringify({
+				id: id,
+				url: url,
+				title: title,
+				action: Action.ToggleLiked,
+				current: liked
+			})
 		});
 		if (!res.ok) {
 			logger.error(await res.text());
@@ -36,6 +45,8 @@
 			},
 			body: JSON.stringify({
 				id: id,
+				url: url,
+				title: title,
 				action: Action.ToggleArchived,
 				current: archived
 			})
@@ -53,7 +64,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: id, action: Action.Delete })
+			body: JSON.stringify({ id: id, url: url, title: title, action: Action.Delete })
 		});
 		if (!res.ok) {
 			logger.error(await res.text());
@@ -65,20 +76,20 @@
 </script>
 
 <div class="flex justify-evenly space-x-4">
-	<LinkButton {url} />
+	<LinkButton {url} size={32} />
 	<button on:click={toggleLiked}
 		>{#if liked}
-			<Heart weight="fill" class="text-heart" size={ICON_SIZE} />
+			<HeartFilled />
 		{:else}
-			<Heart size={ICON_SIZE} />
+			<Heart />
 		{/if}
 	</button>
 	<button on:click={toggleArchived}>
 		{#if archived}
-			<ArchiveBox weight="fill" size={ICON_SIZE} />
+			<ArchiveBoxFilled />
 		{:else}
-			<ArchiveBox size={ICON_SIZE} />
+			<ArchiveBox />
 		{/if}
 	</button>
-	<button on:click={deleteArticleContent}><Trash size={ICON_SIZE} /></button>
+	<button on:click={deleteArticleContent}><Trash /></button>
 </div>

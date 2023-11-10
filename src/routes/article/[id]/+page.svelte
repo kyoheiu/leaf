@@ -4,10 +4,10 @@
 	import { onDestroy, onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import { House } from 'phosphor-svelte';
-	import Buttons from '$lib/Buttons.svelte';
+	import Buttons from '$lib/HeaderButtons.svelte';
 	import logger from '$lib/logger';
 
-	const ICON_SIZE = 24;
+	const ICON_SIZE = 32;
 
 	export let data: PageData;
 	let progData = data.result?.progress;
@@ -87,6 +87,7 @@
 			<Buttons
 				id={data.result.id}
 				url={data.result.url}
+				title={data.result.title}
 				bind:liked={data.result.liked}
 				bind:archived={data.result.archived}
 			/>

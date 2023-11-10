@@ -1,14 +1,16 @@
 <script lang="ts">
 	import { Action, type ArticleDataWithTag } from '$lib/types';
 	import Tags from '$lib/Tags.svelte';
-	import { Heart, ArchiveBox, Trash } from 'phosphor-svelte';
 	import LinkButton from '$lib/LinkButton.svelte';
 	import moment from 'moment';
 	import { toastError, toastSuccess } from './toast';
 	import logger from './logger';
 	import { scale } from 'svelte/transition';
-
-	const ICON_SIZE = 20;
+	import HeartFilled from './buttons/HeartFilled.svelte';
+	import Heart from './buttons/Heart.svelte';
+	import ArchiveBoxFilled from './buttons/ArchiveBoxFilled.svelte';
+	import ArchiveBox from './buttons/ArchiveBox.svelte';
+	import Trash from './buttons/Trash.svelte';
 
 	export let article: ArticleDataWithTag;
 	let isInvisible = false;
@@ -23,7 +25,13 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: article.id, action: Action.ToggleLiked, current: article.liked })
+			body: JSON.stringify({
+				id: article.id,
+				url: article.url,
+				title: article.title,
+				action: Action.ToggleLiked,
+				current: article.liked
+			})
 		});
 		if (!res.ok) {
 			logger.error(await res.text());
@@ -41,6 +49,8 @@
 			},
 			body: JSON.stringify({
 				id: article.id,
+				url: article.url,
+				title: article.title,
 				action: Action.ToggleArchived,
 				current: article.archived
 			})
@@ -65,12 +75,18 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ id: article.id, action: Action.Delete })
+			body: JSON.stringify({
+				id: article.id,
+				url: article.url,
+				title: article.title,
+				action: Action.Delete
+			})
 		});
 		if (!res.ok) {
 			logger.error(await res.text());
 			toastError(`Error:\n${res.statusText}`);
 		} else {
+			toastSuccess(`Deleted:\n${article.title}`);
 			isInvisible = true;
 		}
 	};
@@ -93,12 +109,12 @@
 				{article.title}
 			</a>
 		</div>
-		<div class="my-2 flex items-center text-sm text-slate-500">
+		<div class="my-2 flex items-start text-sm text-slate-500">
 			<a href={article.url} target="_blank">
 				{trimUrl(article.url)}
 			</a>
 			&nbsp;
-			<LinkButton url={article.url} />
+			<LinkButton url={article.url} size={18} />
 		</div>
 		<div class="mx-auto mb-2 mt-1 grid grid-cols-10 gap-4 h-16">
 			{#if article.cover}
@@ -126,15 +142,14 @@
 				<div class="h-1 rounded-md bg-slate-500" style="width: {article.progress}%;" />
 			</div>
 			<button
-				id={`like-button-${article.id}`}
 				class="mx-1 rounded-full border border-bordercolor px-2 text-sm"
 				on:click={toggleLiked}
 				title="toggle liked"
 			>
 				{#if article.liked}
-					<Heart weight="fill" class="text-heart" size={ICON_SIZE} />
+					<HeartFilled />
 				{:else}
-					<Heart size={ICON_SIZE} />
+					<Heart />
 				{/if}
 			</button>
 			<button
@@ -143,9 +158,9 @@
 				title="toggle archived"
 			>
 				{#if article.archived}
-					<ArchiveBox weight="fill" size={ICON_SIZE} />
+					<ArchiveBoxFilled />
 				{:else}
-					<ArchiveBox size={ICON_SIZE} />
+					<ArchiveBox />
 				{/if}
 			</button>
 			<button
@@ -153,7 +168,7 @@
 				on:click={deleteArticleContent}
 				title="delete"
 			>
-				<Trash size={ICON_SIZE} />
+				<Trash />
 			</button>
 		</div>
 	</div>

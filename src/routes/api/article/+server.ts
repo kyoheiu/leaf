@@ -12,6 +12,7 @@ interface Req {
 	id: string;
 	action: Action;
 	url: string | null;
+	title: string | null;
 	current: number | null;
 	pos: number | null;
 	prog: number | null;
@@ -107,7 +108,7 @@ export const POST: RequestHandler = async (event) => {
 					liked: 1 - req.current
 				}
 			});
-			logger.info(`Toggled liked: ${req.id}`);
+			logger.info(`Toggled liked: ${req.url} | ${req.title}`);
 		} else if (req.action === Action.ToggleArchived) {
 			if (req.current === null) {
 				return new Response(null, {
@@ -120,7 +121,7 @@ export const POST: RequestHandler = async (event) => {
 					archived: 1 - req.current
 				}
 			});
-			logger.info(`Toggled archived: ${req.id}`);
+			logger.info(`Toggled archived: ${req.url} | ${req.title}`);
 		} else if (req.action === Action.UpdatePosition) {
 			await prisma.articles.update({
 				where: { id: req.id },
@@ -140,7 +141,7 @@ export const POST: RequestHandler = async (event) => {
 			});
 			//Remove from search index
 			await fs.rm(`${process.env.LEAF_DATA ?? './prisma/databases'}/.index/${req.id}`);
-			logger.info(`Deleted article ${req.id}`);
+			logger.info(`Deleted: ${req.url} | ${req.title}`);
 		}
 		return new Response(null, {
 			status: 200
