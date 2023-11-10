@@ -21,19 +21,21 @@
 		const prog = Math.abs(bodyheight - client - scrolled);
 
 		if (prog < 1) {
-			progData = 100;
 			return { pos: pos, prog: 100 };
 		} else {
-			progData = 100 - Math.round((prog * 100) / bodyheight);
 			return {
 				pos: pos,
-				prog: progData
+				prog: 100 - Math.round((prog * 100) / bodyheight),
 			};
 		}
 	};
 
 	const saveScrollPos = () => {
 		const updated = getScrollPosition();
+		if (updated.prog === progData) {
+			return;
+		}
+		progData = updated.prog;
 		fetch(`/api/article`, {
 			method: 'POST',
 			headers: {
