@@ -12,10 +12,16 @@ Self-hostable "read-it-later" Web app.
   - tagging
   - full-text search by `ripgrep`
 - Via the client API, or the browser extension, you can easily add new articles.
-  - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/) 
+  - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/leaf-extension/)
   - [Chrome](https://chrome.google.com/webstore/detail/leaf/almdhkbalnhgdmkfejpihbcfibbpmdkg)
 
 ## New release
+
+### v1.2.0 (2023-11-11)
+
+- Add transition to pages and buttons.
+- Update `postcss` to 8.4.31.
+- Update logging: Add url and title when liking / archiving / deleting.
 
 ### v1.1.2 (2023-10-24)
 
