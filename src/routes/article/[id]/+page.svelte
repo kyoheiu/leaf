@@ -25,7 +25,7 @@
 		} else {
 			return {
 				pos: pos,
-				prog: 100 - Math.round((prog * 100) / bodyheight),
+				prog: 100 - Math.round((prog * 100) / bodyheight)
 			};
 		}
 	};
