@@ -20,6 +20,7 @@ Self-hostable "read-it-later" Web app.
 ### v1.2.0 (2023-11-11)
 
 - Add transition to pages and buttons.
+- Make it more efficient to update the scroll position.
 - Update `postcss` to 8.4.31.
 - Update logging: Add url and title when liking / archiving / deleting.
 
