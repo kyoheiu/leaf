@@ -2,7 +2,7 @@
 
 Self-hostable "read-it-later" Web app.
 
-demo site is available [here](https://leaf-demo.kyoheiu.dev).  
+Demo site is available [here](https://leaf-demo.kyoheiu.dev).  
 Note that this demo site will be reset every hour.
 
 ## What is this exactly
