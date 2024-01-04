@@ -20,6 +20,12 @@ Note that this demo site will be reset every hour.
 
 ## New release
 
+## v1.2.1 (2024-01-05)
+
+- Fixed the top bar menu position.
+- Suspend saveScrollPos when there is no update.
+- Remove viewTransition.
+
 ### v1.2.0 (2023-11-11)
 
 - Add transition to pages and buttons.
@@ -72,7 +78,7 @@ mkdir .index
 version: '3'
 services:
   leaf:
-    image: docker.io/kyoheiudev/leaf
+    image: docker.io/kyoheiudev/leaf:1.2.1
     container_name: leaf
     environment:
       - LEAF_DATA=/leaf/databases
