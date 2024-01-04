@@ -35,7 +35,7 @@
 <svelte:head>
 	<title>leaf</title>
 </svelte:head>
-<div class="mt-3 flex flex-nowrap items-center justify-between">
+<div class="flex relative flex-nowrap justify-between items-center mt-3">
 	<a class="pr-1" href="/">
 		<div class="w-7 h-7">
 			<img src="/logo.png" alt="leaf" width="auto" height="auto" />
@@ -47,7 +47,7 @@
 	{:else}
 		<form on:submit={createNew}>
 			<input
-				class="w-5/6 flex-auto rounded-full border border-bordercolor py-1 px-3 text-sm"
+				class="flex-auto px-3 py-1 w-5/6 text-sm rounded-full border border-bordercolor"
 				id={'add_new'}
 				type="url"
 				bind:value={url}
@@ -58,12 +58,12 @@
 	<button class="ml-auto" on:click={() => (searchOpen = !searchOpen)} title="search">
 		<MagnifyingGlass size={ICON_SIZE} />
 	</button>
-	<button on:click={() => (showMenu = !showMenu)} class="ml-3 relative" title="menu">
+	<button on:click={() => (showMenu = !showMenu)} class="ml-3" title="menu">
 		<DotsThreeVertical size={ICON_SIZE} />
 	</button>
 	{#if showMenu}
 		<div
-			class=" absolute right-10 top-10 flex w-32 flex-col items-end space-y-3 rounded border bg-slate-50 p-2 text-sm drop-shadow-2xl"
+			class="flex absolute right-0 top-8 flex-col items-end p-2 space-y-3 w-32 text-sm rounded border drop-shadow-2xl bg-slate-50"
 		>
 			<a class="no-underline" href="/liked">Liked</a>
 			<a class="no-underline" href="/archived">Archived</a>
@@ -76,13 +76,13 @@
 	{/if}
 </div>
 {#if searchOpen}
-	<form action="/search" class="mt-3 flex justify-end">
+	<form action="/search" class="flex justify-end mt-3">
 		<input
 			id="search"
 			type="text"
 			name="q"
 			placeholder="search"
-			class="w-3/5 rounded-full border border-bordercolor py-1 px-3 text-sm"
+			class="px-3 py-1 w-3/5 text-sm rounded-full border border-bordercolor"
 		/>
 	</form>
 {/if}
