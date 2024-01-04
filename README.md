@@ -20,7 +20,7 @@ Note that this demo site will be reset every hour.
 
 ## New release
 
-## v1.2.1 (2024-01-05)
+### v1.2.1 (2024-01-05)
 
 - Fixed the top bar menu position.
 - Suspend saveScrollPos when there is no update.
