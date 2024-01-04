@@ -1,6 +1,6 @@
 {
 	"name": "leaf",
-	"version": "1.1.2",
+	"version": "1.2.1",
 	"private": true,
 	"scripts": {
 		"dev": "LEAF_API_TOKEN=test vite dev",
